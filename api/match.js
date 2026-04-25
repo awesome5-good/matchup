@@ -41,7 +41,7 @@ ${JSON.stringify(programs)}
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1000,
         messages: [{ role: 'user', content: prompt }]
       })
@@ -50,6 +50,7 @@ ${JSON.stringify(programs)}
     const data = await response.json();
     console.log('Claude 응답:', JSON.stringify(data));
     
+    return res.status(200).json({ debug: data });
     if (!data.content || !data.content[0]) {
       return res.status(500).json({ error: 'Claude API 응답 오류', data });
     }
