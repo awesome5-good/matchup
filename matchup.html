@@ -659,7 +659,7 @@ ${JSON.stringify(programList, null, 2)}
 
   try {
     // Claude API 호출
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('/api/match', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
