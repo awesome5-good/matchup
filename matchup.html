@@ -665,17 +665,9 @@ const response = await fetch('/api/match', {
       body: JSON.stringify({ company, programs: programList })
     });
 
-    const data = await response.json();
-    const resultText = JSON.stringify(data.matches);
-
-    // JSON 파싱
-    let aiMatches = [];
-    try {
-      aiMatches = JSON.parse(resultText);
-    } catch {
-      const jsonMatch = resultText.match(/\[[\s\S]*\]/);
-      if (jsonMatch) aiMatches = JSON.parse(jsonMatch[0]);
-    }
+const data = await response.json();
+    if (!data.matches) throw new Error('no matches');
+    const aiMatches = data.matches;
 
     // 기존 매칭 삭제
     await db.from('matches').delete().eq('company_id', company.id);
