@@ -48,6 +48,7 @@ ${JSON.stringify(programs)}
     });
 
     const data = await response.json();
+    console.log('Claude 응답:', JSON.stringify(data));
     
     if (!data.content || !data.content[0]) {
       return res.status(500).json({ error: 'Claude API 응답 오류', data });
