@@ -9,71 +9,120 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Pretendard', sans-serif; background: #F9FAFB; color: #111827; min-height: 100vh; }
-    .login-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-    .login-box { background: #fff; border-radius: 16px; padding: 40px; width: 400px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); text-align: center; }
-    .login-logo { width: 48px; height: 48px; background: #4F46E5; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 24px; margin: 0 auto 16px; }
+
+    .login-wrap {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; background: #F9FAFB;
+    }
+    .login-box {
+      background: #fff; border-radius: 16px; padding: 40px;
+      width: 400px; box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+    .login-logo {
+      width: 48px; height: 48px; background: #4F46E5;
+      border-radius: 12px; display: flex; align-items: center;
+      justify-content: center; color: white; font-weight: 800;
+      font-size: 24px; margin: 0 auto 16px;
+    }
     .login-box h2 { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
     .login-box p { font-size: 14px; color: #6B7280; margin-bottom: 24px; }
-    .input-wrap { position: relative; margin-bottom: 8px; }
-    .login-input { width: 100%; border: 1px solid #E5E7EB; border-radius: 8px; padding: 12px 44px 12px 14px; font-size: 14px; font-family: inherit; text-align: center; letter-spacing: 4px; }
+    .login-input {
+      width: 100%; border: 1px solid #E5E7EB; border-radius: 8px;
+      padding: 12px 14px; font-size: 14px; font-family: inherit;
+      margin-bottom: 12px; text-align: center; letter-spacing: 4px;
+    }
     .login-input:focus { outline: none; border-color: #4F46E5; }
-    .eye-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #9CA3AF; font-size: 20px; line-height: 1; }
-    .caps-msg { color: #F59E0B; font-size: 12px; margin-bottom: 8px; display: none; }
-    .login-btn { width: 100%; background: #4F46E5; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 4px; }
+    .login-btn {
+      width: 100%; background: #4F46E5; color: white;
+      border: none; padding: 12px; border-radius: 8px;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+    }
     .login-btn:hover { background: #3730A3; }
     .error-msg { color: #EF4444; font-size: 13px; margin-top: 8px; display: none; }
+
+    /* ADMIN PAGE */
     .admin-wrap { display: none; }
-    .admin-header { background: #fff; border-bottom: 1px solid #E5E7EB; padding: 0 32px; height: 60px; display: flex; align-items: center; gap: 12px; }
+    .admin-header {
+      background: #fff; border-bottom: 1px solid #E5E7EB;
+      padding: 0 32px; height: 60px;
+      display: flex; align-items: center; gap: 12px;
+    }
     .admin-header .logo { font-weight: 800; font-size: 16px; }
-    .admin-header .badge { background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
-    .logout-btn { margin-left: auto; background: #fff; border: 1px solid #E5E7EB; border-radius: 8px; padding: 6px 14px; font-size: 13px; cursor: pointer; }
+    .admin-header .badge {
+      background: #FEF3C7; color: #92400E;
+      font-size: 11px; font-weight: 600;
+      padding: 2px 8px; border-radius: 4px;
+    }
+    .admin-header .logout {
+      margin-left: auto; background: #fff;
+      border: 1px solid #E5E7EB; border-radius: 8px;
+      padding: 6px 14px; font-size: 13px; cursor: pointer;
+    }
     .admin-content { padding: 32px; max-width: 1200px; margin: 0 auto; }
     .admin-content h1 { font-size: 24px; font-weight: 800; margin-bottom: 24px; }
     .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
     .stat-card { background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 20px; }
     .stat-label { font-size: 12px; color: #6B7280; margin-bottom: 8px; }
     .stat-value { font-size: 28px; font-weight: 800; }
+    .stat-value.blue { color: #4F46E5; }
+    .stat-value.green { color: #10B981; }
     .form-card { background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 24px; }
     .form-card h3 { font-weight: 700; margin-bottom: 16px; }
-    .company-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #F3F4F6; }
-    .company-avatar { width: 36px; height: 36px; background: #EEF2FF; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #4F46E5; }
+    .company-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid #F3F4F6;
+    }
+    .company-avatar {
+      width: 36px; height: 36px; background: #EEF2FF;
+      border-radius: 8px; display: flex; align-items: center;
+      justify-content: center; font-weight: 700; color: #4F46E5;
+    }
     .spinner { width: 24px; height: 24px; border: 3px solid #E5E7EB; border-top-color: #4F46E5; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 20px auto; }
     @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
 
+<!-- 로그인 화면 -->
 <div class="login-wrap" id="login-wrap">
   <div class="login-box">
     <div class="login-logo">M</div>
     <h2>관리자 로그인</h2>
     <p>매치업 운영 대시보드</p>
-    <div class="input-wrap">
-      <input type="password" class="login-input" id="pw-input" placeholder="비밀번호"
-        onkeydown="if(event.key==='Enter') checkPw()"
-        onkeyup="checkCapsLock(event)">
-      <button class="eye-btn" onclick="toggleEye()" id="eye-btn">👁</button>
-    </div>
-    <div class="caps-msg" id="caps-msg">⚠️ 캡스락이 켜져 있어요</div>
+    <input type="password" class="login-input" id="pw-input" placeholder="비밀번호" onkeydown="if(event.key==='Enter') checkPw()">
     <button class="login-btn" onclick="checkPw()">로그인</button>
     <div class="error-msg" id="error-msg">비밀번호가 틀렸습니다</div>
   </div>
 </div>
 
+<!-- 관리자 화면 -->
 <div class="admin-wrap" id="admin-wrap">
   <div class="admin-header">
-    <div style="width:32px;height:32px;font-size:16px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:#4F46E5;color:white;font-weight:800">M</div>
+    <div class="login-logo" style="width:32px;height:32px;font-size:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#4F46E5;color:white;font-weight:800">M</div>
     <div class="logo">매치업</div>
     <div class="badge">관리자</div>
-    <button class="logout-btn" onclick="logout()">로그아웃</button>
+    <button class="logout" onclick="logout()">로그아웃</button>
   </div>
   <div class="admin-content">
     <h1>운영 대시보드</h1>
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-label">누적 기업</div><div class="stat-value" id="admin-companies">-</div></div>
-      <div class="stat-card"><div class="stat-label">지원사업 DB</div><div class="stat-value" style="color:#4F46E5" id="admin-programs">-</div></div>
-      <div class="stat-card"><div class="stat-label">총 매칭 건수</div><div class="stat-value" style="color:#10B981" id="admin-matches">-</div></div>
-      <div class="stat-card"><div class="stat-label">DB 상태</div><div class="stat-value" style="font-size:16px;color:#10B981">● 정상</div></div>
+      <div class="stat-card">
+        <div class="stat-label">누적 기업</div>
+        <div class="stat-value" id="admin-companies">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">지원사업 DB</div>
+        <div class="stat-value blue" id="admin-programs">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">총 매칭 건수</div>
+        <div class="stat-value green" id="admin-matches">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">DB 상태</div>
+        <div class="stat-value" style="font-size:16px;color:#10B981">● 정상</div>
+      </div>
     </div>
     <div class="form-card">
       <h3>최근 등록 기업</h3>
@@ -83,23 +132,11 @@
 </div>
 
 <script>
-const ADMIN_PW = 'bravo2024!';
+const ADMIN_PW = 'best5381!';
 const SUPABASE_URL = 'https://wykupodtnbcrebgbzyxr.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_THekjy2-GusHmZ7FrjX9UQ_gm41EUr2';
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-function toggleEye() {
-  const input = document.getElementById('pw-input');
-  const btn = document.getElementById('eye-btn');
-  if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
-  else { input.type = 'password'; btn.textContent = '👁'; }
-}
-
-function checkCapsLock(e) {
-  const caps = e.getModifierState && e.getModifierState('CapsLock');
-  document.getElementById('caps-msg').style.display = caps ? 'block' : 'none';
-}
 
 function checkPw() {
   const pw = document.getElementById('pw-input').value;
@@ -116,7 +153,6 @@ function logout() {
   document.getElementById('login-wrap').style.display = 'flex';
   document.getElementById('admin-wrap').style.display = 'none';
   document.getElementById('pw-input').value = '';
-  document.getElementById('error-msg').style.display = 'none';
 }
 
 async function loadAdmin() {
