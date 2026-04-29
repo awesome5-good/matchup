@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>매치업 — 지원사업 매칭</title>
+  <title>매치업</title>
+  <!-- 파비콘 -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%234F46E5'/><text x='50%25' y='50%25' font-size='20' font-weight='900' font-family='Arial' fill='white' text-anchor='middle' dominant-baseline='central'>M</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
@@ -42,7 +44,7 @@
     .topbar { background: #fff; border-bottom: 1px solid var(--gray-200); padding: 0 28px; height: 60px; display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 50; }
     .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--gray-500); }
     .breadcrumb span { color: var(--gray-900); font-weight: 500; }
-    .search-box { flex: 1; max-width: 400px; margin: 0 auto; background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 8px; padding: 8px 14px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--gray-400); cursor: not-allowed; }
+    .search-box { flex: 1; max-width: 400px; margin: 0 auto; background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 8px; padding: 8px 14px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--gray-400); }
     .search-preparing { font-size: 11px; background: var(--gray-200); color: var(--gray-500); padding: 2px 6px; border-radius: 4px; margin-left: 4px; }
     .topbar-actions { display: flex; align-items: center; gap: 12px; margin-left: auto; }
 
@@ -78,6 +80,31 @@
     .btn-primary { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.15s; }
     .btn-primary:hover { background: var(--primary-dark); }
 
+    /* ── 로딩 화면 개선 ── */
+    .loading { text-align: center; padding: 80px 40px; }
+    .loading-spinner-wrap { margin-bottom: 32px; }
+    .spinner-ring { width: 56px; height: 56px; border: 4px solid var(--gray-200); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-title {
+      font-size: 22px; font-weight: 800; color: var(--gray-900);
+      margin-bottom: 16px;
+    }
+    .loading-desc-box {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary-light) 0%, #e0e7ff 100%);
+      border: 1.5px solid #c7d2fe;
+      border-radius: 12px;
+      padding: 14px 28px;
+      margin-top: 4px;
+    }
+    .loading-desc-box p {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--primary-dark);
+      line-height: 1.6;
+    }
+
     /* RESULTS */
     .result-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; }
     .result-title h1 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
@@ -92,30 +119,66 @@
     .stat-value.danger { color: var(--danger); }
     .stat-sub { font-size: 12px; color: var(--gray-400); margin-top: 4px; }
 
+    /* ── 1순위 배너 ── */
+    .top-pick-section {
+      margin-bottom: 20px;
+    }
+    .top-pick-label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 700; color: var(--primary);
+      margin-bottom: 10px;
+      padding: 0 4px;
+    }
+    .top-pick-label::before {
+      content: '⭐';
+      font-size: 15px;
+    }
+    .other-results-label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600; color: var(--gray-500);
+      margin: 16px 0 10px;
+      padding: 0 4px;
+    }
+
     /* FILTER */
-    .filter-bar { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
-    .filter-chip { position: relative; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid var(--gray-200); background: #fff; cursor: pointer; color: var(--gray-600); transition: all 0.15s; }
+    .filter-bar { display: flex; gap: 6px; margin-bottom: 8px; align-items: center; flex-wrap: wrap; }
+    .filter-chip { position: relative; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1px solid var(--gray-200); background: #fff; cursor: pointer; color: var(--gray-600); transition: all 0.15s; white-space: nowrap; }
     .filter-chip:hover { border-color: var(--primary); color: var(--primary); }
     .filter-chip.active { background: var(--gray-900); color: white; border-color: var(--gray-900); }
-    .filter-chip .tooltip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: var(--gray-900); color: white; font-size: 11px; font-weight: 400; padding: 6px 10px; border-radius: 6px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.15s; z-index: 10; }
+    .filter-chip .tooltip {
+      position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+      background: var(--gray-900); color: white; font-size: 11px; font-weight: 400;
+      padding: 6px 10px; border-radius: 6px; white-space: nowrap;
+      opacity: 0; pointer-events: none; transition: opacity 0.15s; z-index: 10;
+    }
     .filter-chip .tooltip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 4px solid transparent; border-top-color: var(--gray-900); }
     .filter-chip:hover .tooltip { opacity: 1; }
+
+    /* ── 툴팁 안내 문구 ── */
+    .filter-hint {
+      font-size: 11px; color: var(--gray-400); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .filter-hint::before { content: '💡'; font-size: 11px; }
+
     .sort-select { margin-left: auto; border: 1px solid var(--gray-200); border-radius: 8px; padding: 6px 12px; font-size: 13px; font-family: inherit; color: var(--gray-600); background: #fff; cursor: pointer; }
 
     /* PROGRAM CARDS */
-    .program-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 22px; margin-bottom: 12px; display: flex; gap: 20px; align-items: flex-start; transition: all 0.15s; cursor: default; }
-    .program-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); transform: translateY(-1px); border-color: var(--gray-300); }
-    .program-card.top-pick { border: 2px solid var(--primary); background: linear-gradient(135deg, #fafafe 0%, #f0f0ff 100%); }
-    .program-card.top-pick:hover { box-shadow: 0 6px 24px rgba(79,70,229,0.2); }
+    .program-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 22px; margin-bottom: 10px; display: flex; gap: 20px; align-items: flex-start; transition: all 0.15s; cursor: default; }
+    .program-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.09); transform: translateY(-1px); border-color: var(--gray-300); }
+    .program-card.top-pick { border: 2px solid var(--primary); background: linear-gradient(135deg, #fafafe 0%, #f0f0ff 100%); box-shadow: 0 4px 16px rgba(79,70,229,0.12); }
+    .program-card.top-pick:hover { box-shadow: 0 8px 28px rgba(79,70,229,0.22); }
     .score-ring { flex-shrink: 0; text-align: center; }
     .score-circle { width: 64px; height: 64px; border-radius: 50%; border: 4px solid var(--gray-200); display: flex; align-items: center; justify-content: center; flex-direction: column; }
     .score-circle.high { border-color: var(--primary); }
     .score-circle.mid { border-color: var(--success); }
+    .score-circle.low { border-color: var(--warning); }
     .score-num { font-size: 16px; font-weight: 800; color: var(--gray-900); line-height: 1; }
     .score-pct { font-size: 10px; color: var(--gray-400); }
     .score-badge { font-size: 10px; font-weight: 600; margin-top: 4px; padding: 2px 6px; border-radius: 4px; }
     .score-badge.best { background: #FEF3C7; color: #92400E; }
     .score-badge.good { background: #D1FAE5; color: #065F46; }
+    .score-badge.normal { background: var(--gray-100); color: var(--gray-500); }
     .program-info { flex: 1; }
     .program-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
     .program-org { font-size: 13px; color: var(--gray-400); margin-bottom: 10px; }
@@ -124,7 +187,7 @@
     .program-checks { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
     .check-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--gray-600); }
     .check-icon { color: var(--success); font-size: 14px; }
-    .program-meta { display: flex; gap: 20px; font-size: 13px; color: var(--gray-500); }
+    .program-meta { display: flex; gap: 20px; font-size: 13px; color: var(--gray-500); flex-wrap: wrap; }
     .deadline { color: var(--danger); font-weight: 600; }
     .program-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
     .badge-recommend { background: #EEF2FF; color: var(--primary); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; white-space: nowrap; border: 1px solid var(--primary); }
@@ -139,24 +202,13 @@
     .status-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-    /* LOADING */
-    .loading { text-align: center; padding: 60px; color: var(--gray-400); }
-    .spinner { width: 32px; height: 32px; border: 3px solid var(--gray-200); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-steps { margin-top: 24px; text-align: left; max-width: 320px; margin-left: auto; margin-right: auto; }
-    .loading-step { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 13px; color: var(--gray-400); }
-    .loading-step.done { color: var(--success); }
-    .loading-step.active { color: var(--gray-700); font-weight: 600; }
-    .step-icon { width: 20px; text-align: center; }
-
     /* TOAST */
     .toast { position: fixed; bottom: 24px; right: 24px; background: var(--gray-900); color: white; padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 500; z-index: 999; transform: translateY(80px); opacity: 0; transition: all 0.3s; pointer-events: none; }
     .toast.show { transform: translateY(0); opacity: 1; }
-
     .empty-state { text-align: center; padding: 60px 20px; color: var(--gray-400); }
     .empty-state h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--gray-600); }
 
-    /* API KEY MODAL */
+    /* MODAL */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 200; }
     .modal-overlay.show { display: flex; }
     .modal { background: #fff; border-radius: 16px; padding: 32px; width: 480px; max-width: 90vw; }
@@ -297,17 +349,16 @@
         </div>
       </div>
 
+      <!-- ── 개선된 로딩 화면 ── -->
       <div id="form-step-3" style="display:none">
         <div class="form-card">
           <div class="loading">
-            <div class="spinner"></div>
-            <p style="font-size:16px;font-weight:600;color:var(--gray-700);margin-bottom:8px">AI가 매칭 중입니다...</p>
-            <p style="font-size:13px">기업 정보를 분석하고 최적의 지원사업을 찾고 있어요</p>
-            <div class="loading-steps">
-              <div class="loading-step done" id="lstep-1"><span class="step-icon">✅</span> 기업 정보 저장 완료</div>
-              <div class="loading-step active" id="lstep-2"><span class="step-icon">⏳</span> 지원사업 DB 불러오는 중...</div>
-              <div class="loading-step" id="lstep-3"><span class="step-icon">○</span> Claude AI 분석 중...</div>
-              <div class="loading-step" id="lstep-4"><span class="step-icon">○</span> 매칭 결과 정리 중...</div>
+            <div class="loading-spinner-wrap">
+              <div class="spinner-ring"></div>
+            </div>
+            <div class="loading-title">매칭 중입니다...</div>
+            <div class="loading-desc-box">
+              <p>기업 정보를 분석하고<br>최적의 지원사업을 찾고 있어요</p>
             </div>
           </div>
         </div>
@@ -333,21 +384,29 @@
         <div class="stat-card"><div class="stat-label">예상 최대 수혜금</div><div class="stat-value success" id="stat-max-amount">-</div><div class="stat-sub">억원</div></div>
         <div class="stat-card"><div class="stat-label">임박 마감</div><div class="stat-value danger" id="stat-deadline">-</div><div class="stat-sub">일 이내</div></div>
       </div>
+
+      <!-- 카테고리 필터 -->
       <div class="filter-bar">
-        <button class="filter-chip active" onclick="filterCategory('전체', this)">전체<span class="tooltip">모든 지원사업을 봅니다</span></button>
-        <button class="filter-chip" onclick="filterCategory('R&D', this)">연구개발(R&D)<span class="tooltip">기술 개발·연구 과제와 관련된 지원사업입니다</span></button>
-        <button class="filter-chip" onclick="filterCategory('사업화', this)">사업화 지원<span class="tooltip">제품·서비스를 시장에 출시하는 것과 관련된 지원사업입니다</span></button>
-        <button class="filter-chip" onclick="filterCategory('창업', this)">창업 지원<span class="tooltip">예비창업자·초기창업자를 위한 지원사업입니다</span></button>
-        <button class="filter-chip" onclick="filterCategory('바우처', this)">바우처<span class="tooltip">전문 서비스 이용권을 제공하는 지원사업입니다</span></button>
-        <button class="filter-chip" onclick="filterCategory('융자', this)">자금 융자<span class="tooltip">저금리 정책자금 대출과 관련된 지원사업입니다</span></button>
-        <button class="filter-chip" onclick="filterCategory('수출', this)">수출·글로벌<span class="tooltip">해외 진출·수출과 관련된 지원사업입니다</span></button>
-        <button class="filter-chip" onclick="filterCategory('인력', this)">인력 지원<span class="tooltip">채용·인건비와 관련된 지원사업입니다</span></button>
+        <button class="filter-chip active" onclick="filterCategory('전체', this)">전체<span class="tooltip">모든 지원사업을 표시합니다</span></button>
+        <button class="filter-chip" onclick="filterCategory('R&D', this)">🔬 연구개발(R&D)<span class="tooltip">기술·제품 연구개발 과제 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('사업화', this)">🚀 사업화<span class="tooltip">시제품·시장 출시 단계 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('창업', this)">💡 창업<span class="tooltip">예비창업자·초기창업(7년 이내) 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('바우처', this)">🎫 바우처<span class="tooltip">전문서비스(컨설팅·마케팅 등) 이용권 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('융자', this)">💳 자금·융자<span class="tooltip">저금리 정책자금 대출 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('수출', this)">🌏 수출·글로벌<span class="tooltip">해외진출·수출기업 전용 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('인력', this)">👥 인력 지원<span class="tooltip">채용·인건비 보조 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('마케팅', this)">📣 마케팅·홍보<span class="tooltip">온라인·오프라인 판로 개척 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('시설', this)">🏭 시설·장비<span class="tooltip">공장·장비 구입·임차 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('소상공인', this)">🏪 소상공인<span class="tooltip">소상공인·골목상권 전용 지원사업</span></button>
         <select class="sort-select" onchange="sortResults(this.value)">
           <option value="score">적합도 순</option>
           <option value="amount">금액 순</option>
           <option value="deadline">마감 순</option>
         </select>
       </div>
+      <!-- 툴팁 안내 문구 -->
+      <div class="filter-hint">카테고리 위에 마우스를 올리면 상세 설명을 볼 수 있어요</div>
+
       <div id="results-list"><div class="empty-state"><h3>아직 매칭 결과가 없어요</h3><p>기업 정보를 입력하고 매칭을 시작해주세요</p></div></div>
     </div>
 
@@ -386,7 +445,6 @@ function saveApiKey() {
 }
 
 async function callClaudeAPI(prompt) {
-  const apiKey = getApiKey() || 'server';
   const response = await fetch('/api/match', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -419,7 +477,12 @@ function navigate(page) {
   if (page === 'saved') renderSaved();
 }
 
-function goStep1() { document.getElementById('form-step-1').style.display='block'; document.getElementById('form-step-2').style.display='none'; document.getElementById('form-step-3').style.display='none'; setStep(1); }
+function goStep1() {
+  document.getElementById('form-step-1').style.display='block';
+  document.getElementById('form-step-2').style.display='none';
+  document.getElementById('form-step-3').style.display='none';
+  setStep(1);
+}
 function goStep2() {
   const name = document.getElementById('company_name').value.trim();
   const biz = document.getElementById('business_number').value.trim();
@@ -438,21 +501,12 @@ function setStep(n) {
     if (i===n) el.classList.add('active');
   }
 }
-function setLoadingStep(n) {
-  for (let i=1;i<=4;i++) {
-    const el = document.getElementById('lstep-'+i);
-    if (!el) continue;
-    el.classList.remove('done','active');
-    if (i<n) { el.classList.add('done'); el.querySelector('.step-icon').textContent='✅'; }
-    else if (i===n) { el.classList.add('active'); el.querySelector('.step-icon').textContent='⏳'; }
-    else { el.querySelector('.step-icon').textContent='○'; }
-  }
-}
 
 async function submitAndMatch() {
   document.getElementById('form-step-2').style.display='none';
   document.getElementById('form-step-3').style.display='block';
-  setStep(3); setLoadingStep(1);
+  setStep(3);
+
   const companyData = {
     company_name: document.getElementById('company_name').value.trim(),
     business_number: document.getElementById('business_number').value.trim(),
@@ -474,7 +528,6 @@ async function submitAndMatch() {
   document.getElementById('user-avatar').textContent = initial;
   document.getElementById('user-name').textContent = companyData.company_name;
   document.getElementById('user-company').textContent = companyData.industry+' · '+companyData.region;
-  setLoadingStep(2);
   await runMatching(company);
 }
 
@@ -486,7 +539,6 @@ async function runMatching(company) {
     showToast('✅ '+allMatches.length+'건 매칭 완료! (샘플)');
     navigate('results'); return;
   }
-  setLoadingStep(3);
   const programList = programs.slice(0,50).map(p => ({ id:p.id, title:p.title, organization:p.organization||'', category:p.category||'', eligibility:(p.eligibility||'').slice(0,100), deadline:p.deadline||'' }));
   const prompt = `당신은 정부 지원사업 매칭 전문가입니다.
 
@@ -514,7 +566,6 @@ ${JSON.stringify(programList)}
     if (jsonStart>=0&&jsonEnd>jsonStart) aiMatches = JSON.parse(cleaned.slice(jsonStart,jsonEnd));
   } catch(e) { console.error('Claude 파싱 오류:',e); }
 
-  setLoadingStep(4);
   if (!aiMatches||aiMatches.length===0) {
     showToast('AI 응답 오류, 기본 매칭으로 진행합니다');
     allMatches = getSampleMatches(company);
@@ -539,7 +590,7 @@ function getSampleMatches(company) {
     { id:'s2', match_score:88, is_saved:false, program:{ title:'스마트공방 기술보급사업', organization:'중소벤처기업부', category:'사업화', tags:['제조','스마트','기술'], max_support_amount:150000000, deadline:'2026-05-15', eligibility:'제조업 소상공인', source_url:'#' }},
     { id:'s3', match_score:82, is_saved:false, program:{ title:'지역 신사업 창업사관학교', organization:'창업진흥원', category:'창업', tags:['창업','교육','지원'], max_support_amount:100000000, deadline:'2026-07-01', eligibility:'예비창업자·초기창업자', source_url:'#' }},
     { id:'s4', match_score:76, is_saved:false, program:{ title:'AI 바우처 지원사업 (NIPA)', organization:'NIPA', category:'바우처', tags:['AI','IT','바우처'], max_support_amount:30000000, deadline:'2026-05-31', eligibility:'중소기업', source_url:'#' }},
-    { id:'s5', match_score:71, is_saved:false, program:{ title:'온라인 판로 개척 지원', organization:'소상공인시장진흥공단', category:'R&D', tags:['온라인','마케팅','판로'], max_support_amount:5000000, deadline:'2026-08-31', eligibility:'소상공인', source_url:'#' }},
+    { id:'s5', match_score:71, is_saved:false, program:{ title:'온라인 판로 개척 지원', organization:'소상공인시장진흥공단', category:'마케팅', tags:['온라인','마케팅','판로'], max_support_amount:5000000, deadline:'2026-08-31', eligibility:'소상공인', source_url:'#' }},
   ];
 }
 
@@ -557,6 +608,7 @@ function renderResults(matches) {
     document.getElementById('results-list').innerHTML = '<div class="empty-state"><h3>해당 카테고리 결과가 없어요</h3><p>다른 카테고리를 선택해보세요</p></div>';
     return;
   }
+
   const scores = filtered.map(m=>m.match_score);
   const maxScore = Math.max(...scores);
   const maxAmount = Math.max(...filtered.map(m=>m.program?.max_support_amount||0));
@@ -570,11 +622,18 @@ function renderResults(matches) {
   document.getElementById('result-subtitle').textContent = `${filtered.length}개 지원사업이 발견되었습니다.`;
   document.getElementById('match-count').textContent = filtered.length;
 
-  document.getElementById('results-list').innerHTML = filtered.map((m,i) => {
+  // 1순위와 나머지 분리
+  const topMatch = filtered[0];
+  const restMatches = filtered.slice(1);
+
+  const renderCard = (m, isTop) => {
     const p = m.program||{};
     const score = m.match_score;
     const isHigh = score>=85;
-    const isTop = i===0;
+    const isMid = score>=70 && score<85;
+    const circleClass = isHigh?'high':isMid?'mid':'low';
+    const badgeClass = isHigh?'best':isMid?'good':'normal';
+    const badgeText = isHigh?'최적합':isMid?'적합':'검토';
     const tags = Array.isArray(p.tags)?p.tags.map(t=>`<span class="tag">${t}</span>`).join(''):'';
     const daysLeft = p.deadline?Math.ceil((new Date(p.deadline)-today)/86400000):null;
     const amountStr = p.max_support_amount>=100000000?`최대 ${(p.max_support_amount/100000000).toFixed(1)}억원`:p.max_support_amount?`최대 ${(p.max_support_amount/10000).toFixed(0)}만원`:'-';
@@ -583,11 +642,11 @@ function renderResults(matches) {
     return `
     <div class="program-card ${isTop?'top-pick':''}" id="card-${m.id}">
       <div class="score-ring">
-        <div class="score-circle ${isHigh?'high':'mid'}">
+        <div class="score-circle ${circleClass}">
           <div class="score-num">${score}</div>
           <div class="score-pct">점</div>
         </div>
-        <div class="score-badge ${isHigh?'best':'good'}">${isHigh?'최적합':'적합'}</div>
+        <div class="score-badge ${badgeClass}">${badgeText}</div>
       </div>
       <div class="program-info">
         <div class="program-title">${p.title||'지원사업명'}</div>
@@ -596,7 +655,7 @@ function renderResults(matches) {
         <div class="program-checks">${reason}</div>
         <div class="program-meta">
           <span>${amountStr}</span>
-          ${daysLeft?`<span class="${daysLeft<=14?'deadline':''}">마감 D-${daysLeft}</span>`:''}
+          ${daysLeft&&daysLeft>0?`<span class="${daysLeft<=14?'deadline':''}">마감 D-${daysLeft}</span>`:''}
           ${p.category?`<span>${p.category}</span>`:''}
         </div>
       </div>
@@ -608,7 +667,18 @@ function renderResults(matches) {
         ${p.source_url&&p.source_url!=='#'?`<a href="${p.source_url}" target="_blank"><button class="btn-detail">자세히 보기 →</button></a>`:'<button class="btn-detail">자세히 보기 →</button>'}
       </div>
     </div>`;
-  }).join('');
+  };
+
+  let html = '';
+  // 1순위 별도 섹션
+  html += `<div class="top-pick-section"><div class="top-pick-label">1순위 추천</div>${renderCard(topMatch, true)}</div>`;
+  // 나머지
+  if (restMatches.length > 0) {
+    html += `<div class="other-results-label">그 외 추천 지원사업 (${restMatches.length}건)</div>`;
+    html += restMatches.map(m => renderCard(m, false)).join('');
+  }
+
+  document.getElementById('results-list').innerHTML = html;
 }
 
 async function toggleSave(matchId, btn) {
@@ -631,7 +701,7 @@ function renderSaved() {
     return;
   }
   const today = new Date();
-  document.getElementById('saved-list').innerHTML = savedMatches.map((m,i) => {
+  document.getElementById('saved-list').innerHTML = savedMatches.map((m) => {
     const p = m.program||{};
     const score = m.match_score;
     const isHigh = score>=85;
@@ -651,7 +721,7 @@ function renderSaved() {
         ${m.match_reason?`<div class="program-checks"><div class="check-item"><span class="check-icon">✓</span> ${m.match_reason}</div></div>`:''}
         <div class="program-meta">
           <span>${amountStr}</span>
-          ${daysLeft?`<span class="${daysLeft<=14?'deadline':''}">마감 D-${daysLeft}</span>`:''}
+          ${daysLeft&&daysLeft>0?`<span class="${daysLeft<=14?'deadline':''}">마감 D-${daysLeft}</span>`:''}
         </div>
       </div>
       <div class="program-actions">
