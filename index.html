@@ -3,74 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>매치업 — 지원사업 매칭 플랫폼</title>
+  <title>매치업 — 지원사업 매칭</title>
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --primary: #4F46E5;
-      --primary-light: #EEF2FF;
-      --primary-dark: #3730A3;
-      --success: #10B981;
-      --warning: #F59E0B;
-      --danger: #EF4444;
-      --gray-50: #F9FAFB;
-      --gray-100: #F3F4F6;
-      --gray-200: #E5E7EB;
-      --gray-300: #D1D5DB;
-      --gray-400: #9CA3AF;
-      --gray-500: #6B7280;
-      --gray-600: #4B5563;
-      --gray-700: #374151;
-      --gray-900: #111827;
+      --primary: #4F46E5; --primary-light: #EEF2FF; --primary-dark: #3730A3;
+      --success: #10B981; --warning: #F59E0B; --danger: #EF4444;
+      --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB;
+      --gray-300: #D1D5DB; --gray-400: #9CA3AF; --gray-500: #6B7280;
+      --gray-600: #4B5563; --gray-700: #374151; --gray-900: #111827;
       --sidebar-width: 240px;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--gray-50); color: var(--gray-900); display: flex; min-height: 100vh; }
 
     /* SIDEBAR */
-    .sidebar {
-      width: var(--sidebar-width);
-      background: #fff;
-      border-right: 1px solid var(--gray-200);
-      display: flex;
-      flex-direction: column;
-      position: fixed;
-      height: 100vh;
-      z-index: 100;
-    }
-    .sidebar-logo {
-      padding: 20px 20px 16px;
-      border-bottom: 1px solid var(--gray-100);
-      display: flex; align-items: center; gap: 10px;
-    }
-    .logo-icon {
-      width: 32px; height: 32px;
-      background: var(--primary);
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      color: white; font-weight: 800; font-size: 16px;
-    }
+    .sidebar { width: var(--sidebar-width); background: #fff; border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100; }
+    .sidebar-logo { padding: 20px 20px 16px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 16px; }
     .logo-text { font-weight: 700; font-size: 16px; }
     .logo-badge { font-size: 10px; background: var(--primary-light); color: var(--primary); padding: 2px 6px; border-radius: 4px; font-weight: 600; }
     .sidebar-section { padding: 16px 12px 8px; }
-    .sidebar-section-title { font-size: 11px; color: var(--gray-400); font-weight: 600; letter-spacing: 0.05em; padding: 0 8px 8px; text-transform: uppercase; }
-    .nav-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 9px 12px; border-radius: 8px;
-      cursor: pointer; font-size: 14px; font-weight: 500;
-      color: var(--gray-600); margin-bottom: 2px;
-      transition: all 0.15s;
-    }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--gray-600); margin-bottom: 2px; transition: all 0.15s; }
     .nav-item:hover { background: var(--gray-50); color: var(--gray-900); }
     .nav-item.active { background: var(--primary-light); color: var(--primary); }
     .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
     .nav-badge { margin-left: auto; background: var(--primary); color: white; font-size: 11px; font-weight: 600; padding: 1px 6px; border-radius: 10px; }
-    .sidebar-footer {
-      margin-top: auto;
-      padding: 16px;
-      border-top: 1px solid var(--gray-100);
-    }
+    .sidebar-footer { margin-top: auto; padding: 16px; border-top: 1px solid var(--gray-100); }
     .user-card { display: flex; align-items: center; gap: 10px; }
     .user-avatar { width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 13px; font-weight: 700; }
     .user-info { flex: 1; min-width: 0; }
@@ -79,30 +39,12 @@
 
     /* MAIN */
     .main { margin-left: var(--sidebar-width); flex: 1; display: flex; flex-direction: column; }
-    .topbar {
-      background: #fff; border-bottom: 1px solid var(--gray-200);
-      padding: 0 28px; height: 60px;
-      display: flex; align-items: center; gap: 16px;
-      position: sticky; top: 0; z-index: 50;
-    }
+    .topbar { background: #fff; border-bottom: 1px solid var(--gray-200); padding: 0 28px; height: 60px; display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 50; }
     .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--gray-500); }
     .breadcrumb span { color: var(--gray-900); font-weight: 500; }
-    .search-box {
-      flex: 1; max-width: 400px; margin: 0 auto;
-      background: var(--gray-50); border: 1px solid var(--gray-200);
-      border-radius: 8px; padding: 8px 14px;
-      display: flex; align-items: center; gap: 8px;
-      font-size: 13px; color: var(--gray-400);
-    }
+    .search-box { flex: 1; max-width: 400px; margin: 0 auto; background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 8px; padding: 8px 14px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--gray-400); cursor: not-allowed; }
+    .search-preparing { font-size: 11px; background: var(--gray-200); color: var(--gray-500); padding: 2px 6px; border-radius: 4px; margin-left: 4px; }
     .topbar-actions { display: flex; align-items: center; gap: 12px; margin-left: auto; }
-    .btn-primary {
-      background: var(--primary); color: white;
-      border: none; padding: 8px 16px; border-radius: 8px;
-      font-size: 13px; font-weight: 600; cursor: pointer;
-      display: flex; align-items: center; gap: 6px;
-      transition: background 0.15s;
-    }
-    .btn-primary:hover { background: var(--primary-dark); }
 
     /* CONTENT */
     .content { padding: 28px; flex: 1; }
@@ -115,91 +57,58 @@
     .onboarding-header p { color: var(--gray-500); font-size: 14px; }
     .steps { display: flex; align-items: center; gap: 0; margin-bottom: 32px; }
     .step { display: flex; align-items: center; gap: 10px; }
-    .step-num {
-      width: 28px; height: 28px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 13px; font-weight: 700;
-      background: var(--gray-200); color: var(--gray-500);
-    }
+    .step-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: var(--gray-200); color: var(--gray-500); }
     .step.active .step-num { background: var(--primary); color: white; }
     .step.done .step-num { background: var(--success); color: white; }
     .step-label { font-size: 13px; font-weight: 500; color: var(--gray-400); }
     .step.active .step-label { color: var(--gray-900); }
     .step-line { width: 60px; height: 1px; background: var(--gray-200); margin: 0 8px; }
-    .form-card {
-      background: #fff; border: 1px solid var(--gray-200);
-      border-radius: 12px; padding: 28px;
-    }
+    .form-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 28px; }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
     .form-group label { font-size: 13px; font-weight: 600; color: var(--gray-700); }
     .form-group label .req { color: var(--danger); }
-    .form-control {
-      border: 1px solid var(--gray-200); border-radius: 8px;
-      padding: 10px 14px; font-size: 14px; font-family: inherit;
-      color: var(--gray-900); transition: border-color 0.15s;
-      background: #fff;
-    }
+    .form-control { border: 1px solid var(--gray-200); border-radius: 8px; padding: 10px 14px; font-size: 14px; font-family: inherit; color: var(--gray-900); transition: border-color 0.15s; background: #fff; }
     .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
     .form-control::placeholder { color: var(--gray-300); }
     .form-footer { margin-top: 24px; display: flex; justify-content: flex-end; }
-    .btn-next {
-      background: var(--gray-900); color: white;
-      border: none; padding: 11px 24px; border-radius: 8px;
-      font-size: 14px; font-weight: 600; cursor: pointer;
-      display: flex; align-items: center; gap: 8px;
-      transition: background 0.15s;
-    }
+    .btn-next { background: var(--gray-900); color: white; border: none; padding: 11px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
     .btn-next:hover { background: var(--primary); }
+    .btn-secondary { background: #fff; color: var(--gray-700); border: 1px solid var(--gray-200); padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .btn-primary { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.15s; }
+    .btn-primary:hover { background: var(--primary-dark); }
 
-    /* MATCH RESULT */
+    /* RESULTS */
     .result-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; }
     .result-title h1 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
     .result-title p { color: var(--gray-500); font-size: 14px; }
     .result-actions { display: flex; gap: 10px; }
-    .btn-secondary {
-      background: #fff; color: var(--gray-700);
-      border: 1px solid var(--gray-200); padding: 8px 16px; border-radius: 8px;
-      font-size: 13px; font-weight: 600; cursor: pointer;
-      display: flex; align-items: center; gap: 6px;
-    }
     .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-    .stat-card {
-      background: #fff; border: 1px solid var(--gray-200);
-      border-radius: 12px; padding: 20px;
-    }
+    .stat-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 20px; }
     .stat-label { font-size: 12px; color: var(--gray-500); margin-bottom: 8px; font-weight: 500; }
     .stat-value { font-size: 28px; font-weight: 800; color: var(--gray-900); }
     .stat-value.primary { color: var(--primary); }
     .stat-value.success { color: var(--success); }
     .stat-value.danger { color: var(--danger); }
     .stat-sub { font-size: 12px; color: var(--gray-400); margin-top: 4px; }
-    .filter-bar { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; }
-    .filter-chip {
-      padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
-      border: 1px solid var(--gray-200); background: #fff; cursor: pointer;
-      color: var(--gray-600); transition: all 0.15s;
-    }
+
+    /* FILTER */
+    .filter-bar { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
+    .filter-chip { position: relative; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid var(--gray-200); background: #fff; cursor: pointer; color: var(--gray-600); transition: all 0.15s; }
+    .filter-chip:hover { border-color: var(--primary); color: var(--primary); }
     .filter-chip.active { background: var(--gray-900); color: white; border-color: var(--gray-900); }
-    .sort-select {
-      margin-left: auto; border: 1px solid var(--gray-200); border-radius: 8px;
-      padding: 6px 12px; font-size: 13px; font-family: inherit;
-      color: var(--gray-600); background: #fff; cursor: pointer;
-    }
-    .program-card {
-      background: #fff; border: 1px solid var(--gray-200);
-      border-radius: 12px; padding: 22px; margin-bottom: 12px;
-      display: flex; gap: 20px; align-items: flex-start;
-      transition: box-shadow 0.15s;
-    }
-    .program-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    .filter-chip .tooltip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: var(--gray-900); color: white; font-size: 11px; font-weight: 400; padding: 6px 10px; border-radius: 6px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.15s; z-index: 10; }
+    .filter-chip .tooltip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 4px solid transparent; border-top-color: var(--gray-900); }
+    .filter-chip:hover .tooltip { opacity: 1; }
+    .sort-select { margin-left: auto; border: 1px solid var(--gray-200); border-radius: 8px; padding: 6px 12px; font-size: 13px; font-family: inherit; color: var(--gray-600); background: #fff; cursor: pointer; }
+
+    /* PROGRAM CARDS */
+    .program-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 22px; margin-bottom: 12px; display: flex; gap: 20px; align-items: flex-start; transition: all 0.15s; cursor: default; }
+    .program-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); transform: translateY(-1px); border-color: var(--gray-300); }
+    .program-card.top-pick { border: 2px solid var(--primary); background: linear-gradient(135deg, #fafafe 0%, #f0f0ff 100%); }
+    .program-card.top-pick:hover { box-shadow: 0 6px 24px rgba(79,70,229,0.2); }
     .score-ring { flex-shrink: 0; text-align: center; }
-    .score-circle {
-      width: 64px; height: 64px; border-radius: 50%;
-      border: 4px solid var(--gray-200);
-      display: flex; align-items: center; justify-content: center;
-      flex-direction: column; position: relative;
-    }
+    .score-circle { width: 64px; height: 64px; border-radius: 50%; border: 4px solid var(--gray-200); display: flex; align-items: center; justify-content: center; flex-direction: column; }
     .score-circle.high { border-color: var(--primary); }
     .score-circle.mid { border-color: var(--success); }
     .score-num { font-size: 16px; font-weight: 800; color: var(--gray-900); line-height: 1; }
@@ -211,20 +120,19 @@
     .program-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
     .program-org { font-size: 13px; color: var(--gray-400); margin-bottom: 10px; }
     .program-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-    .tag {
-      padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;
-      background: var(--gray-100); color: var(--gray-600);
-    }
+    .tag { padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; background: var(--gray-100); color: var(--gray-600); }
     .program-checks { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
     .check-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--gray-600); }
     .check-icon { color: var(--success); font-size: 14px; }
     .program-meta { display: flex; gap: 20px; font-size: 13px; color: var(--gray-500); }
-    .program-meta strong { color: var(--gray-900); }
     .deadline { color: var(--danger); font-weight: 600; }
     .program-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
-    .badge-recommend { background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px; white-space: nowrap; }
-    .btn-save { background: #fff; border: 1px solid var(--gray-200); color: var(--gray-600); padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; }
-    .btn-detail { background: var(--primary); color: white; border: none; padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .badge-recommend { background: #EEF2FF; color: var(--primary); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; white-space: nowrap; border: 1px solid var(--primary); }
+    .btn-save { background: #fff; border: 1px solid var(--gray-200); color: var(--gray-600); padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+    .btn-save:hover { border-color: var(--warning); color: var(--warning); }
+    .btn-save.saved { background: #FEF3C7; border-color: var(--warning); color: #92400E; }
+    .btn-detail { background: var(--primary); color: white; border: none; padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+    .btn-detail:hover { background: var(--primary-dark); }
 
     /* STATUS */
     .status-bar { background: #D1FAE5; border: 1px solid #6EE7B7; border-radius: 8px; padding: 10px 16px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: #065F46; margin-bottom: 20px; font-weight: 500; }
@@ -235,8 +143,6 @@
     .loading { text-align: center; padding: 60px; color: var(--gray-400); }
     .spinner { width: 32px; height: 32px; border: 3px solid var(--gray-200); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* LOADING STEPS */
     .loading-steps { margin-top: 24px; text-align: left; max-width: 320px; margin-left: auto; margin-right: auto; }
     .loading-step { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 13px; color: var(--gray-400); }
     .loading-step.done { color: var(--success); }
@@ -244,31 +150,16 @@
     .step-icon { width: 20px; text-align: center; }
 
     /* TOAST */
-    .toast {
-      position: fixed; bottom: 24px; right: 24px;
-      background: var(--gray-900); color: white;
-      padding: 12px 20px; border-radius: 10px;
-      font-size: 14px; font-weight: 500;
-      z-index: 999; transform: translateY(80px); opacity: 0;
-      transition: all 0.3s; pointer-events: none;
-    }
+    .toast { position: fixed; bottom: 24px; right: 24px; background: var(--gray-900); color: white; padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 500; z-index: 999; transform: translateY(80px); opacity: 0; transition: all 0.3s; pointer-events: none; }
     .toast.show { transform: translateY(0); opacity: 1; }
 
-    /* EMPTY */
     .empty-state { text-align: center; padding: 60px 20px; color: var(--gray-400); }
     .empty-state h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--gray-600); }
 
     /* API KEY MODAL */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 200; display: none;
-    }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 200; }
     .modal-overlay.show { display: flex; }
-    .modal {
-      background: #fff; border-radius: 16px; padding: 32px;
-      width: 480px; max-width: 90vw;
-    }
+    .modal { background: #fff; border-radius: 16px; padding: 32px; width: 480px; max-width: 90vw; }
     .modal h2 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
     .modal p { font-size: 14px; color: var(--gray-500); margin-bottom: 20px; }
     .modal-input { width: 100%; border: 1px solid var(--gray-200); border-radius: 8px; padding: 12px 14px; font-size: 14px; font-family: inherit; margin-bottom: 16px; }
@@ -284,8 +175,7 @@
 <div class="modal-overlay" id="apikey-modal">
   <div class="modal">
     <h2>Claude API 키 입력</h2>
-    <p>AI 매칭을 위해 Anthropic API 키가 필요합니다. 키는 브라우저 로컬에만 저장되며 외부로 전송되지 않습니다.<br><br>
-    <a href="https://console.anthropic.com/" target="_blank" style="color:var(--primary)">console.anthropic.com</a>에서 발급받으실 수 있습니다.</p>
+    <p>AI 매칭을 위해 Anthropic API 키가 필요합니다.<br><a href="https://console.anthropic.com/" target="_blank" style="color:var(--primary)">console.anthropic.com</a>에서 발급받으실 수 있습니다.</p>
     <input type="password" class="modal-input" id="apikey-input" placeholder="sk-ant-api03-...">
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeApiModal()">나중에</button>
@@ -302,24 +192,27 @@
     <div class="logo-badge">beta</div>
   </div>
   <div class="sidebar-section">
-    <div class="sidebar-section-title">기업</div>
     <div class="nav-item active" onclick="navigate('onboarding')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-      온보딩
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      지원사업 매칭
     </div>
     <div class="nav-item" onclick="navigate('results')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
       매칭 결과
       <span class="nav-badge" id="match-count">0</span>
     </div>
+    <div class="nav-item" onclick="navigate('saved')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      관심 저장 목록
+      <span class="nav-badge" id="saved-count" style="background:#F59E0B">0</span>
+    </div>
   </div>
-  
   <div class="sidebar-footer">
     <div class="user-card">
       <div class="user-avatar" id="user-avatar">?</div>
       <div class="user-info">
         <div class="user-name" id="user-name">기업명 미입력</div>
-        <div class="user-company" id="user-company">온보딩을 완료해주세요</div>
+        <div class="user-company" id="user-company">정보를 입력해주세요</div>
       </div>
     </div>
   </div>
@@ -330,148 +223,91 @@
   <div class="topbar">
     <div class="breadcrumb">
       매치업 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-      <span id="breadcrumb-text">온보딩</span>
+      <span id="breadcrumb-text">지원사업 매칭</span>
     </div>
     <div class="search-box">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      지원사업·기업·전문가 검색...
+      지원사업 검색...
+      <span class="search-preparing">준비 중</span>
     </div>
-    <div class="topbar-actions">
-      <button class="btn-primary" onclick="navigate('onboarding')">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2H3v16h5l4 4 4-4h5V2z"/></svg>
-        재매칭
-      </button>
-    </div>
+    <div class="topbar-actions"></div>
   </div>
 
   <div class="content">
 
-    <!-- 온보딩 페이지 -->
+    <!-- 지원사업 매칭 페이지 -->
     <div class="page active" id="page-onboarding">
       <div class="onboarding-header">
-        <h1>온보딩</h1>
+        <h1>지원사업 매칭</h1>
         <p>기업정보를 상세히 입력할수록 매칭 정확도가 올라갑니다. (무료)</p>
       </div>
       <div class="steps">
-        <div class="step active" id="step-1">
-          <div class="step-num">1</div>
-          <div class="step-label">기본 정보</div>
-        </div>
+        <div class="step active" id="step-1"><div class="step-num">1</div><div class="step-label">기본 정보</div></div>
         <div class="step-line"></div>
-        <div class="step" id="step-2">
-          <div class="step-num">2</div>
-          <div class="step-label">상세 정보</div>
-        </div>
+        <div class="step" id="step-2"><div class="step-num">2</div><div class="step-label">상세 정보</div></div>
         <div class="step-line"></div>
-        <div class="step" id="step-3">
-          <div class="step-num">3</div>
-          <div class="step-label">매칭 실행</div>
-        </div>
+        <div class="step" id="step-3"><div class="step-num">3</div><div class="step-label">매칭 실행</div></div>
       </div>
 
-      <!-- Step 1 -->
       <div id="form-step-1">
         <div class="form-card">
           <div class="form-grid">
-            <div class="form-group">
-              <label>기업명 <span class="req">*</span></label>
-              <input class="form-control" id="company_name" placeholder="(주)그린셀테크" type="text">
-            </div>
-            <div class="form-group">
-              <label>사업자등록번호 <span class="req">*</span></label>
-              <input class="form-control" id="business_number" placeholder="123-45-67890" type="text">
-            </div>
-            <div class="form-group">
-              <label>대표자명</label>
-              <input class="form-control" id="ceo_name" placeholder="홍길동" type="text">
-            </div>
-            <div class="form-group">
-              <label>설립일</label>
-              <input class="form-control" id="founded_date" type="date">
-            </div>
+            <div class="form-group"><label>기업명 <span class="req">*</span></label><input class="form-control" id="company_name" placeholder="(주)그린셀테크" type="text"></div>
+            <div class="form-group"><label>사업자등록번호 <span class="req">*</span></label><input class="form-control" id="business_number" placeholder="123-45-67890" type="text"></div>
+            <div class="form-group"><label>대표자명</label><input class="form-control" id="ceo_name" placeholder="홍길동" type="text"></div>
+            <div class="form-group"><label>설립일</label><input class="form-control" id="founded_date" type="date"></div>
             <div class="form-group">
               <label>업종 <span class="req">*</span></label>
               <select class="form-control" id="industry">
                 <option value="">선택해주세요</option>
-                <option>제조업</option>
-                <option>정보통신/IT</option>
-                <option>소매/도매</option>
-                <option>음식/외식</option>
-                <option>서비스업</option>
-                <option>건설/부동산</option>
-                <option>교육</option>
-                <option>의료/바이오</option>
-                <option>농업/수산업</option>
-                <option>기타</option>
+                <option>제조업</option><option>정보통신/IT</option><option>소매/도매</option>
+                <option>음식/외식</option><option>서비스업</option><option>건설/부동산</option>
+                <option>교육</option><option>의료/바이오</option><option>농업/수산업</option><option>기타</option>
               </select>
             </div>
-            <div class="form-group">
-              <label>세부 업종</label>
-              <input class="form-control" id="industry_detail" placeholder="예) AI/ML 솔루션" type="text">
-            </div>
+            <div class="form-group"><label>세부 업종</label><input class="form-control" id="industry_detail" placeholder="예) AI/ML 솔루션" type="text"></div>
             <div class="form-group">
               <label>지역 <span class="req">*</span></label>
               <select class="form-control" id="region">
                 <option value="">선택해주세요</option>
-                <option>서울</option><option>경기</option><option>인천</option>
-                <option>부산</option><option>대구</option><option>광주</option>
-                <option>대전</option><option>울산</option><option>세종</option>
-                <option>강원</option><option>충북</option><option>충남</option>
-                <option>전북</option><option>전남</option><option>경북</option>
-                <option>경남</option><option>제주</option>
+                <option>서울</option><option>경기</option><option>인천</option><option>부산</option>
+                <option>대구</option><option>광주</option><option>대전</option><option>울산</option>
+                <option>세종</option><option>강원</option><option>충북</option><option>충남</option>
+                <option>전북</option><option>전남</option><option>경북</option><option>경남</option><option>제주</option>
               </select>
             </div>
-            <div class="form-group">
-              <label>시/군/구</label>
-              <input class="form-control" id="district" placeholder="성동구" type="text">
-            </div>
+            <div class="form-group"><label>시/군/구</label><input class="form-control" id="district" placeholder="수성구" type="text"></div>
           </div>
-          <div class="form-footer">
-            <button class="btn-next" onclick="goStep2()">다음 단계 →</button>
-          </div>
+          <div class="form-footer"><button class="btn-next" onclick="goStep2()">다음 →</button></div>
         </div>
       </div>
 
-      <!-- Step 2 -->
       <div id="form-step-2" style="display:none">
         <div class="form-card">
           <div class="form-grid">
-            <div class="form-group">
-              <label>직원 수</label>
-              <input class="form-control" id="employee_count" placeholder="예) 12" type="number" min="0">
-            </div>
-            <div class="form-group">
-              <label>전년 매출 (만원)</label>
-              <input class="form-control" id="annual_revenue" placeholder="예) 32000" type="number" min="0">
-            </div>
-            <div class="form-group" style="grid-column: 1/-1">
-              <label>홈페이지</label>
-              <input class="form-control" id="homepage" placeholder="https://example.com" type="url">
-            </div>
-            <div class="form-group" style="grid-column: 1/-1">
-              <label>기업 소개</label>
-              <textarea class="form-control" id="description" placeholder="기업의 주요 사업 및 기술을 간략히 소개해주세요." rows="4"></textarea>
-            </div>
+            <div class="form-group"><label>직원 수</label><input class="form-control" id="employee_count" placeholder="예) 12" type="number" min="0"></div>
+            <div class="form-group"><label>전년 매출 (만원)</label><input class="form-control" id="annual_revenue" placeholder="예) 32000" type="number" min="0"></div>
+            <div class="form-group" style="grid-column:1/-1"><label>홈페이지</label><input class="form-control" id="homepage" placeholder="https://example.com" type="url"></div>
+            <div class="form-group" style="grid-column:1/-1"><label>기업 소개</label><textarea class="form-control" id="description" placeholder="기업의 주요 사업 및 기술을 간략히 소개해주세요." rows="4"></textarea></div>
           </div>
-          <div class="form-footer" style="gap:10px; justify-content:space-between">
+          <div class="form-footer" style="gap:10px;justify-content:space-between">
             <button class="btn-secondary" onclick="goStep1()">← 이전</button>
-            <button class="btn-next" onclick="submitAndMatch()">🔍 AI 매칭 실행</button>
+            <button class="btn-next" onclick="submitAndMatch()">🔍 매칭 시작</button>
           </div>
         </div>
       </div>
 
-      <!-- Step 3: 매칭 중 -->
       <div id="form-step-3" style="display:none">
         <div class="form-card">
           <div class="loading">
             <div class="spinner"></div>
-            <p style="font-size:16px; font-weight:600; color: var(--gray-700); margin-bottom:8px">AI가 매칭 중입니다...</p>
+            <p style="font-size:16px;font-weight:600;color:var(--gray-700);margin-bottom:8px">AI가 매칭 중입니다...</p>
             <p style="font-size:13px">기업 정보를 분석하고 최적의 지원사업을 찾고 있어요</p>
             <div class="loading-steps">
               <div class="loading-step done" id="lstep-1"><span class="step-icon">✅</span> 기업 정보 저장 완료</div>
               <div class="loading-step active" id="lstep-2"><span class="step-icon">⏳</span> 지원사업 DB 불러오는 중...</div>
               <div class="loading-step" id="lstep-3"><span class="step-icon">○</span> Claude AI 분석 중...</div>
-              <div class="loading-step" id="lstep-4"><span class="step-icon">○</span> 매칭 결과 저장 중...</div>
+              <div class="loading-step" id="lstep-4"><span class="step-icon">○</span> 매칭 결과 정리 중...</div>
             </div>
           </div>
         </div>
@@ -482,93 +318,48 @@
     <div class="page" id="page-results">
       <div class="result-header">
         <div class="result-title">
-          <h1>나에게 맞는 지원사업</h1>
+          <h1>매칭 결과</h1>
           <p id="result-subtitle">매칭 결과를 확인하세요</p>
         </div>
         <div class="result-actions">
           <button class="btn-secondary" onclick="exportResults()">↓ 내보내기</button>
-          <button class="btn-primary" onclick="navigate('onboarding')">↺ 재매칭 실행</button>
+          <button class="btn-primary" onclick="navigate('onboarding')">↺ 다시 매칭하기</button>
         </div>
       </div>
-
-      <div class="status-bar">
-        <div class="status-dot"></div>
-        매칭 완료 · 방금 업데이트됨
-      </div>
-
+      <div class="status-bar"><div class="status-dot"></div>매칭 완료 · 방금 업데이트됨</div>
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">매칭된 사업</div>
-          <div class="stat-value primary" id="stat-count">0</div>
-          <div class="stat-sub">건</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">최고 적합도</div>
-          <div class="stat-value" id="stat-top-score">-</div>
-          <div class="stat-sub">%</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">예상 최대 수혜금</div>
-          <div class="stat-value success" id="stat-max-amount">-</div>
-          <div class="stat-sub">억원</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">임박 마감</div>
-          <div class="stat-value danger" id="stat-deadline">-</div>
-          <div class="stat-sub">일 이내</div>
-        </div>
+        <div class="stat-card"><div class="stat-label">매칭된 사업</div><div class="stat-value primary" id="stat-count">0</div><div class="stat-sub">건</div></div>
+        <div class="stat-card"><div class="stat-label">최고 적합도</div><div class="stat-value" id="stat-top-score">-</div><div class="stat-sub">%</div></div>
+        <div class="stat-card"><div class="stat-label">예상 최대 수혜금</div><div class="stat-value success" id="stat-max-amount">-</div><div class="stat-sub">억원</div></div>
+        <div class="stat-card"><div class="stat-label">임박 마감</div><div class="stat-value danger" id="stat-deadline">-</div><div class="stat-sub">일 이내</div></div>
       </div>
-
       <div class="filter-bar">
-        <button class="filter-chip active" onclick="filterCategory('전체', this)">전체</button>
-        <button class="filter-chip" onclick="filterCategory('R&D', this)">R&D</button>
-        <button class="filter-chip" onclick="filterCategory('사업화', this)">사업화</button>
-        <button class="filter-chip" onclick="filterCategory('바우처', this)">바우처</button>
-        <button class="filter-chip" onclick="filterCategory('융자', this)">융자</button>
+        <button class="filter-chip active" onclick="filterCategory('전체', this)">전체<span class="tooltip">모든 지원사업을 봅니다</span></button>
+        <button class="filter-chip" onclick="filterCategory('R&D', this)">연구개발(R&D)<span class="tooltip">기술 개발·연구 과제와 관련된 지원사업입니다</span></button>
+        <button class="filter-chip" onclick="filterCategory('사업화', this)">사업화 지원<span class="tooltip">제품·서비스를 시장에 출시하는 것과 관련된 지원사업입니다</span></button>
+        <button class="filter-chip" onclick="filterCategory('창업', this)">창업 지원<span class="tooltip">예비창업자·초기창업자를 위한 지원사업입니다</span></button>
+        <button class="filter-chip" onclick="filterCategory('바우처', this)">바우처<span class="tooltip">전문 서비스 이용권을 제공하는 지원사업입니다</span></button>
+        <button class="filter-chip" onclick="filterCategory('융자', this)">자금 융자<span class="tooltip">저금리 정책자금 대출과 관련된 지원사업입니다</span></button>
+        <button class="filter-chip" onclick="filterCategory('수출', this)">수출·글로벌<span class="tooltip">해외 진출·수출과 관련된 지원사업입니다</span></button>
+        <button class="filter-chip" onclick="filterCategory('인력', this)">인력 지원<span class="tooltip">채용·인건비와 관련된 지원사업입니다</span></button>
         <select class="sort-select" onchange="sortResults(this.value)">
           <option value="score">적합도 순</option>
           <option value="amount">금액 순</option>
           <option value="deadline">마감 순</option>
         </select>
       </div>
-
-      <div id="results-list">
-        <div class="empty-state">
-          <h3>아직 매칭 결과가 없어요</h3>
-          <p>온보딩에서 기업 정보를 입력하고 AI 매칭을 실행해주세요</p>
-        </div>
-      </div>
+      <div id="results-list"><div class="empty-state"><h3>아직 매칭 결과가 없어요</h3><p>기업 정보를 입력하고 매칭을 시작해주세요</p></div></div>
     </div>
 
-    <!-- 관리자 페이지 -->
-    <div class="page" id="page-admin">
-      <h1 style="font-size:26px; font-weight:800; margin-bottom:24px">운영 대시보드</h1>
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">누적 기업</div>
-          <div class="stat-value" id="admin-companies">-</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">지원사업 DB</div>
-          <div class="stat-value primary" id="admin-programs">-</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">총 매칭 건수</div>
-          <div class="stat-value success" id="admin-matches">-</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">DB 상태</div>
-          <div class="stat-value" style="font-size:16px; color: var(--success)">● 정상</div>
+    <!-- 관심 저장 목록 페이지 -->
+    <div class="page" id="page-saved">
+      <div class="result-header">
+        <div class="result-title">
+          <h1>관심 저장 목록</h1>
+          <p>저장한 지원사업을 모아서 볼 수 있어요</p>
         </div>
       </div>
-      <div style="display:flex; gap:12px; margin-bottom:16px; margin-top:4px">
-        <button class="btn-secondary" onclick="showApiKeyModal()">🔑 API 키 설정</button>
-        <span style="font-size:13px; color:var(--gray-400); align-self:center" id="apikey-status"></span>
-      </div>
-      <div class="form-card" style="margin-top:8px">
-        <h3 style="font-weight:700; margin-bottom:16px">최근 등록 기업</h3>
-        <div id="admin-company-list"><div class="loading"><div class="spinner"></div></div></div>
-      </div>
+      <div id="saved-list"><div class="empty-state"><h3>아직 저장한 지원사업이 없어요</h3><p>매칭 결과에서 ☆ 관심 저장을 눌러보세요</p></div></div>
     </div>
 
   </div>
@@ -577,60 +368,25 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ── Supabase 초기화 ──────────────────────────────────────────
 const SUPABASE_URL = 'https://wykupodtnbcrebgbzyxr.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_THekjy2-GusHmZ7FrjX9UQ_gm41EUr2';
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ── Claude API 키 관리 ────────────────────────────────────────
-const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
-let CLAUDE_API_KEY = localStorage.getItem('matchup_claude_key') || '';
-
 let pendingMatchCallback = null;
-
-function getApiKey() {
-  return localStorage.getItem('matchup_claude_key') || '';
-}
-
-function showApiKeyModal(callback) {
-  pendingMatchCallback = callback || null;
-  document.getElementById('apikey-modal').classList.add('show');
-  document.getElementById('apikey-input').value = getApiKey();
-}
-
-function closeApiModal() {
-  document.getElementById('apikey-modal').classList.remove('show');
-  pendingMatchCallback = null;
-}
-
+function getApiKey() { return localStorage.getItem('matchup_claude_key') || ''; }
+function showApiKeyModal(cb) { pendingMatchCallback = cb||null; document.getElementById('apikey-modal').classList.add('show'); document.getElementById('apikey-input').value = getApiKey(); }
+function closeApiModal() { document.getElementById('apikey-modal').classList.remove('show'); pendingMatchCallback = null; }
 function saveApiKey() {
   const key = document.getElementById('apikey-input').value.trim();
-  if (!key.startsWith('sk-ant-')) {
-    alert('올바른 API 키 형식이 아닙니다. sk-ant-로 시작해야 합니다.');
-    return;
-  }
+  if (!key.startsWith('sk-ant-')) { alert('올바른 API 키 형식이 아닙니다'); return; }
   localStorage.setItem('matchup_claude_key', key);
-  CLAUDE_API_KEY = key;
   document.getElementById('apikey-modal').classList.remove('show');
-  updateApiKeyStatus();
-  if (pendingMatchCallback) {
-    pendingMatchCallback();
-    pendingMatchCallback = null;
-  }
+  if (pendingMatchCallback) { pendingMatchCallback(); pendingMatchCallback = null; }
 }
 
-function updateApiKeyStatus() {
-  const el = document.getElementById('apikey-status');
-  if (!el) return;
-  const key = getApiKey();
-  el.textContent = key ? `✅ API 키 등록됨 (${key.slice(0,12)}...)` : '⚠️ API 키 미설정';
-}
-
-// ── Claude API 직접 호출 (브라우저에서) ─────────────────────
 async function callClaudeAPI(prompt) {
-const apiKey = getApiKey() || 'server';
-
+  const apiKey = getApiKey() || 'server';
   const response = await fetch('/api/match', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -643,347 +399,309 @@ const apiKey = getApiKey() || 'server';
       }
     })
   });
-
-  if (!response.ok) {
-    const err = await response.json().catch(() => ({}));
-    throw new Error(err.error?.message || `HTTP ${response.status}`);
-  }
-
+  if (!response.ok) { const err = await response.json().catch(()=>({})); throw new Error(err.error?.message || `HTTP ${response.status}`); }
   const data = await response.json();
   return data.content[0].text;
 }
 
 let currentCompanyId = null;
 let allMatches = [];
+let savedMatches = [];
 let currentCategory = '전체';
 
-// ── 네비게이션 ────────────────────────────────────────────────
 function navigate(page) {
-  if (page === 'admin') {
-    const pw = prompt('관리자 비밀번호를 입력하세요');
-    if (pw !== 'best5381!') { showToast('비밀번호가 틀렸습니다'); return; }
-  }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
-  const labels = { onboarding: '온보딩', results: '매칭 결과', admin: '관리자 대시보드' };
+  const labels = { onboarding: '지원사업 매칭', results: '매칭 결과', saved: '관심 저장 목록' };
   document.getElementById('breadcrumb-text').textContent = labels[page] || page;
   if (page === 'results') loadResults();
-  if (page === 'admin') { loadAdmin(); updateApiKeyStatus(); }
+  if (page === 'saved') renderSaved();
 }
 
-// ── 온보딩 스텝 ───────────────────────────────────────────────
-function goStep1() {
-  document.getElementById('form-step-1').style.display = 'block';
-  document.getElementById('form-step-2').style.display = 'none';
-  document.getElementById('form-step-3').style.display = 'none';
-  setStep(1);
-}
+function goStep1() { document.getElementById('form-step-1').style.display='block'; document.getElementById('form-step-2').style.display='none'; document.getElementById('form-step-3').style.display='none'; setStep(1); }
 function goStep2() {
   const name = document.getElementById('company_name').value.trim();
   const biz = document.getElementById('business_number').value.trim();
   const industry = document.getElementById('industry').value;
   const region = document.getElementById('region').value;
-  if (!name || !biz || !industry || !region) { showToast('필수 항목을 모두 입력해주세요'); return; }
-  document.getElementById('form-step-1').style.display = 'none';
-  document.getElementById('form-step-2').style.display = 'block';
+  if (!name||!biz||!industry||!region) { showToast('필수 항목을 모두 입력해주세요'); return; }
+  document.getElementById('form-step-1').style.display='none';
+  document.getElementById('form-step-2').style.display='block';
   setStep(2);
 }
 function setStep(n) {
-  for (let i = 1; i <= 3; i++) {
-    const el = document.getElementById('step-' + i);
-    el.classList.remove('active', 'done');
-    if (i < n) el.classList.add('done');
-    if (i === n) el.classList.add('active');
+  for (let i=1;i<=3;i++) {
+    const el = document.getElementById('step-'+i);
+    el.classList.remove('active','done');
+    if (i<n) el.classList.add('done');
+    if (i===n) el.classList.add('active');
   }
 }
-
 function setLoadingStep(n) {
-  for (let i = 1; i <= 4; i++) {
-    const el = document.getElementById('lstep-' + i);
+  for (let i=1;i<=4;i++) {
+    const el = document.getElementById('lstep-'+i);
     if (!el) continue;
-    el.classList.remove('done', 'active');
-    if (i < n) { el.classList.add('done'); el.querySelector('.step-icon').textContent = '✅'; }
-    else if (i === n) { el.classList.add('active'); el.querySelector('.step-icon').textContent = '⏳'; }
-    else { el.querySelector('.step-icon').textContent = '○'; }
+    el.classList.remove('done','active');
+    if (i<n) { el.classList.add('done'); el.querySelector('.step-icon').textContent='✅'; }
+    else if (i===n) { el.classList.add('active'); el.querySelector('.step-icon').textContent='⏳'; }
+    else { el.querySelector('.step-icon').textContent='○'; }
   }
 }
 
-// ── 기업 저장 + 매칭 실행 ────────────────────────────────────
 async function submitAndMatch() {
-  // API 키 확인
-// API 키는 서버 환경변수로 처리
-
-  document.getElementById('form-step-2').style.display = 'none';
-  document.getElementById('form-step-3').style.display = 'block';
-  setStep(3);
-  setLoadingStep(1);
-
+  document.getElementById('form-step-2').style.display='none';
+  document.getElementById('form-step-3').style.display='block';
+  setStep(3); setLoadingStep(1);
   const companyData = {
     company_name: document.getElementById('company_name').value.trim(),
     business_number: document.getElementById('business_number').value.trim(),
     ceo_name: document.getElementById('ceo_name').value.trim(),
-    founded_date: document.getElementById('founded_date').value || null,
+    founded_date: document.getElementById('founded_date').value||null,
     industry: document.getElementById('industry').value,
     industry_detail: document.getElementById('industry_detail').value.trim(),
     region: document.getElementById('region').value,
     district: document.getElementById('district').value.trim(),
-    employee_count: parseInt(document.getElementById('employee_count').value) || null,
-    annual_revenue: parseInt(document.getElementById('annual_revenue').value) || null,
+    employee_count: parseInt(document.getElementById('employee_count').value)||null,
+    annual_revenue: parseInt(document.getElementById('annual_revenue').value)||null,
     homepage: document.getElementById('homepage').value.trim(),
     description: document.getElementById('description').value.trim(),
   };
-
-  // Supabase에 기업 저장
   const { data: company, error } = await db.from('companies').insert(companyData).select().single();
-  if (error) { showToast('저장 오류: ' + error.message); goStep2(); return; }
+  if (error) { showToast('저장 오류: '+error.message); goStep2(); return; }
   currentCompanyId = company.id;
-
-  // 사이드바 업데이트
   const initial = companyData.company_name.charAt(0);
   document.getElementById('user-avatar').textContent = initial;
   document.getElementById('user-name').textContent = companyData.company_name;
-  document.getElementById('user-company').textContent = companyData.industry + ' · ' + companyData.region;
-
+  document.getElementById('user-company').textContent = companyData.industry+' · '+companyData.region;
   setLoadingStep(2);
   await runMatching(company);
 }
 
-// ── AI 매칭 로직 (Claude API 직접 호출) ──────────────────────
 async function runMatching(company) {
   const { data: programs } = await db.from('programs').select('*').eq('is_active', true).limit(80);
-
-  if (!programs || programs.length === 0) {
-    setLoadingStep(3);
+  if (!programs||programs.length===0) {
     allMatches = getSampleMatches(company);
     document.getElementById('match-count').textContent = allMatches.length;
-    showToast('✅ ' + allMatches.length + '건 매칭 완료! (샘플)');
-    navigate('results');
-    return;
+    showToast('✅ '+allMatches.length+'건 매칭 완료! (샘플)');
+    navigate('results'); return;
   }
-
   setLoadingStep(3);
-
-  // 프로그램 요약 (토큰 절약)
-  const programList = programs.slice(0, 50).map(p => ({
-    id: p.id,
-    title: p.title,
-    organization: p.organization || '',
-    category: p.category || '',
-    eligibility: (p.eligibility || '').slice(0, 100),
-    deadline: p.deadline || ''
-  }));
-
+  const programList = programs.slice(0,50).map(p => ({ id:p.id, title:p.title, organization:p.organization||'', category:p.category||'', eligibility:(p.eligibility||'').slice(0,100), deadline:p.deadline||'' }));
   const prompt = `당신은 정부 지원사업 매칭 전문가입니다.
 
 ## 기업 정보
 - 기업명: ${company.company_name}
-- 업종: ${company.industry}${company.industry_detail ? ' (' + company.industry_detail + ')' : ''}
-- 지역: ${company.region}${company.district ? ' ' + company.district : ''}
-- 직원수: ${company.employee_count || '미상'}명
-- 연매출: ${company.annual_revenue ? company.annual_revenue + '만원' : '미상'}
-- 기업소개: ${company.description || '없음'}
+- 업종: ${company.industry}${company.industry_detail?' ('+company.industry_detail+')':''}
+- 지역: ${company.region}${company.district?' '+company.district:''}
+- 직원수: ${company.employee_count||'미상'}명
+- 연매출: ${company.annual_revenue?company.annual_revenue+'만원':'미상'}
+- 기업소개: ${company.description||'없음'}
 
 ## 지원사업 목록 (${programList.length}건)
 ${JSON.stringify(programList)}
 
 ## 지시사항
-위 기업에 가장 적합한 지원사업 TOP 5를 선정하고, 아래 JSON 배열 형식으로만 답변하세요. 다른 텍스트는 절대 포함하지 마세요.
+위 기업에 가장 적합한 지원사업 TOP 10을 선정하고, 아래 JSON 배열 형식으로만 답변하세요. 다른 텍스트는 절대 포함하지 마세요.
 [{"program_id":"UUID값","score":85,"reason":"매칭 이유 한 문장 (한국어)"}]`;
 
   let aiMatches = [];
   try {
     const rawText = await callClaudeAPI(prompt);
-    // JSON 파싱 (마크다운 블록 제거)
-    const cleaned = rawText.replace(/```json|```/g, '').trim();
+    const cleaned = rawText.replace(/\`\`\`json|\`\`\`/g,'').trim();
     const jsonStart = cleaned.indexOf('[');
-    const jsonEnd = cleaned.lastIndexOf(']') + 1;
-    if (jsonStart >= 0 && jsonEnd > jsonStart) {
-      aiMatches = JSON.parse(cleaned.slice(jsonStart, jsonEnd));
-    }
-  } catch (e) {
-    console.error('Claude 파싱 오류:', e);
-  }
+    const jsonEnd = cleaned.lastIndexOf(']')+1;
+    if (jsonStart>=0&&jsonEnd>jsonStart) aiMatches = JSON.parse(cleaned.slice(jsonStart,jsonEnd));
+  } catch(e) { console.error('Claude 파싱 오류:',e); }
 
   setLoadingStep(4);
-
-  // AI 결과 없으면 폴백
-  if (!aiMatches || aiMatches.length === 0) {
+  if (!aiMatches||aiMatches.length===0) {
     showToast('AI 응답 오류, 기본 매칭으로 진행합니다');
     allMatches = getSampleMatches(company);
     document.getElementById('match-count').textContent = allMatches.length;
-    navigate('results');
-    return;
+    navigate('results'); return;
   }
-
-// 메모리에서 바로 렌더 (DB 저장 스킵)
   let matchResults = aiMatches.map(m => {
-    const prog = programs.find(p => p.id === m.program_id);
-    return prog ? { id: 'm_' + m.program_id, match_score: m.score, match_reason: m.reason, is_saved: false, program: prog } : null;
+    const prog = programs.find(p => p.id===m.program_id);
+    return prog ? { id:'m_'+m.program_id, match_score:m.score, match_reason:m.reason, is_saved:false, program:prog } : null;
   }).filter(Boolean);
 
   allMatches = matchResults;
   document.getElementById('match-count').textContent = matchResults.length;
-  showToast('✅ AI가 ' + matchResults.length + '건 매칭 완료!');
+  showToast('✅ AI가 '+matchResults.length+'건 매칭 완료!');
   navigate('results');
 }
 
 function getSampleMatches(company) {
-  const region = company?.region || '';
+  const region = company?.region||'';
   return [
-    { id: 's1', match_score: 94, is_saved: false, program: { title: `2026 ${region} 소상공인 경영안정자금`, organization: '소상공인시장진흥공단', category: '융자', tags: ['소상공인', '경영안정', '융자'], max_support_amount: 200000000, deadline: '2026-06-30', eligibility: '소상공인 해당 업종', source_url: 'https://www.semas.or.kr' }},
-    { id: 's2', match_score: 88, is_saved: false, program: { title: '스마트공방 기술보급사업', organization: '중소벤처기업부', category: '사업화', tags: ['제조', '스마트', '기술'], max_support_amount: 150000000, deadline: '2026-05-15', eligibility: '제조업 소상공인', source_url: '#' }},
-    { id: 's3', match_score: 82, is_saved: false, program: { title: '지역 신사업 창업사관학교', organization: '창업진흥원', category: '창업', tags: ['창업', '교육', '지원'], max_support_amount: 100000000, deadline: '2026-07-01', eligibility: '예비창업자·초기창업자', source_url: '#' }},
-    { id: 's4', match_score: 76, is_saved: false, program: { title: 'AI 바우처 지원사업 (NIPA)', organization: 'NIPA', category: '바우처', tags: ['AI', 'IT', '바우처'], max_support_amount: 30000000, deadline: '2026-05-31', eligibility: '중소기업', source_url: '#' }},
-    { id: 's5', match_score: 71, is_saved: false, program: { title: '온라인 판로 개척 지원', organization: '소상공인시장진흥공단', category: 'R&D', tags: ['온라인', '마케팅', '판로'], max_support_amount: 5000000, deadline: '2026-08-31', eligibility: '소상공인', source_url: '#' }},
+    { id:'s1', match_score:94, is_saved:false, program:{ title:`2026 ${region} 소상공인 경영안정자금`, organization:'소상공인시장진흥공단', category:'융자', tags:['소상공인','경영안정','융자'], max_support_amount:200000000, deadline:'2026-06-30', eligibility:'소상공인 해당 업종', source_url:'https://www.semas.or.kr' }},
+    { id:'s2', match_score:88, is_saved:false, program:{ title:'스마트공방 기술보급사업', organization:'중소벤처기업부', category:'사업화', tags:['제조','스마트','기술'], max_support_amount:150000000, deadline:'2026-05-15', eligibility:'제조업 소상공인', source_url:'#' }},
+    { id:'s3', match_score:82, is_saved:false, program:{ title:'지역 신사업 창업사관학교', organization:'창업진흥원', category:'창업', tags:['창업','교육','지원'], max_support_amount:100000000, deadline:'2026-07-01', eligibility:'예비창업자·초기창업자', source_url:'#' }},
+    { id:'s4', match_score:76, is_saved:false, program:{ title:'AI 바우처 지원사업 (NIPA)', organization:'NIPA', category:'바우처', tags:['AI','IT','바우처'], max_support_amount:30000000, deadline:'2026-05-31', eligibility:'중소기업', source_url:'#' }},
+    { id:'s5', match_score:71, is_saved:false, program:{ title:'온라인 판로 개척 지원', organization:'소상공인시장진흥공단', category:'R&D', tags:['온라인','마케팅','판로'], max_support_amount:5000000, deadline:'2026-08-31', eligibility:'소상공인', source_url:'#' }},
   ];
 }
 
-// ── 결과 표시 ─────────────────────────────────────────────────
 async function loadResults() {
-  if (allMatches.length === 0 && currentCompanyId) {
-    const { data } = await db.from('matches').select('*, program:programs(*)').eq('company_id', currentCompanyId).order('match_score', { ascending: false });
+  if (allMatches.length===0&&currentCompanyId) {
+    const { data } = await db.from('matches').select('*, program:programs(*)').eq('company_id', currentCompanyId).order('match_score',{ascending:false});
     if (data) allMatches = data;
   }
   renderResults(allMatches);
 }
 
 function renderResults(matches) {
-  const filtered = currentCategory === '전체' ? matches : matches.filter(m => m.program?.category === currentCategory);
-
-  if (filtered.length === 0) {
-    document.getElementById('results-list').innerHTML = '<div class="empty-state"><h3>매칭 결과가 없어요</h3><p>온보딩에서 기업 정보를 입력하고 AI 매칭을 실행해주세요</p></div>';
+  const filtered = currentCategory==='전체' ? matches : matches.filter(m => m.program?.category===currentCategory);
+  if (filtered.length===0) {
+    document.getElementById('results-list').innerHTML = '<div class="empty-state"><h3>해당 카테고리 결과가 없어요</h3><p>다른 카테고리를 선택해보세요</p></div>';
     return;
   }
-
-  const scores = filtered.map(m => m.match_score);
+  const scores = filtered.map(m=>m.match_score);
   const maxScore = Math.max(...scores);
-  const maxAmount = Math.max(...filtered.map(m => m.program?.max_support_amount || 0));
+  const maxAmount = Math.max(...filtered.map(m=>m.program?.max_support_amount||0));
   const today = new Date();
-  const minDays = Math.min(...filtered.map(m => {
-    if (!m.program?.deadline) return 999;
-    return Math.ceil((new Date(m.program.deadline) - today) / 86400000);
-  }).filter(d => d > 0));
+  const minDays = Math.min(...filtered.map(m => { if(!m.program?.deadline) return 999; return Math.ceil((new Date(m.program.deadline)-today)/86400000); }).filter(d=>d>0));
 
   document.getElementById('stat-count').textContent = filtered.length;
   document.getElementById('stat-top-score').textContent = maxScore;
-  document.getElementById('stat-max-amount').textContent = maxAmount >= 100000000 ? (maxAmount/100000000).toFixed(1) : (maxAmount/10000).toFixed(0) + '만';
-  document.getElementById('stat-deadline').textContent = minDays < 999 ? minDays : '-';
+  document.getElementById('stat-max-amount').textContent = maxAmount>=100000000?(maxAmount/100000000).toFixed(1):(maxAmount/10000).toFixed(0)+'만';
+  document.getElementById('stat-deadline').textContent = minDays<999?minDays:'-';
   document.getElementById('result-subtitle').textContent = `${filtered.length}개 지원사업이 발견되었습니다.`;
   document.getElementById('match-count').textContent = filtered.length;
 
-  document.getElementById('results-list').innerHTML = filtered.map((m, i) => {
-    const p = m.program || {};
+  document.getElementById('results-list').innerHTML = filtered.map((m,i) => {
+    const p = m.program||{};
     const score = m.match_score;
-    const isHigh = score >= 85;
-    const tags = Array.isArray(p.tags) ? p.tags.map(t => `<span class="tag">${t}</span>`).join('') : '';
-    const daysLeft = p.deadline ? Math.ceil((new Date(p.deadline) - today) / 86400000) : null;
-    const amountStr = p.max_support_amount >= 100000000 ? `최대 ${(p.max_support_amount/100000000).toFixed(1)}억원` : p.max_support_amount ? `최대 ${(p.max_support_amount/10000).toFixed(0)}만원` : '-';
-    const reason = m.match_reason ? `<div class="check-item"><span class="check-icon">✓</span> ${m.match_reason}</div>` : `<div class="check-item"><span class="check-icon">✓</span> ${p.eligibility || '지원 조건 확인 필요'}</div>`;
+    const isHigh = score>=85;
+    const isTop = i===0;
+    const tags = Array.isArray(p.tags)?p.tags.map(t=>`<span class="tag">${t}</span>`).join(''):'';
+    const daysLeft = p.deadline?Math.ceil((new Date(p.deadline)-today)/86400000):null;
+    const amountStr = p.max_support_amount>=100000000?`최대 ${(p.max_support_amount/100000000).toFixed(1)}억원`:p.max_support_amount?`최대 ${(p.max_support_amount/10000).toFixed(0)}만원`:'-';
+    const reason = m.match_reason?`<div class="check-item"><span class="check-icon">✓</span> ${m.match_reason}</div>`:`<div class="check-item"><span class="check-icon">✓</span> ${p.eligibility||'지원 조건 확인 필요'}</div>`;
+    const isSaved = m.is_saved;
     return `
-    <div class="program-card" id="card-${m.id}">
+    <div class="program-card ${isTop?'top-pick':''}" id="card-${m.id}">
       <div class="score-ring">
-        <div class="score-circle ${isHigh ? 'high' : 'mid'}">
+        <div class="score-circle ${isHigh?'high':'mid'}">
           <div class="score-num">${score}</div>
           <div class="score-pct">점</div>
         </div>
-        <div class="score-badge ${isHigh ? 'best' : 'good'}">${isHigh ? '최적합' : '적합'}</div>
+        <div class="score-badge ${isHigh?'best':'good'}">${isHigh?'최적합':'적합'}</div>
       </div>
       <div class="program-info">
-        <div class="program-title">${p.title || '지원사업명'}</div>
-        <div class="program-org">${p.organization || ''}</div>
-        ${tags ? `<div class="program-tags">${tags}</div>` : ''}
+        <div class="program-title">${p.title||'지원사업명'}</div>
+        <div class="program-org">${p.organization||''}</div>
+        ${tags?`<div class="program-tags">${tags}</div>`:''}
         <div class="program-checks">${reason}</div>
         <div class="program-meta">
           <span>${amountStr}</span>
-          ${daysLeft ? `<span class="${daysLeft <= 14 ? 'deadline' : ''}">마감 D-${daysLeft}</span>` : ''}
-          ${p.category ? `<span>${p.category}</span>` : ''}
+          ${daysLeft?`<span class="${daysLeft<=14?'deadline':''}">마감 D-${daysLeft}</span>`:''}
+          ${p.category?`<span>${p.category}</span>`:''}
         </div>
       </div>
       <div class="program-actions">
-        ${i === 0 ? '<span class="badge-recommend">☆ 강력 추천</span>' : ''}
-        <button class="btn-save" onclick="toggleSave('${m.id}', this)">
-          ${m.is_saved ? '★ 저장됨' : '☆ 저장'}
+        ${isTop?'<span class="badge-recommend">⭐ 1순위 추천</span>':''}
+        <button class="btn-save ${isSaved?'saved':''}" id="save-btn-${m.id}" onclick="toggleSave('${m.id}', this)">
+          ${isSaved?'★ 관심 저장됨':'☆ 관심 저장'}
         </button>
-        ${p.source_url && p.source_url !== '#' ? `<a href="${p.source_url}" target="_blank"><button class="btn-detail">→ 상세</button></a>` : '<button class="btn-detail">→ 상세</button>'}
+        ${p.source_url&&p.source_url!=='#'?`<a href="${p.source_url}" target="_blank"><button class="btn-detail">자세히 보기 →</button></a>`:'<button class="btn-detail">자세히 보기 →</button>'}
       </div>
     </div>`;
   }).join('');
 }
 
 async function toggleSave(matchId, btn) {
-  const match = allMatches.find(m => m.id === matchId);
+  const match = allMatches.find(m=>m.id===matchId);
   if (!match) return;
   const newVal = !match.is_saved;
   match.is_saved = newVal;
-  btn.textContent = newVal ? '★ 저장됨' : '☆ 저장';
-  if (!String(matchId).startsWith('s') && !String(matchId).startsWith('m_')) {
-    await db.from('matches').update({ is_saved: newVal }).eq('id', matchId);
+  btn.textContent = newVal?'★ 관심 저장됨':'☆ 관심 저장';
+  btn.className = 'btn-save'+(newVal?' saved':'');
+  savedMatches = allMatches.filter(m=>m.is_saved);
+  document.getElementById('saved-count').textContent = savedMatches.length;
+  showToast(newVal?'관심 저장했습니다':'저장을 취소했습니다');
+}
+
+function renderSaved() {
+  savedMatches = allMatches.filter(m=>m.is_saved);
+  document.getElementById('saved-count').textContent = savedMatches.length;
+  if (savedMatches.length===0) {
+    document.getElementById('saved-list').innerHTML = '<div class="empty-state"><h3>아직 저장한 지원사업이 없어요</h3><p>매칭 결과에서 ☆ 관심 저장을 눌러보세요</p></div>';
+    return;
   }
-  showToast(newVal ? '저장했습니다' : '저장 취소');
+  const today = new Date();
+  document.getElementById('saved-list').innerHTML = savedMatches.map((m,i) => {
+    const p = m.program||{};
+    const score = m.match_score;
+    const isHigh = score>=85;
+    const tags = Array.isArray(p.tags)?p.tags.map(t=>`<span class="tag">${t}</span>`).join(''):'';
+    const daysLeft = p.deadline?Math.ceil((new Date(p.deadline)-today)/86400000):null;
+    const amountStr = p.max_support_amount>=100000000?`최대 ${(p.max_support_amount/100000000).toFixed(1)}억원`:p.max_support_amount?`최대 ${(p.max_support_amount/10000).toFixed(0)}만원`:'-';
+    return `
+    <div class="program-card" id="saved-card-${m.id}">
+      <div class="score-ring">
+        <div class="score-circle ${isHigh?'high':'mid'}"><div class="score-num">${score}</div><div class="score-pct">점</div></div>
+        <div class="score-badge ${isHigh?'best':'good'}">${isHigh?'최적합':'적합'}</div>
+      </div>
+      <div class="program-info">
+        <div class="program-title">${p.title||'지원사업명'}</div>
+        <div class="program-org">${p.organization||''}</div>
+        ${tags?`<div class="program-tags">${tags}</div>`:''}
+        ${m.match_reason?`<div class="program-checks"><div class="check-item"><span class="check-icon">✓</span> ${m.match_reason}</div></div>`:''}
+        <div class="program-meta">
+          <span>${amountStr}</span>
+          ${daysLeft?`<span class="${daysLeft<=14?'deadline':''}">마감 D-${daysLeft}</span>`:''}
+        </div>
+      </div>
+      <div class="program-actions">
+        <button class="btn-save saved" onclick="toggleSaveFromSaved('${m.id}', this)">★ 관심 저장됨</button>
+        ${p.source_url&&p.source_url!=='#'?`<a href="${p.source_url}" target="_blank"><button class="btn-detail">자세히 보기 →</button></a>`:'<button class="btn-detail">자세히 보기 →</button>'}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleSaveFromSaved(matchId, btn) {
+  const match = allMatches.find(m=>m.id===matchId);
+  if (!match) return;
+  match.is_saved = false;
+  savedMatches = allMatches.filter(m=>m.is_saved);
+  document.getElementById('saved-count').textContent = savedMatches.length;
+  showToast('저장을 취소했습니다');
+  renderSaved();
 }
 
 function filterCategory(cat, el) {
   currentCategory = cat;
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
   el.classList.add('active');
   renderResults(allMatches);
 }
 
 function sortResults(by) {
-  if (by === 'score') allMatches.sort((a,b) => b.match_score - a.match_score);
-  if (by === 'amount') allMatches.sort((a,b) => (b.program?.max_support_amount||0) - (a.program?.max_support_amount||0));
-  if (by === 'deadline') allMatches.sort((a,b) => new Date(a.program?.deadline||'9999') - new Date(b.program?.deadline||'9999'));
+  if (by==='score') allMatches.sort((a,b)=>b.match_score-a.match_score);
+  if (by==='amount') allMatches.sort((a,b)=>(b.program?.max_support_amount||0)-(a.program?.max_support_amount||0));
+  if (by==='deadline') allMatches.sort((a,b)=>new Date(a.program?.deadline||'9999')-new Date(b.program?.deadline||'9999'));
   renderResults(allMatches);
 }
 
 function exportResults() {
   const rows = [['순위','사업명','기관','적합도','지원금액','마감일','매칭이유']];
-  allMatches.forEach((m,i) => {
-    const p = m.program || {};
-    rows.push([i+1, p.title||'', p.organization||'', m.match_score+'%', p.max_support_amount||'', p.deadline||'', m.match_reason||'']);
-  });
-  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  allMatches.forEach((m,i)=>{ const p=m.program||{}; rows.push([i+1,p.title||'',p.organization||'',m.match_score+'%',p.max_support_amount||'',p.deadline||'',m.match_reason||'']); });
+  const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
   const a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
+  a.href = 'data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
   a.download = '매치업_결과.csv';
   a.click();
   showToast('CSV 다운로드 완료');
 }
 
-// ── 관리자 ────────────────────────────────────────────────────
-async function loadAdmin() {
-  const [{ count: cc }, { count: pc }, { count: mc }] = await Promise.all([
-    db.from('companies').select('*', { count: 'exact', head: true }),
-    db.from('programs').select('*', { count: 'exact', head: true }),
-    db.from('matches').select('*', { count: 'exact', head: true }),
-  ]);
-  document.getElementById('admin-companies').textContent = cc || 0;
-  document.getElementById('admin-programs').textContent = pc || 0;
-  document.getElementById('admin-matches').textContent = mc || 0;
-
-  const { data: companies } = await db.from('companies').select('*').order('created_at', { ascending: false }).limit(10);
-  if (!companies || companies.length === 0) {
-    document.getElementById('admin-company-list').innerHTML = '<p style="color:var(--gray-400); font-size:14px">아직 등록된 기업이 없어요</p>';
-    return;
-  }
-  document.getElementById('admin-company-list').innerHTML = companies.map(c => `
-    <div style="display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--gray-100)">
-      <div style="width:36px;height:36px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary)">${c.company_name?.charAt(0)||'?'}</div>
-      <div style="flex:1">
-        <div style="font-weight:600;font-size:14px">${c.company_name}</div>
-        <div style="font-size:12px;color:var(--gray-400)">${c.industry||''} · ${c.region||''} · ${new Date(c.created_at).toLocaleDateString('ko-KR')}</div>
-      </div>
-    </div>
-  `).join('');
-}
-
-// ── 토스트 ────────────────────────────────────────────────────
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  setTimeout(()=>t.classList.remove('show'), 2500);
 }
 </script>
 </body>
