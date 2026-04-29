@@ -1,3 +1,7 @@
+export const config = {
+  api: { bodyParser: true }
+};
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -5,11 +9,16 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const apiKey = process.env.ANTHROPIC_API_KEY || req.body?.api_key;
-  const payload = req.body?.payload;
+  let body = req.body;
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch(e) {}
+  }
 
-  if (!apiKey) return res.status(400).json({ error: 'API 키가 없습니다' });
-  if (!payload) return res.status(400).json({ error: 'payload가 없습니다' });
+  const apiKey = process.env.ANTHROPIC_API_KEY || body?.api_key;
+  const payload = body?.payload;
+
+  if (!apiKey) return res.status(400).json({ error: 'API 키 없음' });
+  if (!payload) return res.status(400).json({ error: 'payload 없음', received: JSON.stringify(body) });
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
