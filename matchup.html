@@ -714,10 +714,7 @@ function setLoadingStep(n) {
 // ── 기업 저장 + 매칭 실행 ────────────────────────────────────
 async function submitAndMatch() {
   // API 키 확인
-  if (!getApiKey()) {
-    showApiKeyModal(() => submitAndMatch());
-    return;
-  }
+// API 키는 서버 환경변수로 처리
 
   document.getElementById('form-step-2').style.display = 'none';
   document.getElementById('form-step-3').style.display = 'block';
