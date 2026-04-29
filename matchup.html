@@ -635,14 +635,13 @@ function updateApiKeyStatus() {
 
 // ── Claude API 직접 호출 (브라우저에서) ─────────────────────
 async function callClaudeAPI(prompt) {
-  const apiKey = getApiKey();
-  if (!apiKey) throw new Error('API_KEY_MISSING');
+const apiKey = getApiKey() || 'server';
 
   const response = await fetch('/api/match', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      api_key: apiKey,
+      api_key: getApiKey(),
       payload: {
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 2000,
