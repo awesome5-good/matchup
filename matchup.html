@@ -374,7 +374,7 @@
         </div>
         <div class="result-actions">
           <button class="btn-secondary" onclick="exportResults()">↓ 내보내기</button>
-          <button class="btn-primary" onclick="navigate('onboarding')">↺ 다시 매칭하기</button>
+          <button class="btn-primary" onclick="rematch()">↺ 다시 매칭하기</button>
         </div>
       </div>
       <div class="status-bar"><div class="status-dot"></div>매칭 완료 · 방금 업데이트됨</div>
@@ -772,6 +772,14 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'), 2500);
+}
+function rematch() {
+  allMatches = [];
+  currentCompanyId = null;
+  currentCategory = '전체';
+  document.getElementById('match-count').textContent = '0';
+  goStep1();
+  navigate('onboarding');
 }
 </script>
 </body>
