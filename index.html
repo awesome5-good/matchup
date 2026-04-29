@@ -665,6 +665,10 @@ let currentCategory = '전체';
 
 // ── 네비게이션 ────────────────────────────────────────────────
 function navigate(page) {
+  if (page === 'admin') {
+    const pw = prompt('관리자 비밀번호를 입력하세요');
+    if (pw !== 'best5381!') { showToast('비밀번호가 틀렸습니다'); return; }
+  }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
