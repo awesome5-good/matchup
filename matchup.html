@@ -8,21 +8,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    :root {
-      --primary:#4F46E5;--primary-light:#EEF2FF;--primary-dark:#3730A3;
-      --success:#10B981;--warning:#F59E0B;--danger:#EF4444;
-      --gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;
-      --gray-300:#D1D5DB;--gray-400:#9CA3AF;--gray-500:#6B7280;
-      --gray-600:#4B5563;--gray-700:#374151;--gray-900:#111827;
-      --sidebar-width:240px;
-    }
+    :root{--primary:#4F46E5;--primary-light:#EEF2FF;--primary-dark:#3730A3;--success:#10B981;--warning:#F59E0B;--danger:#EF4444;--gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;--gray-300:#D1D5DB;--gray-400:#9CA3AF;--gray-500:#6B7280;--gray-600:#4B5563;--gray-700:#374151;--gray-900:#111827;--sidebar-width:240px;}
     *{margin:0;padding:0;box-sizing:border-box;}
     body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--gray-50);color:var(--gray-900);display:flex;min-height:100vh;}
+    /* SIDEBAR */
     .sidebar{width:var(--sidebar-width);background:#fff;border-right:1px solid var(--gray-200);display:flex;flex-direction:column;position:fixed;height:100vh;z-index:100;}
     .sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;gap:10px;}
     .logo-icon{width:32px;height:32px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:16px;}
-    .logo-text{font-weight:700;font-size:16px;}
-    .logo-badge{font-size:10px;background:var(--primary-light);color:var(--primary);padding:2px 6px;border-radius:4px;font-weight:600;}
+    .logo-text{font-weight:700;font-size:16px;}.logo-badge{font-size:10px;background:var(--primary-light);color:var(--primary);padding:2px 6px;border-radius:4px;font-weight:600;}
     .sidebar-section{padding:16px 12px 8px;}
     .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;color:var(--gray-600);margin-bottom:2px;transition:all 0.15s;}
     .nav-item:hover{background:var(--gray-50);color:var(--gray-900);}
@@ -35,6 +28,7 @@
     .user-info{flex:1;min-width:0;}
     .user-name{font-size:13px;font-weight:600;}
     .user-company{font-size:11px;color:var(--gray-400);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    /* MAIN */
     .main{margin-left:var(--sidebar-width);flex:1;display:flex;flex-direction:column;}
     .topbar{background:#fff;border-bottom:1px solid var(--gray-200);padding:0 28px;height:60px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:50;}
     .breadcrumb{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--gray-500);}
@@ -44,7 +38,7 @@
     .topbar-actions{display:flex;align-items:center;gap:12px;margin-left:auto;}
     .content{padding:28px;flex:1;}
     .page{display:none;}.page.active{display:block;}
-    /* ONBOARDING */
+    /* FORM */
     .onboarding-header{margin-bottom:28px;}
     .onboarding-header h1{font-size:26px;font-weight:800;margin-bottom:6px;}
     .onboarding-header p{color:var(--gray-500);font-size:14px;}
@@ -63,7 +57,6 @@
     .form-group{display:flex;flex-direction:column;gap:6px;position:relative;}
     .form-group label{font-size:13px;font-weight:600;color:var(--gray-700);display:flex;align-items:center;gap:4px;}
     .form-group label .req{color:var(--danger);}
-    /* 필드 툴팁 */
     .field-tooltip{position:relative;display:inline-flex;align-items:center;margin-left:4px;cursor:help;}
     .field-tooltip .tip-icon{width:15px;height:15px;background:var(--gray-300);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:white;font-weight:700;}
     .field-tooltip .tip-box{position:absolute;bottom:calc(100% + 6px);left:0;background:var(--gray-900);color:white;font-size:11px;padding:8px 12px;border-radius:8px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;z-index:20;min-width:200px;line-height:1.7;}
@@ -73,11 +66,19 @@
     .form-control:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,70,229,0.1);}
     .form-control::placeholder{color:var(--gray-300);}
     .form-control.error{border-color:var(--danger);}
-    .input-suffix-wrap{position:relative;}
-    .input-suffix-wrap .form-control{padding-right:36px;}
-    .input-suffix{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--gray-400);font-weight:500;pointer-events:none;}
+    /* suffix - 완전 재작성 */
+    .suffix-wrap{display:flex;align-items:center;border:1px solid var(--gray-200);border-radius:8px;background:#fff;transition:border-color 0.15s;overflow:hidden;}
+    .suffix-wrap:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,70,229,0.1);}
+    .suffix-wrap input{border:none;border-radius:0;padding:10px 10px 10px 14px;font-size:14px;font-family:inherit;color:var(--gray-900);background:transparent;flex:1;outline:none;width:100%;}
+    .suffix-wrap input::placeholder{color:var(--gray-300);}
+    .suffix-label{padding:10px 12px 10px 4px;font-size:13px;color:var(--gray-400);font-weight:500;white-space:nowrap;flex-shrink:0;}
     .field-error{font-size:11px;color:var(--danger);margin-top:2px;display:none;}
     .field-error.show{display:block;}
+    /* 필요분야 멀티선택 */
+    .need-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+    .need-chip{padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid var(--gray-200);background:#fff;cursor:pointer;color:var(--gray-600);transition:all 0.15s;user-select:none;}
+    .need-chip:hover{border-color:var(--primary);color:var(--primary);}
+    .need-chip.selected{background:var(--primary);color:white;border-color:var(--primary);}
     .form-footer{margin-top:24px;display:flex;justify-content:flex-end;}
     .btn-next{background:var(--gray-900);color:white;border:none;padding:11px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background 0.15s;}
     .btn-next:hover{background:var(--primary);}
@@ -104,49 +105,23 @@
     .stat-value.success{color:var(--success);}
     .stat-value.danger{color:var(--danger);}
     .stat-sub{font-size:12px;color:var(--gray-400);margin-top:4px;}
-    /* AI 리포트 티저 */
-    .report-teaser{background:linear-gradient(135deg,#0F0E17,#1e1b4b);border-radius:16px;padding:28px 32px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:24px;position:relative;overflow:hidden;}
-    .report-teaser::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(79,70,229,0.3),transparent 70%);border-radius:50%;}
-    .report-teaser-left{flex:1;position:relative;z-index:1;}
-    .report-teaser-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,70,229,0.3);border:1px solid rgba(79,70,229,0.5);color:#a5b4fc;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:12px;}
-    .report-teaser h3{font-size:20px;font-weight:800;color:white;margin-bottom:8px;line-height:1.3;}
-    .report-teaser p{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.6;}
-    .report-teaser-preview{display:flex;flex-direction:column;gap:6px;margin-top:16px;}
-    .preview-item{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);}
-    .preview-dot{width:6px;height:6px;border-radius:50%;background:#818cf8;flex-shrink:0;}
-    .report-teaser-right{position:relative;z-index:1;flex-shrink:0;}
-    .btn-report{background:linear-gradient(135deg,#4F46E5,#7C3AED);color:white;border:none;padding:14px 24px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 4px 16px rgba(79,70,229,0.4);transition:all 0.2s;display:flex;align-items:center;gap:8px;}
-    .btn-report:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(79,70,229,0.5);}
-    .btn-report:disabled{opacity:0.7;cursor:not-allowed;transform:none;}
-    /* 리포트 풀버전 */
-    .report-full{display:none;margin-bottom:24px;}
-    .report-full.show{display:block;}
-    .report-card{background:#fff;border:1px solid var(--gray-200);border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.06);}
-    .report-header{background:linear-gradient(135deg,#0F0E17,#1e1b4b);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;}
-    .report-header h2{font-size:18px;font-weight:800;color:white;}
-    .report-header p{font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;}
-    .report-header-badge{background:rgba(79,70,229,0.4);border:1px solid rgba(79,70,229,0.6);color:#a5b4fc;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;}
-    .report-section{padding:28px 32px;border-bottom:1px solid var(--gray-100);}
-    .report-section:last-child{border-bottom:none;}
-    .report-section-title{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:800;color:var(--gray-900);margin-bottom:16px;}
-    .report-section-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-    .icon-blue{background:var(--primary-light);}
-    .icon-green{background:#D1FAE5;}
-    .icon-orange{background:#FEF3C7;}
-    .icon-purple{background:#EDE9FE;}
-    .report-content{font-size:14px;color:var(--gray-700);line-height:1.9;white-space:pre-wrap;}
-    .report-loading{text-align:center;padding:60px;}
-    .report-spinner{width:36px;height:36px;border:3px solid var(--gray-200);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;}
-    .report-loading p{font-size:14px;font-weight:600;color:var(--gray-600);}
-    /* 재무 분석 */
-    .finance-box{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:10px;padding:16px 20px;margin-top:12px;}
-    .finance-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid var(--gray-100);}
-    .finance-row:last-child{border-bottom:none;}
-    .finance-label{color:var(--gray-500);}
-    .finance-value{font-weight:600;color:var(--gray-900);}
-    .finance-value.good{color:var(--success);}
-    .finance-value.warn{color:var(--warning);}
-    .finance-value.bad{color:var(--danger);}
+    /* 간략 요약 카드 */
+    .summary-card{background:linear-gradient(135deg,#0F0E17,#1e1b4b);border-radius:16px;padding:24px 28px;margin-bottom:24px;display:none;}
+    .summary-card.show{display:block;}
+    .summary-loading{display:flex;align-items:center;gap:12px;color:rgba(255,255,255,0.7);font-size:14px;}
+    .summary-spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,0.2);border-top-color:#818cf8;border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0;}
+    .summary-inner{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;}
+    .summary-top{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+    .summary-badge{background:rgba(79,70,229,0.4);border:1px solid rgba(79,70,229,0.6);color:#a5b4fc;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;}
+    .summary-company{font-size:15px;font-weight:700;color:white;}
+    .summary-metrics{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:16px;}
+    .summary-metric{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:12px 16px;min-width:120px;}
+    .summary-metric-num{font-size:22px;font-weight:800;color:white;line-height:1;}
+    .summary-metric-label{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;}
+    .summary-hook{background:rgba(79,70,229,0.25);border-left:3px solid #818cf8;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:16px;font-size:13px;color:rgba(255,255,255,0.85);line-height:1.6;}
+    .btn-report-main{background:linear-gradient(135deg,#4F46E5,#7C3AED);color:white;border:none;padding:14px 22px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 4px 16px rgba(79,70,229,0.4);transition:all 0.2s;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+    .btn-report-main:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(79,70,229,0.5);}
+    .btn-report-main:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
     /* FILTER */
     .filter-bar{display:flex;gap:6px;margin-bottom:8px;align-items:center;flex-wrap:wrap;}
     .filter-chip{position:relative;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid var(--gray-200);background:#fff;cursor:pointer;color:var(--gray-600);transition:all 0.15s;white-space:nowrap;}
@@ -197,6 +172,84 @@
     .status-bar{background:#D1FAE5;border:1px solid #6EE7B7;border-radius:8px;padding:10px 16px;display:flex;align-items:center;gap:8px;font-size:13px;color:#065F46;margin-bottom:20px;font-weight:500;}
     .status-dot{width:8px;height:8px;background:var(--success);border-radius:50%;animation:pulse 2s infinite;}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+    /* REPORT PAGE */
+    .report-page-header{margin-bottom:28px;}
+    .report-page-header h1{font-size:26px;font-weight:800;margin-bottom:6px;}
+    .report-page-header p{color:var(--gray-500);font-size:14px;}
+    .report-empty{text-align:center;padding:80px 20px;color:var(--gray-400);}
+    .report-empty h3{font-size:18px;font-weight:600;margin-bottom:8px;color:var(--gray-600);}
+    .report-empty p{margin-bottom:20px;}
+    /* 리포트 탭 */
+    .report-tabs{display:flex;gap:0;border-bottom:2px solid var(--gray-200);margin-bottom:28px;overflow-x:auto;}
+    .report-tab{padding:12px 20px;font-size:14px;font-weight:600;color:var(--gray-500);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all 0.15s;}
+    .report-tab:hover{color:var(--gray-900);}
+    .report-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+    .report-tab-content{display:none;}
+    .report-tab-content.active{display:block;}
+    /* 리포트 컴포넌트 */
+    .rpt-section{background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:28px;margin-bottom:20px;}
+    .rpt-section-title{font-size:18px;font-weight:800;color:var(--gray-900);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+    .rpt-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:var(--primary-light);color:var(--primary);}
+    /* 상태 카드 그리드 */
+    .rpt-kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+    .rpt-kpi{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:10px;padding:16px;}
+    .rpt-kpi-label{font-size:11px;color:var(--gray-500);margin-bottom:6px;font-weight:500;}
+    .rpt-kpi-value{font-size:20px;font-weight:800;color:var(--gray-900);}
+    .rpt-kpi-value.good{color:var(--success);}
+    .rpt-kpi-value.warn{color:var(--warning);}
+    .rpt-kpi-value.bad{color:var(--danger);}
+    .rpt-kpi-sub{font-size:11px;color:var(--gray-400);margin-top:3px;}
+    /* 콜아웃 박스 */
+    .callout{border-radius:10px;padding:14px 18px;margin:16px 0;display:flex;gap:12px;align-items:flex-start;}
+    .callout.blue{background:#EEF2FF;border-left:4px solid var(--primary);}
+    .callout.green{background:#D1FAE5;border-left:4px solid var(--success);}
+    .callout.yellow{background:#FEF3C7;border-left:4px solid var(--warning);}
+    .callout.red{background:#FEE2E2;border-left:4px solid var(--danger);}
+    .callout-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+    .callout-body{flex:1;}
+    .callout-title{font-size:13px;font-weight:700;color:var(--gray-900);margin-bottom:4px;}
+    .callout-text{font-size:13px;color:var(--gray-700);line-height:1.7;}
+    /* 테이블 */
+    .rpt-table{width:100%;border-collapse:collapse;font-size:13px;margin:16px 0;}
+    .rpt-table th{background:var(--gray-100);color:var(--gray-700);font-weight:700;padding:10px 14px;text-align:left;border:1px solid var(--gray-200);}
+    .rpt-table td{padding:10px 14px;border:1px solid var(--gray-200);color:var(--gray-700);line-height:1.6;}
+    .rpt-table tr:nth-child(even) td{background:var(--gray-50);}
+    /* 로드맵 */
+    .roadmap{display:flex;flex-direction:column;gap:0;position:relative;}
+    .roadmap::before{content:'';position:absolute;left:23px;top:28px;bottom:28px;width:2px;background:linear-gradient(to bottom,var(--primary),var(--success));border-radius:2px;}
+    .roadmap-item{display:flex;gap:20px;position:relative;padding-bottom:28px;}
+    .roadmap-item:last-child{padding-bottom:0;}
+    .roadmap-dot{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0;position:relative;z-index:1;}
+    .roadmap-dot.now{background:var(--primary);color:white;box-shadow:0 0 0 4px rgba(79,70,229,0.2);}
+    .roadmap-dot.y1{background:var(--success);color:white;box-shadow:0 0 0 4px rgba(16,185,129,0.2);}
+    .roadmap-dot.y3{background:#7C3AED;color:white;box-shadow:0 0 0 4px rgba(124,58,237,0.2);}
+    .roadmap-content{flex:1;padding-top:8px;}
+    .roadmap-label{font-size:11px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;}
+    .roadmap-title{font-size:15px;font-weight:700;color:var(--gray-900);margin-bottom:8px;}
+    .roadmap-items{display:flex;flex-direction:column;gap:4px;}
+    .roadmap-item-text{font-size:13px;color:var(--gray-600);display:flex;align-items:flex-start;gap:6px;line-height:1.6;}
+    .roadmap-item-text::before{content:'→';color:var(--primary);flex-shrink:0;font-weight:700;}
+    /* 체크리스트 */
+    .checklist{display:flex;flex-direction:column;gap:8px;margin:12px 0;}
+    .checklist-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--gray-700);line-height:1.6;padding:10px 14px;background:var(--gray-50);border-radius:8px;border:1px solid var(--gray-200);}
+    .checklist-icon{width:20px;height:20px;border-radius:50%;background:var(--success);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0;margin-top:1px;}
+    .tip-box-report{background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:1px solid #F59E0B;border-radius:10px;padding:14px 18px;margin:12px 0;}
+    .tip-box-title{font-size:13px;font-weight:700;color:#92400E;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+    .tip-box-text{font-size:13px;color:#78350F;line-height:1.7;}
+    /* 전문가 한마디 */
+    .expert-card{background:linear-gradient(135deg,#0F0E17,#1e1b4b);border-radius:16px;padding:32px;color:white;position:relative;overflow:hidden;}
+    .expert-card::before{content:'"';font-size:120px;font-weight:900;color:rgba(79,70,229,0.2);position:absolute;top:-20px;left:20px;line-height:1;}
+    .expert-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,70,229,0.3);border:1px solid rgba(79,70,229,0.5);color:#a5b4fc;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:16px;}
+    .expert-text{font-size:16px;color:rgba(255,255,255,0.9);line-height:1.9;position:relative;z-index:1;font-weight:400;}
+    .expert-action{margin-top:20px;padding:16px 20px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;}
+    .expert-action-label{font-size:11px;color:rgba(255,255,255,0.5);font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;}
+    .expert-action-text{font-size:14px;color:white;font-weight:600;}
+    /* report loading */
+    .report-generating{text-align:center;padding:60px;}
+    .report-gen-spinner{width:48px;height:48px;border:4px solid var(--gray-200);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 20px;}
+    .report-gen-title{font-size:18px;font-weight:700;color:var(--gray-900);margin-bottom:8px;}
+    .report-gen-sub{font-size:13px;color:var(--gray-500);}
+    /* 저장 목록 */
     .toast{position:fixed;bottom:24px;right:24px;background:var(--gray-900);color:white;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;z-index:999;transform:translateY(80px);opacity:0;transition:all 0.3s;pointer-events:none;}
     .toast.show{transform:translateY(0);opacity:1;}
     .empty-state{text-align:center;padding:60px 20px;color:var(--gray-400);}
@@ -210,6 +263,15 @@
     .modal-input:focus{outline:none;border-color:var(--primary);}
     .modal-actions{display:flex;gap:10px;justify-content:flex-end;}
     select.form-control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+    .rpt-prose{font-size:14px;color:var(--gray-700);line-height:1.9;}
+    .rpt-prose h4{font-size:14px;font-weight:700;color:var(--gray-900);margin:16px 0 8px;}
+    .strength-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0;}
+    .strength-item{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:14px;}
+    .strength-item h4{font-size:13px;font-weight:700;color:#065F46;margin-bottom:6px;}
+    .strength-item p{font-size:12px;color:#047857;line-height:1.6;}
+    .weakness-item{background:#FFF7ED;border:1px solid #FED7AA;border-radius:10px;padding:14px;margin:8px 0;}
+    .weakness-item h4{font-size:13px;font-weight:700;color:#9A3412;margin-bottom:6px;}
+    .weakness-item p{font-size:12px;color:#C2410C;line-height:1.6;}
   </style>
 </head>
 <body>
@@ -220,7 +282,7 @@
     <input type="password" class="modal-input" id="apikey-input" placeholder="sk-ant-api03-...">
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeApiModal()">나중에</button>
-      <button class="btn-primary" onclick="saveApiKey()">저장 후 매칭 실행</button>
+      <button class="btn-primary" onclick="saveApiKey()">저장</button>
     </div>
   </div>
 </div>
@@ -234,6 +296,9 @@
     </div>
     <div class="nav-item" onclick="navigate('results')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>매칭 결과<span class="nav-badge" id="match-count">0</span>
+    </div>
+    <div class="nav-item" onclick="navigate('report')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>기업 진단 리포트<span class="nav-badge" id="report-badge" style="background:#7C3AED;display:none">NEW</span>
     </div>
     <div class="nav-item" onclick="navigate('saved')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>관심 저장 목록<span class="nav-badge" id="saved-count" style="background:#F59E0B">0</span>
@@ -253,7 +318,7 @@
     <div class="topbar-actions"></div>
   </div>
   <div class="content">
-    <!-- 매칭 페이지 -->
+    <!-- 매칭 입력 -->
     <div class="page active" id="page-onboarding">
       <div class="onboarding-header"><h1>지원사업 매칭</h1><p>기업정보를 상세히 입력할수록 매칭 정확도가 올라갑니다. (무료)</p></div>
       <div class="steps">
@@ -269,24 +334,28 @@
         <div class="form-card">
           <div class="form-grid">
             <div class="form-group">
-              <label>기업명 <span class="req">*</span><span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">사업자등록증상의 상호명을 입력하세요&#10;예) (주)브라보경영컨설팅, 홍길동카페</span></span></label>
-              <input class="form-control" id="company_name" placeholder="(주)그린셀테크" type="text">
+              <label>기업명 <span class="req">*</span><span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">사업자등록증상의 상호명을 입력하세요</span></span></label>
+              <input class="form-control" id="company_name" placeholder="(주)브라보경영컨설팅" type="text">
             </div>
             <div class="form-group">
-              <label>사업자등록번호 <span class="req">*</span><span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">숫자 10자리를 입력하면&#10;000-00-00000 형식으로 자동 변환됩니다</span></span></label>
+              <label>사업자등록번호 <span class="req">*</span><span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">숫자 10자리 입력 시 000-00-00000 자동 변환</span></span></label>
               <input class="form-control" id="business_number" placeholder="000-00-00000" type="text" maxlength="12" oninput="formatBizNum(this)">
               <span class="field-error" id="biz-error">사업자등록번호는 숫자 10자리입니다</span>
             </div>
             <div class="form-group">
-              <label>대표자명<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">사업자등록증상의 대표자명을 입력하세요</span></span></label>
-              <input class="form-control" id="ceo_name" placeholder="홍길동" type="text">
+              <label>사업자 구분 <span class="req">*</span><span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">법인 제외, 개인사업자만 지원 가능한 사업이 많아요</span></span></label>
+              <select class="form-control" id="biz_type">
+                <option value="">선택해주세요</option>
+                <option value="개인사업자">개인사업자</option>
+                <option value="법인사업자">법인사업자</option>
+              </select>
             </div>
             <div class="form-group">
-              <label>설립일<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">사업자등록증의 개업연월일을 입력하세요&#10;창업 연차에 따라 지원 가능 사업이 달라집니다</span></span></label>
+              <label>설립일<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">사업자등록증의 개업연월일 — 창업 연차에 따라 지원 가능 사업이 달라집니다</span></span></label>
               <input class="form-control" id="founded_date" type="date">
             </div>
             <div class="form-group">
-              <label>업태 <span class="req">*</span><span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">사업자등록증의 업태를 선택하세요&#10;지원사업 자격 조건 확인에 사용됩니다</span></span></label>
+              <label>업태 <span class="req">*</span><span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">사업자등록증의 업태를 선택하세요</span></span></label>
               <select class="form-control" id="industry">
                 <option value="">선택해주세요</option>
                 <option value="제조업">제조업</option>
@@ -306,11 +375,11 @@
               </select>
             </div>
             <div class="form-group">
-              <label>종목(세부 업종)<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">사업자등록증 종목 또는 알고 있는 업종명을 자유롭게 입력하세요&#10;예) 한식당, 카페, 청소용역, 심리상담,&#10;소프트웨어 개발, 자동화기계 제조</span></span></label>
-              <input class="form-control" id="industry_detail" placeholder="예) 한식당, 카페, 소프트웨어 개발" type="text">
+              <label>종목(세부 업종)<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">사업자등록증 종목 또는 본인이 아는 업종명 자유 입력&#10;예) 한식당, 카페, 청소용역, 소프트웨어 개발</span></span></label>
+              <input class="form-control" id="industry_detail" placeholder="예) 카페, 한식당, 소프트웨어 개발" type="text">
             </div>
             <div class="form-group">
-              <label>지역 <span class="req">*</span><span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">사업장 소재지 시·도를 선택하세요&#10;지역별 지원사업 매칭에 사용됩니다</span></span></label>
+              <label>지역 <span class="req">*</span></label>
               <select class="form-control" id="region">
                 <option value="">선택해주세요</option>
                 <option>서울</option><option>경기</option><option>인천</option><option>부산</option>
@@ -320,7 +389,7 @@
               </select>
             </div>
             <div class="form-group">
-              <label>시/군/구<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">더 정확한 지역 매칭을 위해 입력해주세요&#10;예) 수성구, 달서구, 중구</span></span></label>
+              <label>시/군/구<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">더 정확한 지역 매칭을 위해 입력해주세요&#10;예) 수성구, 달서구</span></span></label>
               <input class="form-control" id="district" placeholder="수성구" type="text">
             </div>
           </div>
@@ -333,33 +402,33 @@
         <div class="form-card">
           <div class="form-grid">
             <div class="form-group">
-              <label>직원 수<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">대표자 포함 전체 임직원 수를 입력하세요&#10;소기업·소상공인 여부 판단에 사용됩니다</span></span></label>
-              <div class="input-suffix-wrap">
-                <input class="form-control" id="employee_count" placeholder="예) 5" type="text" oninput="formatNumber(this)">
-                <span class="input-suffix">명</span>
-              </div>
+              <label>직원 수<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">대표자 포함 전체 임직원 수&#10;소기업·소상공인 여부 판단에 사용됩니다</span></span></label>
+              <div class="suffix-wrap"><input id="employee_count" placeholder="예) 5" type="text" oninput="formatNumber(this)"><span class="suffix-label">명</span></div>
             </div>
             <div class="form-group">
-              <label>전년도 매출액<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">전년도 연간 매출액을 원 단위로 입력하세요&#10;예) 5천만원 → 50000000 입력&#10;소상공인·중소기업 구분 기준으로 사용됩니다</span></span></label>
-              <div class="input-suffix-wrap">
-                <input class="form-control" id="annual_revenue" placeholder="예) 50,000,000" type="text" oninput="formatRevenue(this)">
-                <span class="input-suffix">원</span>
-              </div>
+              <label>전년도 매출액<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">연간 매출액을 원 단위로 입력하세요&#10;예) 5천만원 → 50000000</span></span></label>
+              <div class="suffix-wrap"><input id="annual_revenue" placeholder="예) 50,000,000" type="text" oninput="formatRevenue(this)"><span class="suffix-label">원</span></div>
             </div>
-            <div class="form-group">
-              <label>전년도 영업이익(순이익)<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">영업이익 또는 순이익을 원 단위로 입력하세요&#10;업종 평균 마진율과 비교 분석해드립니다&#10;선택 입력 항목입니다</span></span></label>
-              <div class="input-suffix-wrap">
-                <input class="form-control" id="operating_profit" placeholder="예) 8,000,000" type="text" oninput="formatRevenue(this)">
-                <span class="input-suffix">원</span>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>홈페이지<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">회사 홈페이지나 SNS 주소를 입력하세요&#10;선택 입력 항목입니다</span></span></label>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>홈페이지</label>
               <input class="form-control" id="homepage" placeholder="https://example.com" type="url">
             </div>
             <div class="form-group" style="grid-column:1/-1">
-              <label>기업 소개 <span class="req">*</span><span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">주요 사업·제품·서비스·기술을 자유롭게 소개해주세요&#10;AI 매칭 정확도에 가장 큰 영향을 줍니다&#10;예) 대구 소재 청소대행 전문업체로 아파트,&#10;오피스 정기청소 서비스를 제공하고 있습니다</span></span></label>
+              <label>기업 소개 <span class="req">*</span><span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">주요 사업·제품·서비스를 자유롭게 소개해주세요&#10;AI 매칭 정확도에 가장 큰 영향을 줍니다</span></span></label>
               <textarea class="form-control" id="description" placeholder="기업의 주요 사업, 제품, 서비스, 기술을 간략히 소개해주세요. 상세할수록 AI 매칭 정확도가 높아집니다." rows="4"></textarea>
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>지금 가장 필요한 것 <span class="req">*</span><span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">복수 선택 가능 — 선택한 분야 위주로 매칭합니다</span></span></label>
+              <div class="need-chips">
+                <div class="need-chip" onclick="toggleNeed(this)" data-val="자금·운전자본">💰 자금·운전자본</div>
+                <div class="need-chip" onclick="toggleNeed(this)" data-val="마케팅·판로개척">📣 마케팅·판로개척</div>
+                <div class="need-chip" onclick="toggleNeed(this)" data-val="기술개발·R&D">🔬 기술개발·R&D</div>
+                <div class="need-chip" onclick="toggleNeed(this)" data-val="인력채용·교육">👥 인력채용·교육</div>
+                <div class="need-chip" onclick="toggleNeed(this)" data-val="시설·장비투자">🏭 시설·장비투자</div>
+                <div class="need-chip" onclick="toggleNeed(this)" data-val="수출·해외진출">🌏 수출·해외진출</div>
+                <div class="need-chip" onclick="toggleNeed(this)" data-val="창업·사업화">💡 창업·사업화</div>
+                <div class="need-chip" onclick="toggleNeed(this)" data-val="경영·컨설팅">📋 경영·컨설팅</div>
+              </div>
             </div>
           </div>
           <div class="form-footer" style="gap:10px;justify-content:space-between">
@@ -379,7 +448,8 @@
         </div>
       </div>
     </div>
-    <!-- 결과 페이지 -->
+
+    <!-- 매칭 결과 -->
     <div class="page" id="page-results">
       <div class="result-header">
         <div class="result-title"><h1>매칭 결과</h1><p id="result-subtitle">매칭 결과를 확인하세요</p></div>
@@ -395,48 +465,41 @@
         <div class="stat-card"><div class="stat-label">예상 최대 수혜금</div><div class="stat-value success" id="stat-max-amount">-</div><div class="stat-sub"></div></div>
         <div class="stat-card"><div class="stat-label">임박 마감</div><div class="stat-value danger" id="stat-deadline">-</div><div class="stat-sub">일 이내</div></div>
       </div>
-      <!-- 리포트 티저 -->
-      <div class="report-teaser" id="report-teaser">
-        <div class="report-teaser-left">
-          <div class="report-teaser-badge">✨ AI 전문 진단</div>
-          <h3>우리 기업 맞춤<br>AI 진단 리포트</h3>
-          <p>14년 컨설턴트 관점의 기업 진단 · 지원사업 로드맵 · 1순위 신청 꿀팁까지<br>단순 매칭을 넘어 실전 전략을 제공합니다</p>
-          <div class="report-teaser-preview">
-            <div class="preview-item"><span class="preview-dot"></span>기업 현황 진단 및 강점·보완점 분석</div>
-            <div class="preview-item"><span class="preview-dot"></span>지원사업 단계별 성장 로드맵</div>
-            <div class="preview-item"><span class="preview-dot"></span>1순위 사업 신청 가이드 &amp; 꿀팁</div>
-            <div class="preview-item"><span class="preview-dot"></span>업종 평균 재무지표 비교 분석</div>
-          </div>
+      <!-- 간략 요약 카드 -->
+      <div class="summary-card" id="summary-card">
+        <div class="summary-loading" id="summary-loading">
+          <div class="summary-spinner"></div>
+          <span>맞춤 기업 분석 중...</span>
         </div>
-        <div class="report-teaser-right">
-          <button class="btn-report" id="btn-gen-report" onclick="generateReport()">📋 AI 진단 리포트 생성하기</button>
-        </div>
-      </div>
-      <!-- 리포트 풀버전 -->
-      <div class="report-full" id="report-full">
-        <div class="report-card">
-          <div class="report-header">
-            <div><h2>AI 기업 진단 리포트</h2><p id="report-company-name">기업명</p></div>
-            <div class="report-header-badge">✨ AI 분석 완료</div>
-          </div>
-          <div class="report-body" id="report-body">
-            <div class="report-loading"><div class="report-spinner"></div><p>AI가 기업을 분석하고 있습니다...</p></div>
+        <div id="summary-inner" style="display:none">
+          <div class="summary-inner">
+            <div>
+              <div class="summary-top">
+                <span class="summary-badge">📊 기업 분석 요약</span>
+                <span class="summary-company" id="sum-company"></span>
+              </div>
+              <div class="summary-metrics" id="sum-metrics"></div>
+              <div class="summary-hook" id="sum-hook"></div>
+            </div>
+            <button class="btn-report-main" onclick="goToReport()">
+              📋 기업 진단 리포트<br>자세히 보기 →
+            </button>
           </div>
         </div>
       </div>
       <!-- 필터 -->
       <div class="filter-bar">
-        <button class="filter-chip active" onclick="filterCategory('전체',this)">전체<span class="tooltip">모든 지원사업을 표시합니다</span></button>
-        <button class="filter-chip" onclick="filterCategory('R&D',this)">🔬 연구개발(R&D)<span class="tooltip">기술·제품 연구개발 과제 지원</span></button>
-        <button class="filter-chip" onclick="filterCategory('사업화',this)">🚀 사업화<span class="tooltip">시제품·시장 출시 단계 지원</span></button>
-        <button class="filter-chip" onclick="filterCategory('창업',this)">💡 창업<span class="tooltip">예비창업자·초기창업(7년 이내) 지원</span></button>
-        <button class="filter-chip" onclick="filterCategory('바우처',this)">🎫 바우처<span class="tooltip">전문서비스(컨설팅·마케팅 등) 이용권 지원</span></button>
-        <button class="filter-chip" onclick="filterCategory('융자',this)">💳 자금·융자<span class="tooltip">저금리 정책자금 대출 지원</span></button>
-        <button class="filter-chip" onclick="filterCategory('수출',this)">🌏 수출·글로벌<span class="tooltip">해외진출·수출기업 전용 지원</span></button>
-        <button class="filter-chip" onclick="filterCategory('인력',this)">👥 인력 지원<span class="tooltip">채용·인건비 보조 지원</span></button>
-        <button class="filter-chip" onclick="filterCategory('마케팅',this)">📣 마케팅·홍보<span class="tooltip">온라인·오프라인 판로 개척 지원</span></button>
-        <button class="filter-chip" onclick="filterCategory('시설',this)">🏭 시설·장비<span class="tooltip">공장·장비 구입·임차 지원</span></button>
-        <button class="filter-chip" onclick="filterCategory('소상공인',this)">🏪 소상공인<span class="tooltip">소상공인·골목상권 전용 지원사업</span></button>
+        <button class="filter-chip active" onclick="filterCategory('전체',this)">전체<span class="tooltip">모든 지원사업</span></button>
+        <button class="filter-chip" onclick="filterCategory('R&D',this)">🔬 연구개발<span class="tooltip">기술·제품 연구개발</span></button>
+        <button class="filter-chip" onclick="filterCategory('사업화',this)">🚀 사업화<span class="tooltip">시제품·시장 출시</span></button>
+        <button class="filter-chip" onclick="filterCategory('창업',this)">💡 창업<span class="tooltip">예비·초기창업 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('바우처',this)">🎫 바우처<span class="tooltip">전문서비스 이용권</span></button>
+        <button class="filter-chip" onclick="filterCategory('융자',this)">💳 자금·융자<span class="tooltip">저금리 정책자금</span></button>
+        <button class="filter-chip" onclick="filterCategory('수출',this)">🌏 수출·글로벌<span class="tooltip">해외진출 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('인력',this)">👥 인력<span class="tooltip">채용·인건비 보조</span></button>
+        <button class="filter-chip" onclick="filterCategory('마케팅',this)">📣 마케팅<span class="tooltip">판로 개척 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('시설',this)">🏭 시설·장비<span class="tooltip">장비 구입·임차</span></button>
+        <button class="filter-chip" onclick="filterCategory('소상공인',this)">🏪 소상공인<span class="tooltip">소상공인 전용</span></button>
         <select class="sort-select" onchange="sortResults(this.value)">
           <option value="score">적합도 순</option>
           <option value="amount">금액 순</option>
@@ -446,11 +509,25 @@
       <div class="filter-hint">카테고리 위에 마우스를 올리면 상세 설명을 볼 수 있어요</div>
       <div id="results-list"><div class="empty-state"><h3>아직 매칭 결과가 없어요</h3><p>기업 정보를 입력하고 매칭을 시작해주세요</p></div></div>
     </div>
-    <!-- 저장 목록 -->
-    <div class="page" id="page-saved">
-      <div class="result-header">
-        <div class="result-title"><h1>관심 저장 목록</h1><p>저장한 지원사업을 모아서 볼 수 있어요</p></div>
+
+    <!-- 기업 진단 리포트 -->
+    <div class="page" id="page-report">
+      <div class="report-page-header">
+        <h1>기업 진단 리포트</h1>
+        <p id="report-subtitle">매칭 완료 후 요약 카드에서 리포트를 생성해주세요</p>
       </div>
+      <div id="report-area">
+        <div class="report-empty">
+          <h3>📋 아직 리포트가 없어요</h3>
+          <p>매칭 결과 화면의 요약 카드에서<br>"기업 진단 리포트 자세히 보기"를 눌러주세요</p>
+          <button class="btn-primary" onclick="navigate('results')" style="margin:0 auto">매칭 결과로 이동 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 관심 저장 -->
+    <div class="page" id="page-saved">
+      <div class="result-header"><div class="result-title"><h1>관심 저장 목록</h1><p>저장한 지원사업을 모아서 볼 수 있어요</p></div></div>
       <div id="saved-list"><div class="empty-state"><h3>아직 저장한 지원사업이 없어요</h3><p>매칭 결과에서 ☆ 관심 저장을 눌러보세요</p></div></div>
     </div>
   </div>
@@ -461,241 +538,314 @@ const SUPABASE_URL='https://wykupodtnbcrebgbzyxr.supabase.co';
 const SUPABASE_KEY='sb_publishable_THekjy2-GusHmZ7FrjX9UQ_gm41EUr2';
 const {createClient}=supabase;
 const db=createClient(SUPABASE_URL,SUPABASE_KEY);
+const INDUSTRY_MARGINS={'음식점업':{margin:12,net:8,label:'음식점업'},'도매 및 소매업':{margin:18,net:10,label:'도매·소매업'},'제조업':{margin:22,net:14,label:'제조업'},'정보통신업':{margin:35,net:22,label:'IT·정보통신'},'서비스업':{margin:28,net:16,label:'서비스업'},'교육서비스업':{margin:30,net:18,label:'교육서비스'},'건설업':{margin:15,net:9,label:'건설업'},'보건업 및 사회복지서비스업':{margin:20,net:13,label:'보건·복지'},'부동산업':{margin:32,net:20,label:'부동산업'},'운수 및 창고업':{margin:14,net:8,label:'운수·창고'},'예술·스포츠·여가':{margin:25,net:15,label:'예술·스포츠'},'숙박업':{margin:20,net:12,label:'숙박업'},'농업·임업·어업':{margin:18,net:11,label:'농림어업'},'기타':{margin:20,net:12,label:'기타'}};
 
-const INDUSTRY_MARGINS={
-  '음식점업':{margin:12,net:8,label:'음식점업'},
-  '도매 및 소매업':{margin:18,net:10,label:'도매·소매업'},
-  '제조업':{margin:22,net:14,label:'제조업'},
-  '정보통신업':{margin:35,net:22,label:'IT·정보통신'},
-  '서비스업':{margin:28,net:16,label:'서비스업'},
-  '교육서비스업':{margin:30,net:18,label:'교육서비스'},
-  '건설업':{margin:15,net:9,label:'건설업'},
-  '보건업 및 사회복지서비스업':{margin:20,net:13,label:'보건·복지'},
-  '부동산업':{margin:32,net:20,label:'부동산업'},
-  '운수 및 창고업':{margin:14,net:8,label:'운수·창고'},
-  '예술·스포츠·여가':{margin:25,net:15,label:'예술·스포츠'},
-  '숙박업':{margin:20,net:12,label:'숙박업'},
-  '농업·임업·어업':{margin:18,net:11,label:'농림어업'},
-  '기타':{margin:20,net:12,label:'기타'},
-};
-
-function formatBizNum(input){
-  let v=input.value.replace(/\D/g,'').slice(0,10);
-  if(v.length>5)v=v.slice(0,3)+'-'+v.slice(3,5)+'-'+v.slice(5);
-  else if(v.length>3)v=v.slice(0,3)+'-'+v.slice(3);
-  input.value=v;
-  const digits=v.replace(/\D/g,'');
-  const err=document.getElementById('biz-error');
-  if(digits.length>0&&digits.length<10){input.classList.add('error');err.classList.add('show');}
-  else{input.classList.remove('error');err.classList.remove('show');}
-}
-function formatNumber(input){
-  let raw=input.value.replace(/[^0-9]/g,'');
-  input.value=raw?parseInt(raw).toLocaleString('ko-KR'):'';
-}
-function formatRevenue(input){
-  let raw=input.value.replace(/[^0-9]/g,'');
-  input.value=raw?parseInt(raw).toLocaleString('ko-KR'):'';
-}
-function getRawNumber(id){return parseInt(document.getElementById(id).value.replace(/[^0-9]/g,''))||null;}
-
-let pendingMatchCallback=null;
 function getApiKey(){return localStorage.getItem('matchup_claude_key')||'';}
-function closeApiModal(){document.getElementById('apikey-modal').classList.remove('show');pendingMatchCallback=null;}
-function saveApiKey(){
-  const key=document.getElementById('apikey-input').value.trim();
-  if(!key.startsWith('sk-ant-')){alert('올바른 API 키 형식이 아닙니다');return;}
-  localStorage.setItem('matchup_claude_key',key);
-  document.getElementById('apikey-modal').classList.remove('show');
-  if(pendingMatchCallback){pendingMatchCallback();pendingMatchCallback=null;}
-}
-async function callClaudeAPI(prompt,maxTokens){
-  const response=await fetch('/api/match',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({api_key:getApiKey(),payload:{model:'claude-haiku-4-5-20251001',max_tokens:maxTokens||2000,messages:[{role:'user',content:prompt}]}})});
-  if(!response.ok){const err=await response.json().catch(()=>({}));throw new Error(err.error?.message||`HTTP ${response.status}`);}
-  const data=await response.json();
-  return data.content[0].text;
+function closeApiModal(){document.getElementById('apikey-modal').classList.remove('show');}
+function saveApiKey(){const key=document.getElementById('apikey-input').value.trim();if(!key.startsWith('sk-ant-')){alert('올바른 API 키 형식이 아닙니다');return;}localStorage.setItem('matchup_claude_key',key);document.getElementById('apikey-modal').classList.remove('show');}
+async function callAPI(prompt,maxTokens){
+  const r=await fetch('/api/match',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({api_key:getApiKey(),payload:{model:'claude-haiku-4-5-20251001',max_tokens:maxTokens||2000,messages:[{role:'user',content:prompt}]}})});
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${r.status}`);}
+  const d=await r.json();return d.content[0].text;
 }
 
-let currentCompanyId=null,currentCompanyData=null,allMatches=[],savedMatches=[],currentCategory='전체';
+let currentCompanyId=null,currentCompanyData=null,allMatches=[],savedMatches=[],currentCategory='전체',selectedNeeds=[];
+
+function toggleNeed(el){el.classList.toggle('selected');selectedNeeds=Array.from(document.querySelectorAll('.need-chip.selected')).map(c=>c.dataset.val);}
+function formatBizNum(input){let v=input.value.replace(/\D/g,'').slice(0,10);if(v.length>5)v=v.slice(0,3)+'-'+v.slice(3,5)+'-'+v.slice(5);else if(v.length>3)v=v.slice(0,3)+'-'+v.slice(3);input.value=v;const digits=v.replace(/\D/g,'');const err=document.getElementById('biz-error');if(digits.length>0&&digits.length<10){input.classList.add('error');err.classList.add('show');}else{input.classList.remove('error');err.classList.remove('show');}}
+function formatNumber(input){let raw=input.value.replace(/[^0-9]/g,'');input.value=raw?parseInt(raw).toLocaleString('ko-KR'):'';}
+function formatRevenue(input){let raw=input.value.replace(/[^0-9]/g,'');input.value=raw?parseInt(raw).toLocaleString('ko-KR'):'';}
+function getRawNumber(id){return parseInt(document.getElementById(id).value.replace(/[^0-9]/g,''))||null;}
+function getAge(dateStr){if(!dateStr)return null;const diff=new Date()-new Date(dateStr);return Math.floor(diff/1000/60/60/24/365);}
 
 function navigate(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
-  const labels={onboarding:'지원사업 매칭',results:'매칭 결과',saved:'관심 저장 목록'};
+  const labels={onboarding:'지원사업 매칭',results:'매칭 결과',report:'기업 진단 리포트',saved:'관심 저장 목록'};
   document.getElementById('breadcrumb-text').textContent=labels[page]||page;
   if(page==='results')loadResults();
   if(page==='saved')renderSaved();
 }
-function rematch(){
-  allMatches=[];currentCompanyId=null;currentCompanyData=null;currentCategory='전체';
-  document.getElementById('match-count').textContent='0';
-  document.getElementById('report-full').classList.remove('show');
-  document.getElementById('report-teaser').style.display='flex';
-  const btn=document.getElementById('btn-gen-report');
-  btn.disabled=false;btn.textContent='📋 AI 진단 리포트 생성하기';
-  goStep1();navigate('onboarding');
-}
-function goStep1(){
-  document.getElementById('form-step-1').style.display='block';
-  document.getElementById('form-step-2').style.display='none';
-  document.getElementById('form-step-3').style.display='none';
-  setStep(1);
-}
+function rematch(){allMatches=[];currentCompanyId=null;currentCompanyData=null;currentCategory='전체';selectedNeeds=[];document.getElementById('match-count').textContent='0';document.getElementById('summary-card').classList.remove('show');document.getElementById('summary-inner').style.display='none';document.getElementById('summary-loading').style.display='flex';document.getElementById('report-badge').style.display='none';document.querySelectorAll('.need-chip').forEach(c=>c.classList.remove('selected'));goStep1();navigate('onboarding');}
+function goStep1(){document.getElementById('form-step-1').style.display='block';document.getElementById('form-step-2').style.display='none';document.getElementById('form-step-3').style.display='none';setStep(1);}
 function goStep2(){
   const name=document.getElementById('company_name').value.trim();
   const biz=document.getElementById('business_number').value.trim();
+  const bizType=document.getElementById('biz_type').value;
   const industry=document.getElementById('industry').value;
   const region=document.getElementById('region').value;
   const bizDigits=biz.replace(/\D/g,'');
-  if(!name||!industry||!region){showToast('필수 항목을 모두 입력해주세요');return;}
+  if(!name||!bizType||!industry||!region){showToast('필수 항목을 모두 입력해주세요');return;}
   if(biz&&bizDigits.length!==10){showToast('사업자등록번호를 올바르게 입력해주세요');return;}
-  document.getElementById('form-step-1').style.display='none';
-  document.getElementById('form-step-2').style.display='block';
-  setStep(2);
+  document.getElementById('form-step-1').style.display='none';document.getElementById('form-step-2').style.display='block';setStep(2);
 }
-function setStep(n){
-  for(let i=1;i<=3;i++){
-    const el=document.getElementById('step-'+i);
-    el.classList.remove('active','done');
-    if(i<n)el.classList.add('done');
-    if(i===n)el.classList.add('active');
-  }
-}
+function setStep(n){for(let i=1;i<=3;i++){const el=document.getElementById('step-'+i);el.classList.remove('active','done');if(i<n)el.classList.add('done');if(i===n)el.classList.add('active');}}
+
 async function submitAndMatch(){
   const desc=document.getElementById('description').value.trim();
   if(!desc){showToast('기업 소개를 입력해주세요');return;}
-  document.getElementById('form-step-2').style.display='none';
-  document.getElementById('form-step-3').style.display='block';
-  setStep(3);
+  if(selectedNeeds.length===0){showToast('지금 가장 필요한 것을 1개 이상 선택해주세요');return;}
+  document.getElementById('form-step-2').style.display='none';document.getElementById('form-step-3').style.display='block';setStep(3);
+  const fd=document.getElementById('founded_date').value;
+  const ageYears=getAge(fd);
   const cd={
     company_name:document.getElementById('company_name').value.trim(),
     business_number:document.getElementById('business_number').value.trim(),
-    ceo_name:document.getElementById('ceo_name').value.trim(),
-    founded_date:document.getElementById('founded_date').value||null,
+    biz_type:document.getElementById('biz_type').value,
+    ceo_name:'',
+    founded_date:fd||null,
+    age_years:ageYears,
     industry:document.getElementById('industry').value,
     industry_detail:document.getElementById('industry_detail').value.trim(),
     region:document.getElementById('region').value,
     district:document.getElementById('district').value.trim(),
     employee_count:getRawNumber('employee_count'),
     annual_revenue:getRawNumber('annual_revenue'),
-    operating_profit:getRawNumber('operating_profit'),
     homepage:document.getElementById('homepage').value.trim(),
     description:desc,
+    needs:selectedNeeds,
   };
   currentCompanyData=cd;
-  const {data:company,error}=await db.from('companies').insert({
-    company_name:cd.company_name,business_number:cd.business_number,ceo_name:cd.ceo_name,
-    founded_date:cd.founded_date,industry:cd.industry,industry_detail:cd.industry_detail,
-    region:cd.region,district:cd.district,employee_count:cd.employee_count,
-    annual_revenue:cd.annual_revenue,homepage:cd.homepage,description:cd.description,
-  }).select().single();
+  const {data:company,error}=await db.from('companies').insert({company_name:cd.company_name,business_number:cd.business_number,ceo_name:cd.ceo_name,founded_date:cd.founded_date,industry:cd.industry,industry_detail:cd.industry_detail,region:cd.region,district:cd.district,employee_count:cd.employee_count,annual_revenue:cd.annual_revenue,homepage:cd.homepage,description:cd.description}).select().single();
   if(error){showToast('저장 오류: '+error.message);goStep2();return;}
   currentCompanyId=company.id;
   document.getElementById('user-avatar').textContent=cd.company_name.charAt(0);
   document.getElementById('user-name').textContent=cd.company_name;
   document.getElementById('user-company').textContent=cd.industry+' · '+cd.region;
-  document.getElementById('report-company-name').textContent=cd.company_name+' · '+new Date().toLocaleDateString('ko-KR')+' 생성';
   await runMatching(company);
 }
+
 async function runMatching(company){
   const {data:programs}=await db.from('programs').select('*').eq('is_active',true).limit(80);
-  if(!programs||programs.length===0){allMatches=getSampleMatches(company);document.getElementById('match-count').textContent=allMatches.length;showToast('✅ '+allMatches.length+'건 매칭 완료! (샘플)');navigate('results');return;}
+  const cd=currentCompanyData;
+  if(!programs||programs.length===0){allMatches=getSampleMatches(company);document.getElementById('match-count').textContent=allMatches.length;showToast('✅ '+allMatches.length+'건 매칭 완료! (샘플)');navigate('results');startSummaryGeneration();return;}
   const programList=programs.slice(0,50).map(p=>({id:p.id,title:p.title,organization:p.organization||'',category:p.category||'',eligibility:(p.eligibility||'').slice(0,100),deadline:p.deadline||''}));
-  const prompt=`당신은 정부 지원사업 매칭 전문가입니다.\n\n## 기업 정보\n- 기업명: ${company.company_name}\n- 업태: ${company.industry}${company.industry_detail?' / 종목: '+company.industry_detail:''}\n- 지역: ${company.region}${company.district?' '+company.district:''}\n- 직원수: ${company.employee_count||'미상'}명\n- 연매출: ${company.annual_revenue?company.annual_revenue.toLocaleString()+'원':'미상'}\n- 기업소개: ${company.description||'없음'}\n\n## 지원사업 목록 (${programList.length}건)\n${JSON.stringify(programList)}\n\n## 지시사항\n위 기업에 가장 적합한 지원사업 TOP 10을 선정하고, 아래 JSON 배열 형식으로만 답변하세요.\n[{"program_id":"UUID값","score":85,"reason":"매칭 이유 한 문장 (한국어)"}]`;
+  const needsStr=cd.needs&&cd.needs.length>0?'우선순위: '+cd.needs.join(', '):'';
+  const ageStr=cd.age_years!==null?`창업 ${cd.age_years}년차`:'';
+  const prompt=`당신은 정부 지원사업 매칭 전문가입니다.\n\n## 기업 정보\n- 기업명: ${company.company_name}\n- 사업자 구분: ${cd.biz_type||'미상'}\n- 업태: ${company.industry}${company.industry_detail?' / '+company.industry_detail:''}\n- 지역: ${company.region}${company.district?' '+company.district:''}\n- ${ageStr}\n- 직원수: ${company.employee_count||'미상'}명\n- 연매출: ${company.annual_revenue?company.annual_revenue.toLocaleString()+'원':'미상'}\n- ${needsStr}\n- 기업소개: ${company.description||''}\n\n## 지원사업 목록\n${JSON.stringify(programList)}\n\n위 기업에 적합한 TOP 10을 선정하세요. JSON 배열만 답변하세요.\n[{"program_id":"UUID","score":85,"reason":"매칭 이유 한 문장"}]`;
   let aiMatches=[];
-  try{
-    const rawText=await callClaudeAPI(prompt,2000);
-    const cleaned=rawText.replace(/```json|```/g,'').trim();
-    const s=cleaned.indexOf('['),e=cleaned.lastIndexOf(']')+1;
-    if(s>=0&&e>s)aiMatches=JSON.parse(cleaned.slice(s,e));
-  }catch(e){console.error('파싱오류:',e);}
+  try{const raw=await callAPI(prompt,2000);const cleaned=raw.replace(/```json|```/g,'').trim();const s=cleaned.indexOf('['),e=cleaned.lastIndexOf(']')+1;if(s>=0&&e>s)aiMatches=JSON.parse(cleaned.slice(s,e));}catch(e){console.error(e);}
   if(!aiMatches||aiMatches.length===0){allMatches=getSampleMatches(company);}
   else{allMatches=aiMatches.map(m=>{const prog=programs.find(p=>p.id===m.program_id);return prog?{id:'m_'+m.program_id,match_score:m.score,match_reason:m.reason,is_saved:false,program:prog}:null;}).filter(Boolean);}
   document.getElementById('match-count').textContent=allMatches.length;
   showToast('✅ AI가 '+allMatches.length+'건 매칭 완료!');
   navigate('results');
+  startSummaryGeneration();
 }
 
-async function generateReport(){
-  const btn=document.getElementById('btn-gen-report');
-  btn.disabled=true;btn.textContent='⏳ 리포트 생성 중...';
-  document.getElementById('report-full').classList.add('show');
-  document.getElementById('report-body').innerHTML='<div class="report-loading"><div class="report-spinner"></div><p>AI가 기업을 분석하고 있습니다...<br><span style="font-size:12px;color:var(--gray-400)">약 20~30초 소요됩니다</span></p></div>';
-  document.getElementById('report-full').scrollIntoView({behavior:'smooth',block:'start'});
+// 간략 요약 자동 생성
+async function startSummaryGeneration(){
+  const card=document.getElementById('summary-card');
+  card.classList.add('show');
+  document.getElementById('summary-loading').style.display='flex';
+  document.getElementById('summary-inner').style.display='none';
+  const cd=currentCompanyData||{};
+  const today=new Date();
+  const urgent=allMatches.filter(m=>{if(!m.program?.deadline)return false;const d=Math.ceil((new Date(m.program.deadline)-today)/86400000);return d>0&&d<=14;}).length;
+  const eligible=allMatches.filter(m=>m.match_score>=80).length;
+  const maxAmt=Math.max(...allMatches.map(m=>m.program?.max_support_amount||0));
+  const top1=allMatches[0];
+  const ageStr=cd.age_years!==null&&cd.age_years!==undefined?`창업 ${cd.age_years}년차 `:'';
+  const prompt=`아래 기업의 매칭 결과를 바탕으로 핵심 인사이트 한 문장을 작성하세요. 대표님이 "이 버튼을 꼭 눌러야겠다"고 느낄 만큼 구체적이고 임팩트 있게. 1순위 사업의 핵심 포인트를 언급하세요.\n기업: ${cd.company_name} (${cd.industry}, ${cd.region})\n1순위 사업: ${top1?.program?.title||''} (적합도 ${top1?.match_score||0}점)\n1순위 매칭이유: ${top1?.match_reason||''}\n필요분야: ${(cd.needs||[]).join(', ')}\n\n30자 이내 한 문장만 답변하세요.`;
+  let hook='지금 바로 신청 가능한 사업이 있습니다';
+  try{hook=await callAPI(prompt,200);}catch(e){}
+  document.getElementById('sum-company').textContent=cd.company_name||'';
+  const amtStr=maxAmt>=100000000?(maxAmt/100000000).toFixed(0)+'억원':maxAmt?Math.round(maxAmt/10000)+'만원':'-';
+  document.getElementById('sum-metrics').innerHTML=`
+    <div class="summary-metric"><div class="summary-metric-num">${allMatches.length}</div><div class="summary-metric-label">매칭 사업 수</div></div>
+    <div class="summary-metric"><div class="summary-metric-num" style="color:#34D399">${eligible}</div><div class="summary-metric-label">즉시 신청 가능</div></div>
+    <div class="summary-metric"><div class="summary-metric-num" style="color:#F87171">${urgent}</div><div class="summary-metric-label">마감 임박 (2주내)</div></div>
+    <div class="summary-metric"><div class="summary-metric-num" style="color:#A78BFA">${amtStr}</div><div class="summary-metric-label">최대 수혜금액</div></div>`;
+  document.getElementById('sum-hook').innerHTML=`💡 ${hook}`;
+  document.getElementById('summary-loading').style.display='none';
+  document.getElementById('summary-inner').style.display='block';
+}
+
+function goToReport(){
+  navigate('report');
+  generateFullReport();
+}
+
+// 풀 리포트 생성
+async function generateFullReport(){
+  document.getElementById('report-badge').style.display='inline';
+  document.getElementById('report-subtitle').textContent=(currentCompanyData?.company_name||'기업')+' · '+new Date().toLocaleDateString('ko-KR')+' 생성';
+  document.getElementById('report-area').innerHTML=`
+    <div class="report-generating">
+      <div class="report-gen-spinner"></div>
+      <div class="report-gen-title">AI가 기업을 분석하고 있습니다</div>
+      <div class="report-gen-sub">맞춤 진단 리포트를 작성 중입니다. 약 20~30초 소요됩니다.</div>
+    </div>`;
   const cd=currentCompanyData||{};
   const top3=allMatches.slice(0,3).map((m,i)=>`${i+1}순위: ${m.program?.title||''} (${m.match_score}점) - ${m.match_reason||''}`).join('\n');
   const industryData=INDUSTRY_MARGINS[cd.industry]||INDUSTRY_MARGINS['기타'];
   const revenue=cd.annual_revenue||0;
-  const profit=cd.operating_profit||0;
-  const myMargin=revenue>0?Math.round((profit/revenue)*100):null;
-  const prompt=`당신은 14년 경력의 소상공인·중소기업 전문 경영 컨설턴트입니다. 아래 기업 정보와 매칭된 지원사업을 바탕으로 실전적인 AI 진단 리포트를 작성하세요. 컨설턴트가 직접 대표님께 말하는 톤으로, 구체적이고 실용적으로 작성하세요.\n\n## 기업 정보\n- 기업명: ${cd.company_name||'미입력'}\n- 업태/종목: ${cd.industry||''}${cd.industry_detail?' / '+cd.industry_detail:''}\n- 지역: ${cd.region||''}${cd.district?' '+cd.district:''}\n- 설립일: ${cd.founded_date||'미입력'}\n- 직원수: ${cd.employee_count?cd.employee_count+'명':'미입력'}\n- 연매출: ${revenue>0?revenue.toLocaleString()+'원':'미입력'}\n- 영업이익: ${profit>0?profit.toLocaleString()+'원':'미입력'}\n- 업종 평균 마진율: ${industryData.margin}% / 평균 순이익률: ${industryData.net}%\n- 기업소개: ${cd.description||'미입력'}\n\n## 매칭된 상위 지원사업\n${top3}\n\n## 작성 지시사항\n아래 4개 섹션을 순서대로 작성하세요. 각 섹션은 [SECTION1], [SECTION2], [SECTION3], [SECTION4] 태그로 구분하세요.\n\n[SECTION1] 기업 현황 진단\n- 업종·지역·규모·업력 종합 분석 (2~3문장)\n- 핵심 강점 2가지 (구체적으로)\n- 보완 필요 영역 1~2가지\n${myMargin!==null?`- 현재 영업이익률 ${myMargin}% → 업종 평균 ${industryData.margin}%와 비교 분석 및 조언`:''}\n\n[SECTION2] 지원사업 성장 로드맵\n- 지금 당장 신청 가능한 사업 (매칭 결과 기반)\n- 이 사업을 받으면 생기는 스펙과 다음 단계 사업\n- 3단계 성장 시나리오 (지금 → 1년 후 → 3년 후)\n\n[SECTION3] 1순위 사업 신청 가이드\n- 1순위 추천 사업명 명시\n- 핵심 심사 포인트 3가지\n- 사업계획서에서 반드시 강조해야 할 내용\n- 준비 서류 체크리스트\n- 합격률을 높이는 실전 꿀팁 2~3가지\n\n[SECTION4] 전문가 한마디\n- 이 기업 대표님께 드리는 컨설턴트로서의 진심 어린 조언 (3~4문장)\n- 격려와 실행 가능한 다음 액션 1가지 포함`;
+  const ageStr=cd.age_years!==null&&cd.age_years!==undefined?`${cd.age_years}년차`:'';
+  const prompt=`당신은 소상공인·중소기업 전문 경영 컨설턴트입니다. 아래 정보를 바탕으로 실전 기업 진단 리포트를 작성하세요. 각 섹션은 [S1][S2][S3][S4] 태그로 구분하세요.
+
+기업정보:
+- 기업명: ${cd.company_name}
+- 사업자구분: ${cd.biz_type||'미상'}
+- 업태/종목: ${cd.industry}${cd.industry_detail?' / '+cd.industry_detail:''}
+- 지역: ${cd.region}${cd.district?' '+cd.district:''}
+- 업력: ${ageStr||'미입력'}
+- 직원수: ${cd.employee_count?cd.employee_count+'명':'미입력'}
+- 연매출: ${revenue>0?revenue.toLocaleString()+'원':'미입력'}
+- 필요분야: ${(cd.needs||[]).join(', ')||'미입력'}
+- 기업소개: ${cd.description}
+- 업종평균마진율: ${industryData.margin}% / 평균순이익률: ${industryData.net}%
+
+매칭 상위 3건:
+${top3}
+
+[S1] 기업 현황 진단
+다음을 포함하여 작성:
+1. 종합현황분석 (업종·지역·규모·업력 기반 2~3문장)
+2. 핵심강점 2가지 (제목+설명)
+3. 보완필요영역 1~2가지 (제목+설명)
+${revenue>0?`4. 재무현황: 연매출 ${revenue.toLocaleString()}원 기준, 업종평균(${industryData.margin}%)과 비교 분석`:''}
+
+[S2] 지원사업 성장 로드맵
+1. 현재 즉시 신청 가능한 사업 (매칭결과 기반, 구체적 사업명 포함)
+2. 1년 후 목표와 신청 가능한 사업
+3. 3년 후 성장 시나리오
+각 단계별 쌓이는 스펙·실적 포함
+
+[S3] 1순위 사업 신청 가이드
+1순위: ${allMatches[0]?.program?.title||''}
+1. 이 사업의 핵심 심사포인트 3가지
+2. 사업계획서 작성 전략 (강조할 내용 구체적으로)
+3. 준비서류 체크리스트 5~7가지
+4. 합격률을 높이는 실전 꿀팁 3가지
+
+[S4] 전문가 한마디
+이 기업 대표님께 드리는 진심 어린 조언 (4~5문장)
+마지막 문장: 구체적인 다음 액션 1가지`;
+
   try{
-    const result=await callClaudeAPI(prompt,3000);
-    renderReportHTML(result,cd,industryData,myMargin);
-    btn.textContent='✅ 리포트 생성 완료';
+    const result=await callAPI(prompt,4000);
+    renderFullReport(result,cd,industryData,revenue);
   }catch(e){
-    document.getElementById('report-body').innerHTML='<div class="report-loading"><p style="color:var(--danger)">리포트 생성 중 오류가 발생했습니다.<br>잠시 후 다시 시도해주세요.</p></div>';
-    btn.disabled=false;btn.textContent='📋 AI 진단 리포트 생성하기';
+    document.getElementById('report-area').innerHTML='<div class="report-generating"><p style="color:var(--danger)">리포트 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</p></div>';
   }
 }
 
-function renderReportHTML(rawText,cd,industryData,myMargin){
-  const m1=rawText.match(/\[SECTION1\]([\s\S]*?)(?=\[SECTION2\]|$)/);
-  const m2=rawText.match(/\[SECTION2\]([\s\S]*?)(?=\[SECTION3\]|$)/);
-  const m3=rawText.match(/\[SECTION3\]([\s\S]*?)(?=\[SECTION4\]|$)/);
-  const m4=rawText.match(/\[SECTION4\]([\s\S]*?)$/);
-  const s1=m1?m1[1].trim():'분석 중...';
-  const s2=m2?m2[1].trim():'분석 중...';
-  const s3=m3?m3[1].trim():'분석 중...';
-  const s4=m4?m4[1].trim():'분석 중...';
-  const revenue=cd.annual_revenue||0;
-  const profit=cd.operating_profit||0;
-  let financeHTML='';
+function renderFullReport(raw,cd,iData,revenue){
+  const g=(tag)=>{const r=raw.match(new RegExp(`\\[${tag}\\]([\\s\\S]*?)(?=\\[S[1-4]\\]|$)`));return r?r[1].trim():'';};
+  const s1=g('S1'),s2=g('S2'),s3=g('S3'),s4=g('S4');
+
+  // 재무 KPI
+  let kpiHTML='';
   if(revenue>0){
-    const mv=profit>0?Math.round((profit/revenue)*100):null;
-    const ms=mv!==null?(mv>=industryData.margin?'good':mv>=industryData.margin*0.7?'warn':'bad'):'';
-    financeHTML=`<div class="finance-box">
-      <div class="finance-row"><span class="finance-label">전년도 매출액</span><span class="finance-value">${revenue.toLocaleString()}원</span></div>
-      ${profit>0?`<div class="finance-row"><span class="finance-label">영업이익</span><span class="finance-value">${profit.toLocaleString()}원</span></div>`:''}
-      ${mv!==null?`<div class="finance-row"><span class="finance-label">우리 기업 마진율</span><span class="finance-value ${ms}">${mv}%</span></div>`:''}
-      <div class="finance-row"><span class="finance-label">업종 평균 마진율 (${industryData.label})</span><span class="finance-value">${industryData.margin}%</span></div>
-      <div class="finance-row"><span class="finance-label">업종 평균 순이익률</span><span class="finance-value">${industryData.net}%</span></div>
+    kpiHTML=`<div class="rpt-kpi-grid">
+      <div class="rpt-kpi"><div class="rpt-kpi-label">전년도 매출액</div><div class="rpt-kpi-value">${(revenue/10000).toLocaleString()}만원</div></div>
+      <div class="rpt-kpi"><div class="rpt-kpi-label">업종 평균 마진율</div><div class="rpt-kpi-value">${iData.margin}%</div><div class="rpt-kpi-sub">${iData.label} 기준</div></div>
+      <div class="rpt-kpi"><div class="rpt-kpi-label">업종 평균 순이익률</div><div class="rpt-kpi-value">${iData.net}%</div><div class="rpt-kpi-sub">목표 기준치</div></div>
     </div>`;
   }
-  document.getElementById('report-body').innerHTML=`
-    <div class="report-section">
-      <div class="report-section-title"><div class="report-section-icon icon-blue">🏢</div>기업 현황 진단</div>
-      ${financeHTML}<div class="report-content" style="margin-top:${revenue>0?'16px':'0'}">${s1}</div>
+
+  // 매칭 요약 테이블
+  const today=new Date();
+  const tableRows=allMatches.slice(0,5).map((m,i)=>{
+    const p=m.program||{};
+    const dl=p.deadline?Math.ceil((new Date(p.deadline)-today)/86400000):null;
+    const amt=p.max_support_amount>=100000000?`${(p.max_support_amount/100000000).toFixed(0)}억원`:p.max_support_amount?`${Math.round(p.max_support_amount/10000)}만원`:'-';
+    return `<tr><td><strong>${i+1}순위</strong></td><td>${p.title||''}</td><td>${m.match_score}점</td><td>${amt}</td><td>${dl&&dl>0?`D-${dl}`:'-'}</td></tr>`;
+  }).join('');
+
+  document.getElementById('report-area').innerHTML=`
+    <div class="report-tabs">
+      <div class="report-tab active" onclick="switchTab('tab-diagnosis',this)">🏢 기업 현황 진단</div>
+      <div class="report-tab" onclick="switchTab('tab-roadmap',this)">📈 성장 로드맵</div>
+      <div class="report-tab" onclick="switchTab('tab-guide',this)">🎯 1순위 신청 가이드</div>
+      <div class="report-tab" onclick="switchTab('tab-expert',this)">💬 전문가 한마디</div>
     </div>
-    <div class="report-section">
-      <div class="report-section-title"><div class="report-section-icon icon-green">📈</div>지원사업 성장 로드맵</div>
-      <div class="report-content">${s2}</div>
+
+    <!-- 탭1: 기업 현황 진단 -->
+    <div class="report-tab-content active" id="tab-diagnosis">
+      ${kpiHTML}
+      <div class="rpt-section">
+        <div class="rpt-section-title">📊 매칭 결과 요약 <span class="rpt-badge">${allMatches.length}건 매칭</span></div>
+        <table class="rpt-table">
+          <thead><tr><th>순위</th><th>지원사업명</th><th>적합도</th><th>지원금액</th><th>마감</th></tr></thead>
+          <tbody>${tableRows}</tbody>
+        </table>
+      </div>
+      <div class="rpt-section">
+        <div class="rpt-section-title">🏢 기업 현황 진단</div>
+        <div class="rpt-prose">${formatSection(s1)}</div>
+      </div>
     </div>
-    <div class="report-section">
-      <div class="report-section-title"><div class="report-section-icon icon-orange">🎯</div>1순위 사업 신청 가이드</div>
-      <div class="report-content">${s3}</div>
+
+    <!-- 탭2: 성장 로드맵 -->
+    <div class="report-tab-content" id="tab-roadmap">
+      <div class="rpt-section">
+        <div class="rpt-section-title">📈 지원사업 성장 로드맵</div>
+        <div class="callout blue"><div class="callout-icon">💡</div><div class="callout-body"><div class="callout-title">로드맵 활용 방법</div><div class="callout-text">각 단계의 지원사업을 순서대로 받아가면 스펙이 쌓이고, 다음 단계에서 더 큰 사업에 도전할 수 있습니다.</div></div></div>
+        <div class="rpt-prose">${formatSection(s2)}</div>
+      </div>
     </div>
-    <div class="report-section" style="background:linear-gradient(135deg,#fafafe,#f5f3ff)">
-      <div class="report-section-title"><div class="report-section-icon icon-purple">💬</div>전문가 한마디</div>
-      <div class="report-content" style="color:var(--primary-dark);font-weight:500">${s4}</div>
+
+    <!-- 탭3: 신청 가이드 -->
+    <div class="report-tab-content" id="tab-guide">
+      <div class="rpt-section">
+        <div class="rpt-section-title">🎯 1순위 사업 신청 가이드 <span class="rpt-badge">${allMatches[0]?.program?.title||''}</span></div>
+        <div class="callout yellow"><div class="callout-icon">⚠️</div><div class="callout-body"><div class="callout-title">신청 전 반드시 확인하세요</div><div class="callout-text">아래 가이드는 공고문 및 일반적 심사 기준을 바탕으로 작성되었습니다. 실제 신청 전 해당 기관 공고문을 반드시 확인하세요.</div></div></div>
+        <div class="rpt-prose">${formatSection(s3)}</div>
+      </div>
+    </div>
+
+    <!-- 탭4: 전문가 한마디 -->
+    <div class="report-tab-content" id="tab-expert">
+      <div class="expert-card">
+        <div class="expert-badge">💬 전문가 한마디</div>
+        <div class="expert-text">${s4.replace(/\n/g,'<br>')}</div>
+        <div class="expert-action">
+          <div class="expert-action-label">📌 다음 액션</div>
+          <div class="expert-action-text">${allMatches[0]?.program?.title||'1순위 지원사업'} 공고문 확인 후 신청 준비를 시작해보세요</div>
+        </div>
+      </div>
     </div>`;
+}
+
+function formatSection(text){
+  if(!text)return '';
+  // 마크다운 기본 변환
+  let html=text
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/^###\s+(.+)$/gm,'<h4>$1</h4>')
+    .replace(/^##\s+(.+)$/gm,'<h4>$1</h4>')
+    .replace(/^#\s+(.+)$/gm,'<h4>$1</h4>')
+    .replace(/^\s*[-•]\s+(.+)$/gm,'<li>$1</li>')
+    .replace(/^\s*\d+\.\s+(.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g,'<ul>$&</ul>')
+    .replace(/\n{2,}/g,'</p><p>')
+    .replace(/\n/g,'<br>');
+  if(!html.startsWith('<')){html='<p>'+html+'</p>';}
+  return html;
+}
+
+function switchTab(tabId,el){
+  document.querySelectorAll('.report-tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.report-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  el.classList.add('active');
 }
 
 function getSampleMatches(company){
   const r=company?.region||'';
   return[
-    {id:'s1',match_score:94,is_saved:false,program:{title:`2026 ${r} 소상공인 경영안정자금`,organization:'소상공인시장진흥공단',category:'융자',tags:['소상공인','경영안정','융자'],max_support_amount:200000000,deadline:'2026-06-30',eligibility:'소상공인 해당 업종',source_url:'https://www.semas.or.kr'}},
-    {id:'s2',match_score:88,is_saved:false,program:{title:'스마트공방 기술보급사업',organization:'중소벤처기업부',category:'사업화',tags:['제조','스마트','기술'],max_support_amount:150000000,deadline:'2026-05-15',eligibility:'제조업 소상공인',source_url:'#'}},
-    {id:'s3',match_score:82,is_saved:false,program:{title:'지역 신사업 창업사관학교',organization:'창업진흥원',category:'창업',tags:['창업','교육','지원'],max_support_amount:100000000,deadline:'2026-07-01',eligibility:'예비창업자·초기창업자',source_url:'#'}},
-    {id:'s4',match_score:76,is_saved:false,program:{title:'AI 바우처 지원사업 (NIPA)',organization:'NIPA',category:'바우처',tags:['AI','IT','바우처'],max_support_amount:30000000,deadline:'2026-05-31',eligibility:'중소기업',source_url:'#'}},
-    {id:'s5',match_score:71,is_saved:false,program:{title:'온라인 판로 개척 지원',organization:'소상공인시장진흥공단',category:'마케팅',tags:['온라인','마케팅','판로'],max_support_amount:5000000,deadline:'2026-08-31',eligibility:'소상공인',source_url:'#'}},
+    {id:'s1',match_score:94,is_saved:false,program:{title:`2026 ${r} 소상공인 경영안정자금`,organization:'소상공인시장진흥공단',category:'융자',tags:['소상공인','경영안정'],max_support_amount:200000000,deadline:'2026-06-30',eligibility:'소상공인 해당 업종',source_url:'https://www.semas.or.kr'}},
+    {id:'s2',match_score:88,is_saved:false,program:{title:'스마트공방 기술보급사업',organization:'중소벤처기업부',category:'사업화',tags:['제조','스마트'],max_support_amount:150000000,deadline:'2026-05-15',eligibility:'제조업 소상공인',source_url:'#'}},
+    {id:'s3',match_score:82,is_saved:false,program:{title:'지역 신사업 창업사관학교',organization:'창업진흥원',category:'창업',tags:['창업','지원'],max_support_amount:100000000,deadline:'2026-07-01',eligibility:'예비창업자',source_url:'#'}},
+    {id:'s4',match_score:76,is_saved:false,program:{title:'AI 바우처 지원사업',organization:'NIPA',category:'바우처',tags:['AI','IT'],max_support_amount:30000000,deadline:'2026-05-31',eligibility:'중소기업',source_url:'#'}},
+    {id:'s5',match_score:71,is_saved:false,program:{title:'온라인 판로 개척 지원',organization:'소상공인시장진흥공단',category:'마케팅',tags:['온라인','마케팅'],max_support_amount:5000000,deadline:'2026-08-31',eligibility:'소상공인',source_url:'#'}},
   ];
 }
-async function loadResults(){
-  if(allMatches.length===0&&currentCompanyId){const{data}=await db.from('matches').select('*, program:programs(*)').eq('company_id',currentCompanyId).order('match_score',{ascending:false});if(data)allMatches=data;}
-  renderResults(allMatches);
-}
+
+async function loadResults(){if(allMatches.length===0&&currentCompanyId){const{data}=await db.from('matches').select('*, program:programs(*)').eq('company_id',currentCompanyId).order('match_score',{ascending:false});if(data)allMatches=data;}renderResults(allMatches);}
+
 function renderResults(matches){
   const filtered=currentCategory==='전체'?matches:matches.filter(m=>m.program?.category===currentCategory);
   if(filtered.length===0){document.getElementById('results-list').innerHTML='<div class="empty-state"><h3>해당 카테고리 결과가 없어요</h3><p>다른 카테고리를 선택해보세요</p></div>';return;}
@@ -711,8 +861,7 @@ function renderResults(matches){
   document.getElementById('result-subtitle').textContent=`${filtered.length}개 지원사업이 발견되었습니다.`;
   document.getElementById('match-count').textContent=filtered.length;
   const renderCard=(m,isTop)=>{
-    const p=m.program||{};
-    const score=m.match_score;
+    const p=m.program||{};const score=m.match_score;
     const cc=score>=85?'high':score>=70?'mid':'low';
     const bc=score>=85?'best':score>=70?'good':'normal';
     const bt=score>=85?'최적합':score>=70?'적합':'검토';
@@ -722,72 +871,26 @@ function renderResults(matches){
     const reason=m.match_reason?`<div class="check-item"><span class="check-icon">✓</span>${m.match_reason}</div>`:`<div class="check-item"><span class="check-icon">✓</span>${p.eligibility||'지원 조건 확인 필요'}</div>`;
     return `<div class="program-card ${isTop?'top-pick':''}" id="card-${m.id}">
       <div class="score-ring"><div class="score-circle ${cc}"><div class="score-num">${score}</div><div class="score-pct">점</div></div><div class="score-badge ${bc}">${bt}</div></div>
-      <div class="program-info">
-        <div class="program-title">${p.title||'지원사업명'}</div>
-        <div class="program-org">${p.organization||''}</div>
-        ${tags?`<div class="program-tags">${tags}</div>`:''}
+      <div class="program-info"><div class="program-title">${p.title||''}</div><div class="program-org">${p.organization||''}</div>${tags?`<div class="program-tags">${tags}</div>`:''}
         <div class="program-checks">${reason}</div>
         <div class="program-meta"><span>${amt}</span>${dl&&dl>0?`<span class="${dl<=14?'deadline':''}">마감 D-${dl}</span>`:''}${p.category?`<span>${p.category}</span>`:''}</div>
       </div>
-      <div class="program-actions">
-        ${isTop?'<span class="badge-recommend">⭐ 1순위 추천</span>':''}
+      <div class="program-actions">${isTop?'<span class="badge-recommend">⭐ 1순위 추천</span>':''}
         <button class="btn-save ${m.is_saved?'saved':''}" id="save-btn-${m.id}" onclick="toggleSave('${m.id}',this)">${m.is_saved?'★ 관심 저장됨':'☆ 관심 저장'}</button>
         ${p.source_url&&p.source_url!=='#'?`<a href="${p.source_url}" target="_blank"><button class="btn-detail">자세히 보기 →</button></a>`:'<button class="btn-detail">자세히 보기 →</button>'}
-      </div>
-    </div>`;
+      </div></div>`;
   };
   let html=`<div class="top-pick-section"><div class="top-pick-label">1순위 추천</div>${renderCard(filtered[0],true)}</div>`;
   if(filtered.length>1){html+=`<div class="other-results-label">그 외 추천 지원사업 (${filtered.length-1}건)</div>`;html+=filtered.slice(1).map(m=>renderCard(m,false)).join('');}
   document.getElementById('results-list').innerHTML=html;
 }
-function toggleSave(matchId,btn){
-  const match=allMatches.find(m=>m.id===matchId);if(!match)return;
-  match.is_saved=!match.is_saved;
-  btn.textContent=match.is_saved?'★ 관심 저장됨':'☆ 관심 저장';
-  btn.className='btn-save'+(match.is_saved?' saved':'');
-  savedMatches=allMatches.filter(m=>m.is_saved);
-  document.getElementById('saved-count').textContent=savedMatches.length;
-  showToast(match.is_saved?'관심 저장했습니다':'저장을 취소했습니다');
-}
-function renderSaved(){
-  savedMatches=allMatches.filter(m=>m.is_saved);
-  document.getElementById('saved-count').textContent=savedMatches.length;
-  if(savedMatches.length===0){document.getElementById('saved-list').innerHTML='<div class="empty-state"><h3>아직 저장한 지원사업이 없어요</h3><p>매칭 결과에서 ☆ 관심 저장을 눌러보세요</p></div>';return;}
-  const today=new Date();
-  document.getElementById('saved-list').innerHTML=savedMatches.map(m=>{
-    const p=m.program||{};const score=m.match_score;
-    const tags=Array.isArray(p.tags)?p.tags.map(t=>`<span class="tag">${t}</span>`).join(''):'';
-    const dl=p.deadline?Math.ceil((new Date(p.deadline)-today)/86400000):null;
-    const amt=p.max_support_amount>=100000000?`최대 ${(p.max_support_amount/100000000).toFixed(1)}억원`:p.max_support_amount?`최대 ${Math.round(p.max_support_amount/10000)}만원`:'-';
-    return `<div class="program-card">
-      <div class="score-ring"><div class="score-circle ${score>=85?'high':'mid'}"><div class="score-num">${score}</div><div class="score-pct">점</div></div><div class="score-badge ${score>=85?'best':'good'}">${score>=85?'최적합':'적합'}</div></div>
-      <div class="program-info"><div class="program-title">${p.title||'지원사업명'}</div><div class="program-org">${p.organization||''}</div>${tags?`<div class="program-tags">${tags}</div>`:''}${m.match_reason?`<div class="program-checks"><div class="check-item"><span class="check-icon">✓</span>${m.match_reason}</div></div>`:''}
-        <div class="program-meta"><span>${amt}</span>${dl&&dl>0?`<span class="${dl<=14?'deadline':''}">마감 D-${dl}</span>`:''}</div>
-      </div>
-      <div class="program-actions"><button class="btn-save saved" onclick="toggleSaveFromSaved('${m.id}')">★ 관심 저장됨</button>${p.source_url&&p.source_url!=='#'?`<a href="${p.source_url}" target="_blank"><button class="btn-detail">자세히 보기 →</button></a>`:'<button class="btn-detail">자세히 보기 →</button>'}</div>
-    </div>`;
-  }).join('');
-}
-function toggleSaveFromSaved(matchId){
-  const match=allMatches.find(m=>m.id===matchId);if(!match)return;
-  match.is_saved=false;savedMatches=allMatches.filter(m=>m.is_saved);
-  document.getElementById('saved-count').textContent=savedMatches.length;
-  showToast('저장을 취소했습니다');renderSaved();
-}
+
+function toggleSave(matchId,btn){const match=allMatches.find(m=>m.id===matchId);if(!match)return;match.is_saved=!match.is_saved;btn.textContent=match.is_saved?'★ 관심 저장됨':'☆ 관심 저장';btn.className='btn-save'+(match.is_saved?' saved':'');savedMatches=allMatches.filter(m=>m.is_saved);document.getElementById('saved-count').textContent=savedMatches.length;showToast(match.is_saved?'관심 저장했습니다':'저장을 취소했습니다');}
+function renderSaved(){savedMatches=allMatches.filter(m=>m.is_saved);document.getElementById('saved-count').textContent=savedMatches.length;if(savedMatches.length===0){document.getElementById('saved-list').innerHTML='<div class="empty-state"><h3>아직 저장한 지원사업이 없어요</h3><p>매칭 결과에서 ☆ 관심 저장을 눌러보세요</p></div>';return;}const today=new Date();document.getElementById('saved-list').innerHTML=savedMatches.map(m=>{const p=m.program||{};const score=m.match_score;const tags=Array.isArray(p.tags)?p.tags.map(t=>`<span class="tag">${t}</span>`).join(''):'';const dl=p.deadline?Math.ceil((new Date(p.deadline)-today)/86400000):null;const amt=p.max_support_amount>=100000000?`최대 ${(p.max_support_amount/100000000).toFixed(1)}억원`:p.max_support_amount?`최대 ${Math.round(p.max_support_amount/10000)}만원`:'-';return `<div class="program-card"><div class="score-ring"><div class="score-circle ${score>=85?'high':'mid'}"><div class="score-num">${score}</div><div class="score-pct">점</div></div><div class="score-badge ${score>=85?'best':'good'}">${score>=85?'최적합':'적합'}</div></div><div class="program-info"><div class="program-title">${p.title||''}</div><div class="program-org">${p.organization||''}</div>${tags?`<div class="program-tags">${tags}</div>`:''}${m.match_reason?`<div class="program-checks"><div class="check-item"><span class="check-icon">✓</span>${m.match_reason}</div></div>`:''}  <div class="program-meta"><span>${amt}</span>${dl&&dl>0?`<span class="${dl<=14?'deadline':''}">마감 D-${dl}</span>`:''}</div></div><div class="program-actions"><button class="btn-save saved" onclick="toggleSaveFromSaved('${m.id}')">★ 관심 저장됨</button>${p.source_url&&p.source_url!=='#'?`<a href="${p.source_url}" target="_blank"><button class="btn-detail">자세히 보기 →</button></a>`:'<button class="btn-detail">자세히 보기 →</button>'}</div></div>`;}).join('');}
+function toggleSaveFromSaved(matchId){const match=allMatches.find(m=>m.id===matchId);if(!match)return;match.is_saved=false;savedMatches=allMatches.filter(m=>m.is_saved);document.getElementById('saved-count').textContent=savedMatches.length;showToast('저장을 취소했습니다');renderSaved();}
 function filterCategory(cat,el){currentCategory=cat;document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');renderResults(allMatches);}
-function sortResults(by){
-  if(by==='score')allMatches.sort((a,b)=>b.match_score-a.match_score);
-  if(by==='amount')allMatches.sort((a,b)=>(b.program?.max_support_amount||0)-(a.program?.max_support_amount||0));
-  if(by==='deadline')allMatches.sort((a,b)=>new Date(a.program?.deadline||'9999')-new Date(b.program?.deadline||'9999'));
-  renderResults(allMatches);
-}
-function exportResults(){
-  const rows=[['순위','사업명','기관','적합도','지원금액','마감일','매칭이유']];
-  allMatches.forEach((m,i)=>{const p=m.program||{};rows.push([i+1,p.title||'',p.organization||'',m.match_score+'점',p.max_support_amount||'',p.deadline||'',m.match_reason||'']);});
-  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);a.download='매치업_결과.csv';a.click();
-  showToast('CSV 다운로드 완료');
-}
+function sortResults(by){if(by==='score')allMatches.sort((a,b)=>b.match_score-a.match_score);if(by==='amount')allMatches.sort((a,b)=>(b.program?.max_support_amount||0)-(a.program?.max_support_amount||0));if(by==='deadline')allMatches.sort((a,b)=>new Date(a.program?.deadline||'9999')-new Date(b.program?.deadline||'9999'));renderResults(allMatches);}
+function exportResults(){const rows=[['순위','사업명','기관','적합도','지원금액','마감일','매칭이유']];allMatches.forEach((m,i)=>{const p=m.program||{};rows.push([i+1,p.title||'',p.organization||'',m.match_score+'점',p.max_support_amount||'',p.deadline||'',m.match_reason||'']);});const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);a.download='매치업_결과.csv';a.click();showToast('CSV 다운로드 완료');}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 </script>
 </body>
