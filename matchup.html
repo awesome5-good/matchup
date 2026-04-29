@@ -818,29 +818,11 @@ ${JSON.stringify(programList)}
     return;
   }
 
-  // 기존 매칭 삭제 후 저장
-  await db.from('matches').delete().eq('company_id', company.id);
-
-  let matchResults = [];
-  for (const m of aiMatches) {
+// 메모리에서 바로 렌더 (DB 저장 스킵)
+  let matchResults = aiMatches.map(m => {
     const prog = programs.find(p => p.id === m.program_id);
-    if (!prog) continue;
-    const { data: match } = await db.from('matches').insert({
-      company_id: company.id,
-      program_id: m.program_id,
-      match_score: m.score,
-      match_reason: m.reason
-    }).select().single();
-    if (match) matchResults.push({ ...match, program: prog });
-  }
-
-  // DB에 저장된 게 없으면 메모리에서 렌더
-  if (matchResults.length === 0) {
-    matchResults = aiMatches.map(m => {
-      const prog = programs.find(p => p.id === m.program_id);
-      return prog ? { id: 'm_' + m.program_id, match_score: m.score, match_reason: m.reason, is_saved: false, program: prog } : null;
-    }).filter(Boolean);
-  }
+    return prog ? { id: 'm_' + m.program_id, match_score: m.score, match_reason: m.reason, is_saved: false, program: prog } : null;
+  }).filter(Boolean);
 
   allMatches = matchResults;
   document.getElementById('match-count').textContent = matchResults.length;
