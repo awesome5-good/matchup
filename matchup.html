@@ -4,226 +4,215 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>매치업</title>
-  <!-- 파비콘 -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%234F46E5'/><text x='50%25' y='50%25' font-size='20' font-weight='900' font-family='Arial' fill='white' text-anchor='middle' dominant-baseline='central'>M</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --primary: #4F46E5; --primary-light: #EEF2FF; --primary-dark: #3730A3;
-      --success: #10B981; --warning: #F59E0B; --danger: #EF4444;
-      --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB;
-      --gray-300: #D1D5DB; --gray-400: #9CA3AF; --gray-500: #6B7280;
-      --gray-600: #4B5563; --gray-700: #374151; --gray-900: #111827;
-      --sidebar-width: 240px;
+      --primary:#4F46E5;--primary-light:#EEF2FF;--primary-dark:#3730A3;
+      --success:#10B981;--warning:#F59E0B;--danger:#EF4444;
+      --gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;
+      --gray-300:#D1D5DB;--gray-400:#9CA3AF;--gray-500:#6B7280;
+      --gray-600:#4B5563;--gray-700:#374151;--gray-900:#111827;
+      --sidebar-width:240px;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--gray-50); color: var(--gray-900); display: flex; min-height: 100vh; }
-
-    /* SIDEBAR */
-    .sidebar { width: var(--sidebar-width); background: #fff; border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100; }
-    .sidebar-logo { padding: 20px 20px 16px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; gap: 10px; }
-    .logo-icon { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 16px; }
-    .logo-text { font-weight: 700; font-size: 16px; }
-    .logo-badge { font-size: 10px; background: var(--primary-light); color: var(--primary); padding: 2px 6px; border-radius: 4px; font-weight: 600; }
-    .sidebar-section { padding: 16px 12px 8px; }
-    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--gray-600); margin-bottom: 2px; transition: all 0.15s; }
-    .nav-item:hover { background: var(--gray-50); color: var(--gray-900); }
-    .nav-item.active { background: var(--primary-light); color: var(--primary); }
-    .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
-    .nav-badge { margin-left: auto; background: var(--primary); color: white; font-size: 11px; font-weight: 600; padding: 1px 6px; border-radius: 10px; }
-    .sidebar-footer { margin-top: auto; padding: 16px; border-top: 1px solid var(--gray-100); }
-    .user-card { display: flex; align-items: center; gap: 10px; }
-    .user-avatar { width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 13px; font-weight: 700; }
-    .user-info { flex: 1; min-width: 0; }
-    .user-name { font-size: 13px; font-weight: 600; }
-    .user-company { font-size: 11px; color: var(--gray-400); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-    /* MAIN */
-    .main { margin-left: var(--sidebar-width); flex: 1; display: flex; flex-direction: column; }
-    .topbar { background: #fff; border-bottom: 1px solid var(--gray-200); padding: 0 28px; height: 60px; display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 50; }
-    .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--gray-500); }
-    .breadcrumb span { color: var(--gray-900); font-weight: 500; }
-    .search-box { flex: 1; max-width: 400px; margin: 0 auto; background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 8px; padding: 8px 14px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--gray-400); }
-    .search-preparing { font-size: 11px; background: var(--gray-200); color: var(--gray-500); padding: 2px 6px; border-radius: 4px; margin-left: 4px; }
-    .topbar-actions { display: flex; align-items: center; gap: 12px; margin-left: auto; }
-
-    /* CONTENT */
-    .content { padding: 28px; flex: 1; }
-    .page { display: none; }
-    .page.active { display: block; }
-
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--gray-50);color:var(--gray-900);display:flex;min-height:100vh;}
+    .sidebar{width:var(--sidebar-width);background:#fff;border-right:1px solid var(--gray-200);display:flex;flex-direction:column;position:fixed;height:100vh;z-index:100;}
+    .sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;gap:10px;}
+    .logo-icon{width:32px;height:32px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:16px;}
+    .logo-text{font-weight:700;font-size:16px;}
+    .logo-badge{font-size:10px;background:var(--primary-light);color:var(--primary);padding:2px 6px;border-radius:4px;font-weight:600;}
+    .sidebar-section{padding:16px 12px 8px;}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;color:var(--gray-600);margin-bottom:2px;transition:all 0.15s;}
+    .nav-item:hover{background:var(--gray-50);color:var(--gray-900);}
+    .nav-item.active{background:var(--primary-light);color:var(--primary);}
+    .nav-item svg{width:18px;height:18px;flex-shrink:0;}
+    .nav-badge{margin-left:auto;background:var(--primary);color:white;font-size:11px;font-weight:600;padding:1px 6px;border-radius:10px;}
+    .sidebar-footer{margin-top:auto;padding:16px;border-top:1px solid var(--gray-100);}
+    .user-card{display:flex;align-items:center;gap:10px;}
+    .user-avatar{width:32px;height:32px;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:13px;font-weight:700;}
+    .user-info{flex:1;min-width:0;}
+    .user-name{font-size:13px;font-weight:600;}
+    .user-company{font-size:11px;color:var(--gray-400);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .main{margin-left:var(--sidebar-width);flex:1;display:flex;flex-direction:column;}
+    .topbar{background:#fff;border-bottom:1px solid var(--gray-200);padding:0 28px;height:60px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:50;}
+    .breadcrumb{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--gray-500);}
+    .breadcrumb span{color:var(--gray-900);font-weight:500;}
+    .search-box{flex:1;max-width:400px;margin:0 auto;background:var(--gray-100);border:1px solid var(--gray-200);border-radius:8px;padding:8px 14px;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gray-400);}
+    .search-preparing{font-size:11px;background:var(--gray-200);color:var(--gray-500);padding:2px 6px;border-radius:4px;margin-left:4px;}
+    .topbar-actions{display:flex;align-items:center;gap:12px;margin-left:auto;}
+    .content{padding:28px;flex:1;}
+    .page{display:none;}.page.active{display:block;}
     /* ONBOARDING */
-    .onboarding-header { margin-bottom: 28px; }
-    .onboarding-header h1 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
-    .onboarding-header p { color: var(--gray-500); font-size: 14px; }
-    .steps { display: flex; align-items: center; gap: 0; margin-bottom: 32px; }
-    .step { display: flex; align-items: center; gap: 10px; }
-    .step-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: var(--gray-200); color: var(--gray-500); }
-    .step.active .step-num { background: var(--primary); color: white; }
-    .step.done .step-num { background: var(--success); color: white; }
-    .step-label { font-size: 13px; font-weight: 500; color: var(--gray-400); }
-    .step.active .step-label { color: var(--gray-900); }
-    .step-line { width: 60px; height: 1px; background: var(--gray-200); margin: 0 8px; }
-    .form-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 28px; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-group label { font-size: 13px; font-weight: 600; color: var(--gray-700); }
-    .form-group label .req { color: var(--danger); }
-    .form-control { border: 1px solid var(--gray-200); border-radius: 8px; padding: 10px 14px; font-size: 14px; font-family: inherit; color: var(--gray-900); transition: border-color 0.15s; background: #fff; }
-    .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
-    .form-control::placeholder { color: var(--gray-300); }
-    .form-footer { margin-top: 24px; display: flex; justify-content: flex-end; }
-    .btn-next { background: var(--gray-900); color: white; border: none; padding: 11px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
-    .btn-next:hover { background: var(--primary); }
-    .btn-secondary { background: #fff; color: var(--gray-700); border: 1px solid var(--gray-200); padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-    .btn-primary { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.15s; }
-    .btn-primary:hover { background: var(--primary-dark); }
-
-    /* ── 로딩 화면 개선 ── */
-    .loading { text-align: center; padding: 80px 40px; }
-    .loading-spinner-wrap { margin-bottom: 32px; }
-    .spinner-ring { width: 56px; height: 56px; border: 4px solid var(--gray-200); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .loading-title {
-      font-size: 22px; font-weight: 800; color: var(--gray-900);
-      margin-bottom: 16px;
-    }
-    .loading-desc-box {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--primary-light) 0%, #e0e7ff 100%);
-      border: 1.5px solid #c7d2fe;
-      border-radius: 12px;
-      padding: 14px 28px;
-      margin-top: 4px;
-    }
-    .loading-desc-box p {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--primary-dark);
-      line-height: 1.6;
-    }
-
+    .onboarding-header{margin-bottom:28px;}
+    .onboarding-header h1{font-size:26px;font-weight:800;margin-bottom:6px;}
+    .onboarding-header p{color:var(--gray-500);font-size:14px;}
+    .steps{display:flex;align-items:center;margin-bottom:24px;}
+    .step{display:flex;align-items:center;gap:10px;}
+    .step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:var(--gray-200);color:var(--gray-500);}
+    .step.active .step-num{background:var(--primary);color:white;}
+    .step.done .step-num{background:var(--success);color:white;}
+    .step-label{font-size:13px;font-weight:500;color:var(--gray-400);}
+    .step.active .step-label{color:var(--gray-900);}
+    .step-line{width:60px;height:1px;background:var(--gray-200);margin:0 8px;}
+    .required-notice{font-size:12px;color:var(--gray-500);margin-bottom:16px;display:flex;align-items:center;gap:4px;}
+    .required-notice .req-mark{color:var(--danger);font-weight:700;font-size:14px;}
+    .form-card{background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:28px;}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+    .form-group{display:flex;flex-direction:column;gap:6px;position:relative;}
+    .form-group label{font-size:13px;font-weight:600;color:var(--gray-700);display:flex;align-items:center;gap:4px;}
+    .form-group label .req{color:var(--danger);}
+    /* 필드 툴팁 */
+    .field-tooltip{position:relative;display:inline-flex;align-items:center;margin-left:4px;cursor:help;}
+    .field-tooltip .tip-icon{width:15px;height:15px;background:var(--gray-300);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:white;font-weight:700;}
+    .field-tooltip .tip-box{position:absolute;bottom:calc(100% + 6px);left:0;background:var(--gray-900);color:white;font-size:11px;padding:8px 12px;border-radius:8px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;z-index:20;min-width:200px;line-height:1.7;}
+    .field-tooltip .tip-box::after{content:'';position:absolute;top:100%;left:10px;border:4px solid transparent;border-top-color:var(--gray-900);}
+    .field-tooltip:hover .tip-box{opacity:1;}
+    .form-control{border:1px solid var(--gray-200);border-radius:8px;padding:10px 14px;font-size:14px;font-family:inherit;color:var(--gray-900);transition:border-color 0.15s;background:#fff;width:100%;}
+    .form-control:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,70,229,0.1);}
+    .form-control::placeholder{color:var(--gray-300);}
+    .form-control.error{border-color:var(--danger);}
+    .input-suffix-wrap{position:relative;}
+    .input-suffix-wrap .form-control{padding-right:36px;}
+    .input-suffix{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--gray-400);font-weight:500;pointer-events:none;}
+    .field-error{font-size:11px;color:var(--danger);margin-top:2px;display:none;}
+    .field-error.show{display:block;}
+    .form-footer{margin-top:24px;display:flex;justify-content:flex-end;}
+    .btn-next{background:var(--gray-900);color:white;border:none;padding:11px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background 0.15s;}
+    .btn-next:hover{background:var(--primary);}
+    .btn-secondary{background:#fff;color:var(--gray-700);border:1px solid var(--gray-200);padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;}
+    .btn-primary{background:var(--primary);color:white;border:none;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background 0.15s;}
+    .btn-primary:hover{background:var(--primary-dark);}
+    /* LOADING */
+    .loading{text-align:center;padding:80px 40px;}
+    .spinner-ring{width:56px;height:56px;border:4px solid var(--gray-200);border-top-color:var(--primary);border-radius:50%;animation:spin 0.9s linear infinite;margin:0 auto 32px;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .loading-title{font-size:22px;font-weight:800;color:var(--gray-900);margin-bottom:16px;}
+    .loading-desc-box{display:inline-block;background:linear-gradient(135deg,var(--primary-light),#e0e7ff);border:1.5px solid #c7d2fe;border-radius:12px;padding:14px 28px;}
+    .loading-desc-box p{font-size:15px;font-weight:600;color:var(--primary-dark);line-height:1.6;}
     /* RESULTS */
-    .result-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; }
-    .result-title h1 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
-    .result-title p { color: var(--gray-500); font-size: 14px; }
-    .result-actions { display: flex; gap: 10px; }
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-    .stat-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 20px; }
-    .stat-label { font-size: 12px; color: var(--gray-500); margin-bottom: 8px; font-weight: 500; }
-    .stat-value { font-size: 28px; font-weight: 800; color: var(--gray-900); }
-    .stat-value.primary { color: var(--primary); }
-    .stat-value.success { color: var(--success); }
-    .stat-value.danger { color: var(--danger); }
-    .stat-sub { font-size: 12px; color: var(--gray-400); margin-top: 4px; }
-
-    /* ── 1순위 배너 ── */
-    .top-pick-section {
-      margin-bottom: 20px;
-    }
-    .top-pick-label {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 13px; font-weight: 700; color: var(--primary);
-      margin-bottom: 10px;
-      padding: 0 4px;
-    }
-    .top-pick-label::before {
-      content: '⭐';
-      font-size: 15px;
-    }
-    .other-results-label {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 13px; font-weight: 600; color: var(--gray-500);
-      margin: 16px 0 10px;
-      padding: 0 4px;
-    }
-
+    .result-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;}
+    .result-title h1{font-size:26px;font-weight:800;margin-bottom:6px;}
+    .result-title p{color:var(--gray-500);font-size:14px;}
+    .result-actions{display:flex;gap:10px;}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+    .stat-card{background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:20px;}
+    .stat-label{font-size:12px;color:var(--gray-500);margin-bottom:8px;font-weight:500;}
+    .stat-value{font-size:28px;font-weight:800;color:var(--gray-900);}
+    .stat-value.primary{color:var(--primary);}
+    .stat-value.success{color:var(--success);}
+    .stat-value.danger{color:var(--danger);}
+    .stat-sub{font-size:12px;color:var(--gray-400);margin-top:4px;}
+    /* AI 리포트 티저 */
+    .report-teaser{background:linear-gradient(135deg,#0F0E17,#1e1b4b);border-radius:16px;padding:28px 32px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:24px;position:relative;overflow:hidden;}
+    .report-teaser::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(79,70,229,0.3),transparent 70%);border-radius:50%;}
+    .report-teaser-left{flex:1;position:relative;z-index:1;}
+    .report-teaser-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,70,229,0.3);border:1px solid rgba(79,70,229,0.5);color:#a5b4fc;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:12px;}
+    .report-teaser h3{font-size:20px;font-weight:800;color:white;margin-bottom:8px;line-height:1.3;}
+    .report-teaser p{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.6;}
+    .report-teaser-preview{display:flex;flex-direction:column;gap:6px;margin-top:16px;}
+    .preview-item{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,0.7);}
+    .preview-dot{width:6px;height:6px;border-radius:50%;background:#818cf8;flex-shrink:0;}
+    .report-teaser-right{position:relative;z-index:1;flex-shrink:0;}
+    .btn-report{background:linear-gradient(135deg,#4F46E5,#7C3AED);color:white;border:none;padding:14px 24px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 4px 16px rgba(79,70,229,0.4);transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+    .btn-report:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(79,70,229,0.5);}
+    .btn-report:disabled{opacity:0.7;cursor:not-allowed;transform:none;}
+    /* 리포트 풀버전 */
+    .report-full{display:none;margin-bottom:24px;}
+    .report-full.show{display:block;}
+    .report-card{background:#fff;border:1px solid var(--gray-200);border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.06);}
+    .report-header{background:linear-gradient(135deg,#0F0E17,#1e1b4b);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;}
+    .report-header h2{font-size:18px;font-weight:800;color:white;}
+    .report-header p{font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;}
+    .report-header-badge{background:rgba(79,70,229,0.4);border:1px solid rgba(79,70,229,0.6);color:#a5b4fc;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;}
+    .report-section{padding:28px 32px;border-bottom:1px solid var(--gray-100);}
+    .report-section:last-child{border-bottom:none;}
+    .report-section-title{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:800;color:var(--gray-900);margin-bottom:16px;}
+    .report-section-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+    .icon-blue{background:var(--primary-light);}
+    .icon-green{background:#D1FAE5;}
+    .icon-orange{background:#FEF3C7;}
+    .icon-purple{background:#EDE9FE;}
+    .report-content{font-size:14px;color:var(--gray-700);line-height:1.9;white-space:pre-wrap;}
+    .report-loading{text-align:center;padding:60px;}
+    .report-spinner{width:36px;height:36px;border:3px solid var(--gray-200);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;}
+    .report-loading p{font-size:14px;font-weight:600;color:var(--gray-600);}
+    /* 재무 분석 */
+    .finance-box{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:10px;padding:16px 20px;margin-top:12px;}
+    .finance-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid var(--gray-100);}
+    .finance-row:last-child{border-bottom:none;}
+    .finance-label{color:var(--gray-500);}
+    .finance-value{font-weight:600;color:var(--gray-900);}
+    .finance-value.good{color:var(--success);}
+    .finance-value.warn{color:var(--warning);}
+    .finance-value.bad{color:var(--danger);}
     /* FILTER */
-    .filter-bar { display: flex; gap: 6px; margin-bottom: 8px; align-items: center; flex-wrap: wrap; }
-    .filter-chip { position: relative; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1px solid var(--gray-200); background: #fff; cursor: pointer; color: var(--gray-600); transition: all 0.15s; white-space: nowrap; }
-    .filter-chip:hover { border-color: var(--primary); color: var(--primary); }
-    .filter-chip.active { background: var(--gray-900); color: white; border-color: var(--gray-900); }
-    .filter-chip .tooltip {
-      position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
-      background: var(--gray-900); color: white; font-size: 11px; font-weight: 400;
-      padding: 6px 10px; border-radius: 6px; white-space: nowrap;
-      opacity: 0; pointer-events: none; transition: opacity 0.15s; z-index: 10;
-    }
-    .filter-chip .tooltip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 4px solid transparent; border-top-color: var(--gray-900); }
-    .filter-chip:hover .tooltip { opacity: 1; }
-
-    /* ── 툴팁 안내 문구 ── */
-    .filter-hint {
-      font-size: 11px; color: var(--gray-400); margin-bottom: 12px;
-      display: flex; align-items: center; gap: 4px;
-    }
-    .filter-hint::before { content: '💡'; font-size: 11px; }
-
-    .sort-select { margin-left: auto; border: 1px solid var(--gray-200); border-radius: 8px; padding: 6px 12px; font-size: 13px; font-family: inherit; color: var(--gray-600); background: #fff; cursor: pointer; }
-
-    /* PROGRAM CARDS */
-    .program-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 22px; margin-bottom: 10px; display: flex; gap: 20px; align-items: flex-start; transition: all 0.15s; cursor: default; }
-    .program-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.09); transform: translateY(-1px); border-color: var(--gray-300); }
-    .program-card.top-pick { border: 2px solid var(--primary); background: linear-gradient(135deg, #fafafe 0%, #f0f0ff 100%); box-shadow: 0 4px 16px rgba(79,70,229,0.12); }
-    .program-card.top-pick:hover { box-shadow: 0 8px 28px rgba(79,70,229,0.22); }
-    .score-ring { flex-shrink: 0; text-align: center; }
-    .score-circle { width: 64px; height: 64px; border-radius: 50%; border: 4px solid var(--gray-200); display: flex; align-items: center; justify-content: center; flex-direction: column; }
-    .score-circle.high { border-color: var(--primary); }
-    .score-circle.mid { border-color: var(--success); }
-    .score-circle.low { border-color: var(--warning); }
-    .score-num { font-size: 16px; font-weight: 800; color: var(--gray-900); line-height: 1; }
-    .score-pct { font-size: 10px; color: var(--gray-400); }
-    .score-badge { font-size: 10px; font-weight: 600; margin-top: 4px; padding: 2px 6px; border-radius: 4px; }
-    .score-badge.best { background: #FEF3C7; color: #92400E; }
-    .score-badge.good { background: #D1FAE5; color: #065F46; }
-    .score-badge.normal { background: var(--gray-100); color: var(--gray-500); }
-    .program-info { flex: 1; }
-    .program-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-    .program-org { font-size: 13px; color: var(--gray-400); margin-bottom: 10px; }
-    .program-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-    .tag { padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; background: var(--gray-100); color: var(--gray-600); }
-    .program-checks { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
-    .check-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--gray-600); }
-    .check-icon { color: var(--success); font-size: 14px; }
-    .program-meta { display: flex; gap: 20px; font-size: 13px; color: var(--gray-500); flex-wrap: wrap; }
-    .deadline { color: var(--danger); font-weight: 600; }
-    .program-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
-    .badge-recommend { background: #EEF2FF; color: var(--primary); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; white-space: nowrap; border: 1px solid var(--primary); }
-    .btn-save { background: #fff; border: 1px solid var(--gray-200); color: var(--gray-600); padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
-    .btn-save:hover { border-color: var(--warning); color: var(--warning); }
-    .btn-save.saved { background: #FEF3C7; border-color: var(--warning); color: #92400E; }
-    .btn-detail { background: var(--primary); color: white; border: none; padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
-    .btn-detail:hover { background: var(--primary-dark); }
-
-    /* STATUS */
-    .status-bar { background: #D1FAE5; border: 1px solid #6EE7B7; border-radius: 8px; padding: 10px 16px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: #065F46; margin-bottom: 20px; font-weight: 500; }
-    .status-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-    /* TOAST */
-    .toast { position: fixed; bottom: 24px; right: 24px; background: var(--gray-900); color: white; padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 500; z-index: 999; transform: translateY(80px); opacity: 0; transition: all 0.3s; pointer-events: none; }
-    .toast.show { transform: translateY(0); opacity: 1; }
-    .empty-state { text-align: center; padding: 60px 20px; color: var(--gray-400); }
-    .empty-state h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--gray-600); }
-
-    /* MODAL */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 200; }
-    .modal-overlay.show { display: flex; }
-    .modal { background: #fff; border-radius: 16px; padding: 32px; width: 480px; max-width: 90vw; }
-    .modal h2 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
-    .modal p { font-size: 14px; color: var(--gray-500); margin-bottom: 20px; }
-    .modal-input { width: 100%; border: 1px solid var(--gray-200); border-radius: 8px; padding: 12px 14px; font-size: 14px; font-family: inherit; margin-bottom: 16px; }
-    .modal-input:focus { outline: none; border-color: var(--primary); }
-    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
-
-    select.form-control { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+    .filter-bar{display:flex;gap:6px;margin-bottom:8px;align-items:center;flex-wrap:wrap;}
+    .filter-chip{position:relative;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid var(--gray-200);background:#fff;cursor:pointer;color:var(--gray-600);transition:all 0.15s;white-space:nowrap;}
+    .filter-chip:hover{border-color:var(--primary);color:var(--primary);}
+    .filter-chip.active{background:var(--gray-900);color:white;border-color:var(--gray-900);}
+    .filter-chip .tooltip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--gray-900);color:white;font-size:11px;padding:6px 10px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;z-index:10;}
+    .filter-chip .tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--gray-900);}
+    .filter-chip:hover .tooltip{opacity:1;}
+    .filter-hint{font-size:11px;color:var(--gray-400);margin-bottom:12px;display:flex;align-items:center;gap:4px;}
+    .filter-hint::before{content:'💡';font-size:11px;}
+    .sort-select{margin-left:auto;border:1px solid var(--gray-200);border-radius:8px;padding:6px 12px;font-size:13px;font-family:inherit;color:var(--gray-600);background:#fff;cursor:pointer;}
+    /* CARDS */
+    .top-pick-section{margin-bottom:20px;}
+    .top-pick-label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--primary);margin-bottom:10px;padding:0 4px;}
+    .top-pick-label::before{content:'⭐';font-size:15px;}
+    .other-results-label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--gray-500);margin:16px 0 10px;padding:0 4px;}
+    .program-card{background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:22px;margin-bottom:10px;display:flex;gap:20px;align-items:flex-start;transition:all 0.15s;}
+    .program-card:hover{box-shadow:0 6px 20px rgba(0,0,0,0.09);transform:translateY(-1px);border-color:var(--gray-300);}
+    .program-card.top-pick{border:2px solid var(--primary);background:linear-gradient(135deg,#fafafe,#f0f0ff);box-shadow:0 4px 16px rgba(79,70,229,0.12);}
+    .score-ring{flex-shrink:0;text-align:center;}
+    .score-circle{width:64px;height:64px;border-radius:50%;border:4px solid var(--gray-200);display:flex;align-items:center;justify-content:center;flex-direction:column;}
+    .score-circle.high{border-color:var(--primary);}
+    .score-circle.mid{border-color:var(--success);}
+    .score-circle.low{border-color:var(--warning);}
+    .score-num{font-size:16px;font-weight:800;color:var(--gray-900);line-height:1;}
+    .score-pct{font-size:10px;color:var(--gray-400);}
+    .score-badge{font-size:10px;font-weight:600;margin-top:4px;padding:2px 6px;border-radius:4px;}
+    .score-badge.best{background:#FEF3C7;color:#92400E;}
+    .score-badge.good{background:#D1FAE5;color:#065F46;}
+    .score-badge.normal{background:var(--gray-100);color:var(--gray-500);}
+    .program-info{flex:1;}
+    .program-title{font-size:16px;font-weight:700;margin-bottom:4px;}
+    .program-org{font-size:13px;color:var(--gray-400);margin-bottom:10px;}
+    .program-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+    .tag{padding:3px 8px;border-radius:4px;font-size:12px;font-weight:500;background:var(--gray-100);color:var(--gray-600);}
+    .program-checks{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+    .check-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--gray-600);}
+    .check-icon{color:var(--success);font-size:14px;}
+    .program-meta{display:flex;gap:20px;font-size:13px;color:var(--gray-500);flex-wrap:wrap;}
+    .deadline{color:var(--danger);font-weight:600;}
+    .program-actions{display:flex;flex-direction:column;gap:8px;align-items:flex-end;}
+    .badge-recommend{background:#EEF2FF;color:var(--primary);font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;white-space:nowrap;border:1px solid var(--primary);}
+    .btn-save{background:#fff;border:1px solid var(--gray-200);color:var(--gray-600);padding:7px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;}
+    .btn-save:hover{border-color:var(--warning);color:var(--warning);}
+    .btn-save.saved{background:#FEF3C7;border-color:var(--warning);color:#92400E;}
+    .btn-detail{background:var(--primary);color:white;border:none;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:background 0.15s;}
+    .btn-detail:hover{background:var(--primary-dark);}
+    .status-bar{background:#D1FAE5;border:1px solid #6EE7B7;border-radius:8px;padding:10px 16px;display:flex;align-items:center;gap:8px;font-size:13px;color:#065F46;margin-bottom:20px;font-weight:500;}
+    .status-dot{width:8px;height:8px;background:var(--success);border-radius:50%;animation:pulse 2s infinite;}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+    .toast{position:fixed;bottom:24px;right:24px;background:var(--gray-900);color:white;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;z-index:999;transform:translateY(80px);opacity:0;transition:all 0.3s;pointer-events:none;}
+    .toast.show{transform:translateY(0);opacity:1;}
+    .empty-state{text-align:center;padding:60px 20px;color:var(--gray-400);}
+    .empty-state h3{font-size:18px;font-weight:600;margin-bottom:8px;color:var(--gray-600);}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:200;}
+    .modal-overlay.show{display:flex;}
+    .modal{background:#fff;border-radius:16px;padding:32px;width:480px;max-width:90vw;}
+    .modal h2{font-size:20px;font-weight:800;margin-bottom:8px;}
+    .modal p{font-size:14px;color:var(--gray-500);margin-bottom:20px;}
+    .modal-input{width:100%;border:1px solid var(--gray-200);border-radius:8px;padding:12px 14px;font-size:14px;font-family:inherit;margin-bottom:16px;}
+    .modal-input:focus{outline:none;border-color:var(--primary);}
+    .modal-actions{display:flex;gap:10px;justify-content:flex-end;}
+    select.form-control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
   </style>
 </head>
 <body>
-
-<!-- API KEY MODAL -->
 <div class="modal-overlay" id="apikey-modal">
   <div class="modal">
     <h2>Claude API 키 입력</h2>
@@ -235,64 +224,38 @@
     </div>
   </div>
 </div>
-
-<!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-logo">
-    <div class="logo-icon">M</div>
-    <div class="logo-text">매치업</div>
-    <div class="logo-badge">beta</div>
+    <div class="logo-icon">M</div><div class="logo-text">매치업</div><div class="logo-badge">beta</div>
   </div>
   <div class="sidebar-section">
     <div class="nav-item active" onclick="navigate('onboarding')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      지원사업 매칭
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>지원사업 매칭
     </div>
     <div class="nav-item" onclick="navigate('results')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-      매칭 결과
-      <span class="nav-badge" id="match-count">0</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>매칭 결과<span class="nav-badge" id="match-count">0</span>
     </div>
     <div class="nav-item" onclick="navigate('saved')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      관심 저장 목록
-      <span class="nav-badge" id="saved-count" style="background:#F59E0B">0</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>관심 저장 목록<span class="nav-badge" id="saved-count" style="background:#F59E0B">0</span>
     </div>
   </div>
   <div class="sidebar-footer">
     <div class="user-card">
       <div class="user-avatar" id="user-avatar">?</div>
-      <div class="user-info">
-        <div class="user-name" id="user-name">기업명 미입력</div>
-        <div class="user-company" id="user-company">정보를 입력해주세요</div>
-      </div>
+      <div class="user-info"><div class="user-name" id="user-name">기업명 미입력</div><div class="user-company" id="user-company">정보를 입력해주세요</div></div>
     </div>
   </div>
 </aside>
-
-<!-- MAIN -->
 <main class="main">
   <div class="topbar">
-    <div class="breadcrumb">
-      매치업 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-      <span id="breadcrumb-text">지원사업 매칭</span>
-    </div>
-    <div class="search-box">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      지원사업 검색...
-      <span class="search-preparing">준비 중</span>
-    </div>
+    <div class="breadcrumb">매치업 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg><span id="breadcrumb-text">지원사업 매칭</span></div>
+    <div class="search-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>지원사업 검색...<span class="search-preparing">준비 중</span></div>
     <div class="topbar-actions"></div>
   </div>
-
   <div class="content">
-
-    <!-- 지원사업 매칭 페이지 -->
+    <!-- 매칭 페이지 -->
     <div class="page active" id="page-onboarding">
-      <div class="onboarding-header">
-        <h1>지원사업 매칭</h1>
-        <p>기업정보를 상세히 입력할수록 매칭 정확도가 올라갑니다. (무료)</p>
-      </div>
+      <div class="onboarding-header"><h1>지원사업 매칭</h1><p>기업정보를 상세히 입력할수록 매칭 정확도가 올라갑니다. (무료)</p></div>
       <div class="steps">
         <div class="step active" id="step-1"><div class="step-num">1</div><div class="step-label">기본 정보</div></div>
         <div class="step-line"></div>
@@ -300,26 +263,54 @@
         <div class="step-line"></div>
         <div class="step" id="step-3"><div class="step-num">3</div><div class="step-label">매칭 실행</div></div>
       </div>
-
+      <!-- STEP 1 -->
       <div id="form-step-1">
+        <div class="required-notice"><span class="req-mark">*</span> 표시는 필수 입력 항목입니다</div>
         <div class="form-card">
           <div class="form-grid">
-            <div class="form-group"><label>기업명 <span class="req">*</span></label><input class="form-control" id="company_name" placeholder="(주)그린셀테크" type="text"></div>
-            <div class="form-group"><label>사업자등록번호 <span class="req">*</span></label><input class="form-control" id="business_number" placeholder="123-45-67890" type="text"></div>
-            <div class="form-group"><label>대표자명</label><input class="form-control" id="ceo_name" placeholder="홍길동" type="text"></div>
-            <div class="form-group"><label>설립일</label><input class="form-control" id="founded_date" type="date"></div>
             <div class="form-group">
-              <label>업종 <span class="req">*</span></label>
+              <label>기업명 <span class="req">*</span><span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">사업자등록증상의 상호명을 입력하세요&#10;예) (주)브라보경영컨설팅, 홍길동카페</span></span></label>
+              <input class="form-control" id="company_name" placeholder="(주)그린셀테크" type="text">
+            </div>
+            <div class="form-group">
+              <label>사업자등록번호 <span class="req">*</span><span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">숫자 10자리를 입력하면&#10;000-00-00000 형식으로 자동 변환됩니다</span></span></label>
+              <input class="form-control" id="business_number" placeholder="000-00-00000" type="text" maxlength="12" oninput="formatBizNum(this)">
+              <span class="field-error" id="biz-error">사업자등록번호는 숫자 10자리입니다</span>
+            </div>
+            <div class="form-group">
+              <label>대표자명<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">사업자등록증상의 대표자명을 입력하세요</span></span></label>
+              <input class="form-control" id="ceo_name" placeholder="홍길동" type="text">
+            </div>
+            <div class="form-group">
+              <label>설립일<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">사업자등록증의 개업연월일을 입력하세요&#10;창업 연차에 따라 지원 가능 사업이 달라집니다</span></span></label>
+              <input class="form-control" id="founded_date" type="date">
+            </div>
+            <div class="form-group">
+              <label>업태 <span class="req">*</span><span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">사업자등록증의 업태를 선택하세요&#10;지원사업 자격 조건 확인에 사용됩니다</span></span></label>
               <select class="form-control" id="industry">
                 <option value="">선택해주세요</option>
-                <option>제조업</option><option>정보통신/IT</option><option>소매/도매</option>
-                <option>음식/외식</option><option>서비스업</option><option>건설/부동산</option>
-                <option>교육</option><option>의료/바이오</option><option>농업/수산업</option><option>기타</option>
+                <option value="제조업">제조업</option>
+                <option value="도매 및 소매업">도매 및 소매업</option>
+                <option value="음식점업">음식점업</option>
+                <option value="숙박업">숙박업</option>
+                <option value="정보통신업">정보통신업</option>
+                <option value="서비스업">서비스업</option>
+                <option value="교육서비스업">교육서비스업</option>
+                <option value="보건업 및 사회복지서비스업">보건업 및 사회복지서비스업</option>
+                <option value="건설업">건설업</option>
+                <option value="부동산업">부동산업</option>
+                <option value="농업·임업·어업">농업·임업·어업</option>
+                <option value="운수 및 창고업">운수 및 창고업</option>
+                <option value="예술·스포츠·여가">예술·스포츠·여가</option>
+                <option value="기타">기타</option>
               </select>
             </div>
-            <div class="form-group"><label>세부 업종</label><input class="form-control" id="industry_detail" placeholder="예) AI/ML 솔루션" type="text"></div>
             <div class="form-group">
-              <label>지역 <span class="req">*</span></label>
+              <label>종목(세부 업종)<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">사업자등록증 종목 또는 알고 있는 업종명을 자유롭게 입력하세요&#10;예) 한식당, 카페, 청소용역, 심리상담,&#10;소프트웨어 개발, 자동화기계 제조</span></span></label>
+              <input class="form-control" id="industry_detail" placeholder="예) 한식당, 카페, 소프트웨어 개발" type="text">
+            </div>
+            <div class="form-group">
+              <label>지역 <span class="req">*</span><span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">사업장 소재지 시·도를 선택하세요&#10;지역별 지원사업 매칭에 사용됩니다</span></span></label>
               <select class="form-control" id="region">
                 <option value="">선택해주세요</option>
                 <option>서울</option><option>경기</option><option>인천</option><option>부산</option>
@@ -328,19 +319,48 @@
                 <option>전북</option><option>전남</option><option>경북</option><option>경남</option><option>제주</option>
               </select>
             </div>
-            <div class="form-group"><label>시/군/구</label><input class="form-control" id="district" placeholder="수성구" type="text"></div>
+            <div class="form-group">
+              <label>시/군/구<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">더 정확한 지역 매칭을 위해 입력해주세요&#10;예) 수성구, 달서구, 중구</span></span></label>
+              <input class="form-control" id="district" placeholder="수성구" type="text">
+            </div>
           </div>
           <div class="form-footer"><button class="btn-next" onclick="goStep2()">다음 →</button></div>
         </div>
       </div>
-
+      <!-- STEP 2 -->
       <div id="form-step-2" style="display:none">
+        <div class="required-notice"><span class="req-mark">*</span> 표시는 필수 입력 항목입니다</div>
         <div class="form-card">
           <div class="form-grid">
-            <div class="form-group"><label>직원 수</label><input class="form-control" id="employee_count" placeholder="예) 12" type="number" min="0"></div>
-            <div class="form-group"><label>전년 매출 (만원)</label><input class="form-control" id="annual_revenue" placeholder="예) 32000" type="number" min="0"></div>
-            <div class="form-group" style="grid-column:1/-1"><label>홈페이지</label><input class="form-control" id="homepage" placeholder="https://example.com" type="url"></div>
-            <div class="form-group" style="grid-column:1/-1"><label>기업 소개</label><textarea class="form-control" id="description" placeholder="기업의 주요 사업 및 기술을 간략히 소개해주세요." rows="4"></textarea></div>
+            <div class="form-group">
+              <label>직원 수<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">대표자 포함 전체 임직원 수를 입력하세요&#10;소기업·소상공인 여부 판단에 사용됩니다</span></span></label>
+              <div class="input-suffix-wrap">
+                <input class="form-control" id="employee_count" placeholder="예) 5" type="text" oninput="formatNumber(this)">
+                <span class="input-suffix">명</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>전년도 매출액<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">전년도 연간 매출액을 원 단위로 입력하세요&#10;예) 5천만원 → 50000000 입력&#10;소상공인·중소기업 구분 기준으로 사용됩니다</span></span></label>
+              <div class="input-suffix-wrap">
+                <input class="form-control" id="annual_revenue" placeholder="예) 50,000,000" type="text" oninput="formatRevenue(this)">
+                <span class="input-suffix">원</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>전년도 영업이익(순이익)<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">영업이익 또는 순이익을 원 단위로 입력하세요&#10;업종 평균 마진율과 비교 분석해드립니다&#10;선택 입력 항목입니다</span></span></label>
+              <div class="input-suffix-wrap">
+                <input class="form-control" id="operating_profit" placeholder="예) 8,000,000" type="text" oninput="formatRevenue(this)">
+                <span class="input-suffix">원</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>홈페이지<span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">회사 홈페이지나 SNS 주소를 입력하세요&#10;선택 입력 항목입니다</span></span></label>
+              <input class="form-control" id="homepage" placeholder="https://example.com" type="url">
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>기업 소개 <span class="req">*</span><span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">주요 사업·제품·서비스·기술을 자유롭게 소개해주세요&#10;AI 매칭 정확도에 가장 큰 영향을 줍니다&#10;예) 대구 소재 청소대행 전문업체로 아파트,&#10;오피스 정기청소 서비스를 제공하고 있습니다</span></span></label>
+              <textarea class="form-control" id="description" placeholder="기업의 주요 사업, 제품, 서비스, 기술을 간략히 소개해주세요. 상세할수록 AI 매칭 정확도가 높아집니다." rows="4"></textarea>
+            </div>
           </div>
           <div class="form-footer" style="gap:10px;justify-content:space-between">
             <button class="btn-secondary" onclick="goStep1()">← 이전</button>
@@ -348,30 +368,21 @@
           </div>
         </div>
       </div>
-
-      <!-- ── 개선된 로딩 화면 ── -->
+      <!-- STEP 3 로딩 -->
       <div id="form-step-3" style="display:none">
         <div class="form-card">
           <div class="loading">
-            <div class="loading-spinner-wrap">
-              <div class="spinner-ring"></div>
-            </div>
+            <div class="spinner-ring"></div>
             <div class="loading-title">매칭 중입니다...</div>
-            <div class="loading-desc-box">
-              <p>기업 정보를 분석하고<br>최적의 지원사업을 찾고 있어요</p>
-            </div>
+            <div class="loading-desc-box"><p>기업 정보를 분석하고<br>최적의 지원사업을 찾고 있어요</p></div>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- 매칭 결과 페이지 -->
+    <!-- 결과 페이지 -->
     <div class="page" id="page-results">
       <div class="result-header">
-        <div class="result-title">
-          <h1>매칭 결과</h1>
-          <p id="result-subtitle">매칭 결과를 확인하세요</p>
-        </div>
+        <div class="result-title"><h1>매칭 결과</h1><p id="result-subtitle">매칭 결과를 확인하세요</p></div>
         <div class="result-actions">
           <button class="btn-secondary" onclick="exportResults()">↓ 내보내기</button>
           <button class="btn-primary" onclick="rematch()">↺ 다시 매칭하기</button>
@@ -381,406 +392,403 @@
       <div class="stats-grid">
         <div class="stat-card"><div class="stat-label">매칭된 사업</div><div class="stat-value primary" id="stat-count">0</div><div class="stat-sub">건</div></div>
         <div class="stat-card"><div class="stat-label">최고 적합도</div><div class="stat-value" id="stat-top-score">-</div><div class="stat-sub">%</div></div>
-        <div class="stat-card"><div class="stat-label">예상 최대 수혜금</div><div class="stat-value success" id="stat-max-amount">-</div><div class="stat-sub">억원</div></div>
+        <div class="stat-card"><div class="stat-label">예상 최대 수혜금</div><div class="stat-value success" id="stat-max-amount">-</div><div class="stat-sub"></div></div>
         <div class="stat-card"><div class="stat-label">임박 마감</div><div class="stat-value danger" id="stat-deadline">-</div><div class="stat-sub">일 이내</div></div>
       </div>
-
-      <!-- 카테고리 필터 -->
+      <!-- 리포트 티저 -->
+      <div class="report-teaser" id="report-teaser">
+        <div class="report-teaser-left">
+          <div class="report-teaser-badge">✨ AI 전문 진단</div>
+          <h3>우리 기업 맞춤<br>AI 진단 리포트</h3>
+          <p>14년 컨설턴트 관점의 기업 진단 · 지원사업 로드맵 · 1순위 신청 꿀팁까지<br>단순 매칭을 넘어 실전 전략을 제공합니다</p>
+          <div class="report-teaser-preview">
+            <div class="preview-item"><span class="preview-dot"></span>기업 현황 진단 및 강점·보완점 분석</div>
+            <div class="preview-item"><span class="preview-dot"></span>지원사업 단계별 성장 로드맵</div>
+            <div class="preview-item"><span class="preview-dot"></span>1순위 사업 신청 가이드 &amp; 꿀팁</div>
+            <div class="preview-item"><span class="preview-dot"></span>업종 평균 재무지표 비교 분석</div>
+          </div>
+        </div>
+        <div class="report-teaser-right">
+          <button class="btn-report" id="btn-gen-report" onclick="generateReport()">📋 AI 진단 리포트 생성하기</button>
+        </div>
+      </div>
+      <!-- 리포트 풀버전 -->
+      <div class="report-full" id="report-full">
+        <div class="report-card">
+          <div class="report-header">
+            <div><h2>AI 기업 진단 리포트</h2><p id="report-company-name">기업명</p></div>
+            <div class="report-header-badge">✨ AI 분석 완료</div>
+          </div>
+          <div class="report-body" id="report-body">
+            <div class="report-loading"><div class="report-spinner"></div><p>AI가 기업을 분석하고 있습니다...</p></div>
+          </div>
+        </div>
+      </div>
+      <!-- 필터 -->
       <div class="filter-bar">
-        <button class="filter-chip active" onclick="filterCategory('전체', this)">전체<span class="tooltip">모든 지원사업을 표시합니다</span></button>
-        <button class="filter-chip" onclick="filterCategory('R&D', this)">🔬 연구개발(R&D)<span class="tooltip">기술·제품 연구개발 과제 지원</span></button>
-        <button class="filter-chip" onclick="filterCategory('사업화', this)">🚀 사업화<span class="tooltip">시제품·시장 출시 단계 지원</span></button>
-        <button class="filter-chip" onclick="filterCategory('창업', this)">💡 창업<span class="tooltip">예비창업자·초기창업(7년 이내) 지원</span></button>
-        <button class="filter-chip" onclick="filterCategory('바우처', this)">🎫 바우처<span class="tooltip">전문서비스(컨설팅·마케팅 등) 이용권 지원</span></button>
-        <button class="filter-chip" onclick="filterCategory('융자', this)">💳 자금·융자<span class="tooltip">저금리 정책자금 대출 지원</span></button>
-        <button class="filter-chip" onclick="filterCategory('수출', this)">🌏 수출·글로벌<span class="tooltip">해외진출·수출기업 전용 지원</span></button>
-        <button class="filter-chip" onclick="filterCategory('인력', this)">👥 인력 지원<span class="tooltip">채용·인건비 보조 지원</span></button>
-        <button class="filter-chip" onclick="filterCategory('마케팅', this)">📣 마케팅·홍보<span class="tooltip">온라인·오프라인 판로 개척 지원</span></button>
-        <button class="filter-chip" onclick="filterCategory('시설', this)">🏭 시설·장비<span class="tooltip">공장·장비 구입·임차 지원</span></button>
-        <button class="filter-chip" onclick="filterCategory('소상공인', this)">🏪 소상공인<span class="tooltip">소상공인·골목상권 전용 지원사업</span></button>
+        <button class="filter-chip active" onclick="filterCategory('전체',this)">전체<span class="tooltip">모든 지원사업을 표시합니다</span></button>
+        <button class="filter-chip" onclick="filterCategory('R&D',this)">🔬 연구개발(R&D)<span class="tooltip">기술·제품 연구개발 과제 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('사업화',this)">🚀 사업화<span class="tooltip">시제품·시장 출시 단계 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('창업',this)">💡 창업<span class="tooltip">예비창업자·초기창업(7년 이내) 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('바우처',this)">🎫 바우처<span class="tooltip">전문서비스(컨설팅·마케팅 등) 이용권 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('융자',this)">💳 자금·융자<span class="tooltip">저금리 정책자금 대출 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('수출',this)">🌏 수출·글로벌<span class="tooltip">해외진출·수출기업 전용 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('인력',this)">👥 인력 지원<span class="tooltip">채용·인건비 보조 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('마케팅',this)">📣 마케팅·홍보<span class="tooltip">온라인·오프라인 판로 개척 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('시설',this)">🏭 시설·장비<span class="tooltip">공장·장비 구입·임차 지원</span></button>
+        <button class="filter-chip" onclick="filterCategory('소상공인',this)">🏪 소상공인<span class="tooltip">소상공인·골목상권 전용 지원사업</span></button>
         <select class="sort-select" onchange="sortResults(this.value)">
           <option value="score">적합도 순</option>
           <option value="amount">금액 순</option>
           <option value="deadline">마감 순</option>
         </select>
       </div>
-      <!-- 툴팁 안내 문구 -->
       <div class="filter-hint">카테고리 위에 마우스를 올리면 상세 설명을 볼 수 있어요</div>
-
       <div id="results-list"><div class="empty-state"><h3>아직 매칭 결과가 없어요</h3><p>기업 정보를 입력하고 매칭을 시작해주세요</p></div></div>
     </div>
-
-    <!-- 관심 저장 목록 페이지 -->
+    <!-- 저장 목록 -->
     <div class="page" id="page-saved">
       <div class="result-header">
-        <div class="result-title">
-          <h1>관심 저장 목록</h1>
-          <p>저장한 지원사업을 모아서 볼 수 있어요</p>
-        </div>
+        <div class="result-title"><h1>관심 저장 목록</h1><p>저장한 지원사업을 모아서 볼 수 있어요</p></div>
       </div>
       <div id="saved-list"><div class="empty-state"><h3>아직 저장한 지원사업이 없어요</h3><p>매칭 결과에서 ☆ 관심 저장을 눌러보세요</p></div></div>
     </div>
-
   </div>
 </main>
-
 <div class="toast" id="toast"></div>
-
 <script>
-const SUPABASE_URL = 'https://wykupodtnbcrebgbzyxr.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_THekjy2-GusHmZ7FrjX9UQ_gm41EUr2';
-const { createClient } = supabase;
-const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_URL='https://wykupodtnbcrebgbzyxr.supabase.co';
+const SUPABASE_KEY='sb_publishable_THekjy2-GusHmZ7FrjX9UQ_gm41EUr2';
+const {createClient}=supabase;
+const db=createClient(SUPABASE_URL,SUPABASE_KEY);
 
-let pendingMatchCallback = null;
-function getApiKey() { return localStorage.getItem('matchup_claude_key') || ''; }
-function showApiKeyModal(cb) { pendingMatchCallback = cb||null; document.getElementById('apikey-modal').classList.add('show'); document.getElementById('apikey-input').value = getApiKey(); }
-function closeApiModal() { document.getElementById('apikey-modal').classList.remove('show'); pendingMatchCallback = null; }
-function saveApiKey() {
-  const key = document.getElementById('apikey-input').value.trim();
-  if (!key.startsWith('sk-ant-')) { alert('올바른 API 키 형식이 아닙니다'); return; }
-  localStorage.setItem('matchup_claude_key', key);
-  document.getElementById('apikey-modal').classList.remove('show');
-  if (pendingMatchCallback) { pendingMatchCallback(); pendingMatchCallback = null; }
+const INDUSTRY_MARGINS={
+  '음식점업':{margin:12,net:8,label:'음식점업'},
+  '도매 및 소매업':{margin:18,net:10,label:'도매·소매업'},
+  '제조업':{margin:22,net:14,label:'제조업'},
+  '정보통신업':{margin:35,net:22,label:'IT·정보통신'},
+  '서비스업':{margin:28,net:16,label:'서비스업'},
+  '교육서비스업':{margin:30,net:18,label:'교육서비스'},
+  '건설업':{margin:15,net:9,label:'건설업'},
+  '보건업 및 사회복지서비스업':{margin:20,net:13,label:'보건·복지'},
+  '부동산업':{margin:32,net:20,label:'부동산업'},
+  '운수 및 창고업':{margin:14,net:8,label:'운수·창고'},
+  '예술·스포츠·여가':{margin:25,net:15,label:'예술·스포츠'},
+  '숙박업':{margin:20,net:12,label:'숙박업'},
+  '농업·임업·어업':{margin:18,net:11,label:'농림어업'},
+  '기타':{margin:20,net:12,label:'기타'},
+};
+
+function formatBizNum(input){
+  let v=input.value.replace(/\D/g,'').slice(0,10);
+  if(v.length>5)v=v.slice(0,3)+'-'+v.slice(3,5)+'-'+v.slice(5);
+  else if(v.length>3)v=v.slice(0,3)+'-'+v.slice(3);
+  input.value=v;
+  const digits=v.replace(/\D/g,'');
+  const err=document.getElementById('biz-error');
+  if(digits.length>0&&digits.length<10){input.classList.add('error');err.classList.add('show');}
+  else{input.classList.remove('error');err.classList.remove('show');}
 }
+function formatNumber(input){
+  let raw=input.value.replace(/[^0-9]/g,'');
+  input.value=raw?parseInt(raw).toLocaleString('ko-KR'):'';
+}
+function formatRevenue(input){
+  let raw=input.value.replace(/[^0-9]/g,'');
+  input.value=raw?parseInt(raw).toLocaleString('ko-KR'):'';
+}
+function getRawNumber(id){return parseInt(document.getElementById(id).value.replace(/[^0-9]/g,''))||null;}
 
-async function callClaudeAPI(prompt) {
-  const response = await fetch('/api/match', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      api_key: getApiKey(),
-      payload: {
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 2000,
-        messages: [{ role: 'user', content: prompt }]
-      }
-    })
-  });
-  if (!response.ok) { const err = await response.json().catch(()=>({})); throw new Error(err.error?.message || `HTTP ${response.status}`); }
-  const data = await response.json();
+let pendingMatchCallback=null;
+function getApiKey(){return localStorage.getItem('matchup_claude_key')||'';}
+function closeApiModal(){document.getElementById('apikey-modal').classList.remove('show');pendingMatchCallback=null;}
+function saveApiKey(){
+  const key=document.getElementById('apikey-input').value.trim();
+  if(!key.startsWith('sk-ant-')){alert('올바른 API 키 형식이 아닙니다');return;}
+  localStorage.setItem('matchup_claude_key',key);
+  document.getElementById('apikey-modal').classList.remove('show');
+  if(pendingMatchCallback){pendingMatchCallback();pendingMatchCallback=null;}
+}
+async function callClaudeAPI(prompt,maxTokens){
+  const response=await fetch('/api/match',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({api_key:getApiKey(),payload:{model:'claude-haiku-4-5-20251001',max_tokens:maxTokens||2000,messages:[{role:'user',content:prompt}]}})});
+  if(!response.ok){const err=await response.json().catch(()=>({}));throw new Error(err.error?.message||`HTTP ${response.status}`);}
+  const data=await response.json();
   return data.content[0].text;
 }
 
-let currentCompanyId = null;
-let allMatches = [];
-let savedMatches = [];
-let currentCategory = '전체';
+let currentCompanyId=null,currentCompanyData=null,allMatches=[],savedMatches=[],currentCategory='전체';
 
-function navigate(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
-  const labels = { onboarding: '지원사업 매칭', results: '매칭 결과', saved: '관심 저장 목록' };
-  document.getElementById('breadcrumb-text').textContent = labels[page] || page;
-  if (page === 'results') loadResults();
-  if (page === 'saved') renderSaved();
+function navigate(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  const labels={onboarding:'지원사업 매칭',results:'매칭 결과',saved:'관심 저장 목록'};
+  document.getElementById('breadcrumb-text').textContent=labels[page]||page;
+  if(page==='results')loadResults();
+  if(page==='saved')renderSaved();
 }
-
-function goStep1() {
+function rematch(){
+  allMatches=[];currentCompanyId=null;currentCompanyData=null;currentCategory='전체';
+  document.getElementById('match-count').textContent='0';
+  document.getElementById('report-full').classList.remove('show');
+  document.getElementById('report-teaser').style.display='flex';
+  const btn=document.getElementById('btn-gen-report');
+  btn.disabled=false;btn.textContent='📋 AI 진단 리포트 생성하기';
+  goStep1();navigate('onboarding');
+}
+function goStep1(){
   document.getElementById('form-step-1').style.display='block';
   document.getElementById('form-step-2').style.display='none';
   document.getElementById('form-step-3').style.display='none';
   setStep(1);
 }
-function goStep2() {
-  const name = document.getElementById('company_name').value.trim();
-  const biz = document.getElementById('business_number').value.trim();
-  const industry = document.getElementById('industry').value;
-  const region = document.getElementById('region').value;
-  if (!name||!biz||!industry||!region) { showToast('필수 항목을 모두 입력해주세요'); return; }
+function goStep2(){
+  const name=document.getElementById('company_name').value.trim();
+  const biz=document.getElementById('business_number').value.trim();
+  const industry=document.getElementById('industry').value;
+  const region=document.getElementById('region').value;
+  const bizDigits=biz.replace(/\D/g,'');
+  if(!name||!industry||!region){showToast('필수 항목을 모두 입력해주세요');return;}
+  if(biz&&bizDigits.length!==10){showToast('사업자등록번호를 올바르게 입력해주세요');return;}
   document.getElementById('form-step-1').style.display='none';
   document.getElementById('form-step-2').style.display='block';
   setStep(2);
 }
-function setStep(n) {
-  for (let i=1;i<=3;i++) {
-    const el = document.getElementById('step-'+i);
+function setStep(n){
+  for(let i=1;i<=3;i++){
+    const el=document.getElementById('step-'+i);
     el.classList.remove('active','done');
-    if (i<n) el.classList.add('done');
-    if (i===n) el.classList.add('active');
+    if(i<n)el.classList.add('done');
+    if(i===n)el.classList.add('active');
   }
 }
-
-async function submitAndMatch() {
+async function submitAndMatch(){
+  const desc=document.getElementById('description').value.trim();
+  if(!desc){showToast('기업 소개를 입력해주세요');return;}
   document.getElementById('form-step-2').style.display='none';
   document.getElementById('form-step-3').style.display='block';
   setStep(3);
-
-  const companyData = {
-    company_name: document.getElementById('company_name').value.trim(),
-    business_number: document.getElementById('business_number').value.trim(),
-    ceo_name: document.getElementById('ceo_name').value.trim(),
-    founded_date: document.getElementById('founded_date').value||null,
-    industry: document.getElementById('industry').value,
-    industry_detail: document.getElementById('industry_detail').value.trim(),
-    region: document.getElementById('region').value,
-    district: document.getElementById('district').value.trim(),
-    employee_count: parseInt(document.getElementById('employee_count').value)||null,
-    annual_revenue: parseInt(document.getElementById('annual_revenue').value)||null,
-    homepage: document.getElementById('homepage').value.trim(),
-    description: document.getElementById('description').value.trim(),
+  const cd={
+    company_name:document.getElementById('company_name').value.trim(),
+    business_number:document.getElementById('business_number').value.trim(),
+    ceo_name:document.getElementById('ceo_name').value.trim(),
+    founded_date:document.getElementById('founded_date').value||null,
+    industry:document.getElementById('industry').value,
+    industry_detail:document.getElementById('industry_detail').value.trim(),
+    region:document.getElementById('region').value,
+    district:document.getElementById('district').value.trim(),
+    employee_count:getRawNumber('employee_count'),
+    annual_revenue:getRawNumber('annual_revenue'),
+    operating_profit:getRawNumber('operating_profit'),
+    homepage:document.getElementById('homepage').value.trim(),
+    description:desc,
   };
-  const { data: company, error } = await db.from('companies').insert(companyData).select().single();
-  if (error) { showToast('저장 오류: '+error.message); goStep2(); return; }
-  currentCompanyId = company.id;
-  const initial = companyData.company_name.charAt(0);
-  document.getElementById('user-avatar').textContent = initial;
-  document.getElementById('user-name').textContent = companyData.company_name;
-  document.getElementById('user-company').textContent = companyData.industry+' · '+companyData.region;
+  currentCompanyData=cd;
+  const {data:company,error}=await db.from('companies').insert({
+    company_name:cd.company_name,business_number:cd.business_number,ceo_name:cd.ceo_name,
+    founded_date:cd.founded_date,industry:cd.industry,industry_detail:cd.industry_detail,
+    region:cd.region,district:cd.district,employee_count:cd.employee_count,
+    annual_revenue:cd.annual_revenue,homepage:cd.homepage,description:cd.description,
+  }).select().single();
+  if(error){showToast('저장 오류: '+error.message);goStep2();return;}
+  currentCompanyId=company.id;
+  document.getElementById('user-avatar').textContent=cd.company_name.charAt(0);
+  document.getElementById('user-name').textContent=cd.company_name;
+  document.getElementById('user-company').textContent=cd.industry+' · '+cd.region;
+  document.getElementById('report-company-name').textContent=cd.company_name+' · '+new Date().toLocaleDateString('ko-KR')+' 생성';
   await runMatching(company);
 }
-
-async function runMatching(company) {
-  const { data: programs } = await db.from('programs').select('*').eq('is_active', true).limit(80);
-  if (!programs||programs.length===0) {
-    allMatches = getSampleMatches(company);
-    document.getElementById('match-count').textContent = allMatches.length;
-    showToast('✅ '+allMatches.length+'건 매칭 완료! (샘플)');
-    navigate('results'); return;
-  }
-  const programList = programs.slice(0,50).map(p => ({ id:p.id, title:p.title, organization:p.organization||'', category:p.category||'', eligibility:(p.eligibility||'').slice(0,100), deadline:p.deadline||'' }));
-  const prompt = `당신은 정부 지원사업 매칭 전문가입니다.
-
-## 기업 정보
-- 기업명: ${company.company_name}
-- 업종: ${company.industry}${company.industry_detail?' ('+company.industry_detail+')':''}
-- 지역: ${company.region}${company.district?' '+company.district:''}
-- 직원수: ${company.employee_count||'미상'}명
-- 연매출: ${company.annual_revenue?company.annual_revenue+'만원':'미상'}
-- 기업소개: ${company.description||'없음'}
-
-## 지원사업 목록 (${programList.length}건)
-${JSON.stringify(programList)}
-
-## 지시사항
-위 기업에 가장 적합한 지원사업 TOP 10을 선정하고, 아래 JSON 배열 형식으로만 답변하세요. 다른 텍스트는 절대 포함하지 마세요.
-[{"program_id":"UUID값","score":85,"reason":"매칭 이유 한 문장 (한국어)"}]`;
-
-  let aiMatches = [];
-  try {
-    const rawText = await callClaudeAPI(prompt);
-    const cleaned = rawText.replace(/\`\`\`json|\`\`\`/g,'').trim();
-    const jsonStart = cleaned.indexOf('[');
-    const jsonEnd = cleaned.lastIndexOf(']')+1;
-    if (jsonStart>=0&&jsonEnd>jsonStart) aiMatches = JSON.parse(cleaned.slice(jsonStart,jsonEnd));
-  } catch(e) { console.error('Claude 파싱 오류:',e); }
-
-  if (!aiMatches||aiMatches.length===0) {
-    showToast('AI 응답 오류, 기본 매칭으로 진행합니다');
-    allMatches = getSampleMatches(company);
-    document.getElementById('match-count').textContent = allMatches.length;
-    navigate('results'); return;
-  }
-  let matchResults = aiMatches.map(m => {
-    const prog = programs.find(p => p.id===m.program_id);
-    return prog ? { id:'m_'+m.program_id, match_score:m.score, match_reason:m.reason, is_saved:false, program:prog } : null;
-  }).filter(Boolean);
-
-  allMatches = matchResults;
-  document.getElementById('match-count').textContent = matchResults.length;
-  showToast('✅ AI가 '+matchResults.length+'건 매칭 완료!');
+async function runMatching(company){
+  const {data:programs}=await db.from('programs').select('*').eq('is_active',true).limit(80);
+  if(!programs||programs.length===0){allMatches=getSampleMatches(company);document.getElementById('match-count').textContent=allMatches.length;showToast('✅ '+allMatches.length+'건 매칭 완료! (샘플)');navigate('results');return;}
+  const programList=programs.slice(0,50).map(p=>({id:p.id,title:p.title,organization:p.organization||'',category:p.category||'',eligibility:(p.eligibility||'').slice(0,100),deadline:p.deadline||''}));
+  const prompt=`당신은 정부 지원사업 매칭 전문가입니다.\n\n## 기업 정보\n- 기업명: ${company.company_name}\n- 업태: ${company.industry}${company.industry_detail?' / 종목: '+company.industry_detail:''}\n- 지역: ${company.region}${company.district?' '+company.district:''}\n- 직원수: ${company.employee_count||'미상'}명\n- 연매출: ${company.annual_revenue?company.annual_revenue.toLocaleString()+'원':'미상'}\n- 기업소개: ${company.description||'없음'}\n\n## 지원사업 목록 (${programList.length}건)\n${JSON.stringify(programList)}\n\n## 지시사항\n위 기업에 가장 적합한 지원사업 TOP 10을 선정하고, 아래 JSON 배열 형식으로만 답변하세요.\n[{"program_id":"UUID값","score":85,"reason":"매칭 이유 한 문장 (한국어)"}]`;
+  let aiMatches=[];
+  try{
+    const rawText=await callClaudeAPI(prompt,2000);
+    const cleaned=rawText.replace(/```json|```/g,'').trim();
+    const s=cleaned.indexOf('['),e=cleaned.lastIndexOf(']')+1;
+    if(s>=0&&e>s)aiMatches=JSON.parse(cleaned.slice(s,e));
+  }catch(e){console.error('파싱오류:',e);}
+  if(!aiMatches||aiMatches.length===0){allMatches=getSampleMatches(company);}
+  else{allMatches=aiMatches.map(m=>{const prog=programs.find(p=>p.id===m.program_id);return prog?{id:'m_'+m.program_id,match_score:m.score,match_reason:m.reason,is_saved:false,program:prog}:null;}).filter(Boolean);}
+  document.getElementById('match-count').textContent=allMatches.length;
+  showToast('✅ AI가 '+allMatches.length+'건 매칭 완료!');
   navigate('results');
 }
 
-function getSampleMatches(company) {
-  const region = company?.region||'';
-  return [
-    { id:'s1', match_score:94, is_saved:false, program:{ title:`2026 ${region} 소상공인 경영안정자금`, organization:'소상공인시장진흥공단', category:'융자', tags:['소상공인','경영안정','융자'], max_support_amount:200000000, deadline:'2026-06-30', eligibility:'소상공인 해당 업종', source_url:'https://www.semas.or.kr' }},
-    { id:'s2', match_score:88, is_saved:false, program:{ title:'스마트공방 기술보급사업', organization:'중소벤처기업부', category:'사업화', tags:['제조','스마트','기술'], max_support_amount:150000000, deadline:'2026-05-15', eligibility:'제조업 소상공인', source_url:'#' }},
-    { id:'s3', match_score:82, is_saved:false, program:{ title:'지역 신사업 창업사관학교', organization:'창업진흥원', category:'창업', tags:['창업','교육','지원'], max_support_amount:100000000, deadline:'2026-07-01', eligibility:'예비창업자·초기창업자', source_url:'#' }},
-    { id:'s4', match_score:76, is_saved:false, program:{ title:'AI 바우처 지원사업 (NIPA)', organization:'NIPA', category:'바우처', tags:['AI','IT','바우처'], max_support_amount:30000000, deadline:'2026-05-31', eligibility:'중소기업', source_url:'#' }},
-    { id:'s5', match_score:71, is_saved:false, program:{ title:'온라인 판로 개척 지원', organization:'소상공인시장진흥공단', category:'마케팅', tags:['온라인','마케팅','판로'], max_support_amount:5000000, deadline:'2026-08-31', eligibility:'소상공인', source_url:'#' }},
+async function generateReport(){
+  const btn=document.getElementById('btn-gen-report');
+  btn.disabled=true;btn.textContent='⏳ 리포트 생성 중...';
+  document.getElementById('report-full').classList.add('show');
+  document.getElementById('report-body').innerHTML='<div class="report-loading"><div class="report-spinner"></div><p>AI가 기업을 분석하고 있습니다...<br><span style="font-size:12px;color:var(--gray-400)">약 20~30초 소요됩니다</span></p></div>';
+  document.getElementById('report-full').scrollIntoView({behavior:'smooth',block:'start'});
+  const cd=currentCompanyData||{};
+  const top3=allMatches.slice(0,3).map((m,i)=>`${i+1}순위: ${m.program?.title||''} (${m.match_score}점) - ${m.match_reason||''}`).join('\n');
+  const industryData=INDUSTRY_MARGINS[cd.industry]||INDUSTRY_MARGINS['기타'];
+  const revenue=cd.annual_revenue||0;
+  const profit=cd.operating_profit||0;
+  const myMargin=revenue>0?Math.round((profit/revenue)*100):null;
+  const prompt=`당신은 14년 경력의 소상공인·중소기업 전문 경영 컨설턴트입니다. 아래 기업 정보와 매칭된 지원사업을 바탕으로 실전적인 AI 진단 리포트를 작성하세요. 컨설턴트가 직접 대표님께 말하는 톤으로, 구체적이고 실용적으로 작성하세요.\n\n## 기업 정보\n- 기업명: ${cd.company_name||'미입력'}\n- 업태/종목: ${cd.industry||''}${cd.industry_detail?' / '+cd.industry_detail:''}\n- 지역: ${cd.region||''}${cd.district?' '+cd.district:''}\n- 설립일: ${cd.founded_date||'미입력'}\n- 직원수: ${cd.employee_count?cd.employee_count+'명':'미입력'}\n- 연매출: ${revenue>0?revenue.toLocaleString()+'원':'미입력'}\n- 영업이익: ${profit>0?profit.toLocaleString()+'원':'미입력'}\n- 업종 평균 마진율: ${industryData.margin}% / 평균 순이익률: ${industryData.net}%\n- 기업소개: ${cd.description||'미입력'}\n\n## 매칭된 상위 지원사업\n${top3}\n\n## 작성 지시사항\n아래 4개 섹션을 순서대로 작성하세요. 각 섹션은 [SECTION1], [SECTION2], [SECTION3], [SECTION4] 태그로 구분하세요.\n\n[SECTION1] 기업 현황 진단\n- 업종·지역·규모·업력 종합 분석 (2~3문장)\n- 핵심 강점 2가지 (구체적으로)\n- 보완 필요 영역 1~2가지\n${myMargin!==null?`- 현재 영업이익률 ${myMargin}% → 업종 평균 ${industryData.margin}%와 비교 분석 및 조언`:''}\n\n[SECTION2] 지원사업 성장 로드맵\n- 지금 당장 신청 가능한 사업 (매칭 결과 기반)\n- 이 사업을 받으면 생기는 스펙과 다음 단계 사업\n- 3단계 성장 시나리오 (지금 → 1년 후 → 3년 후)\n\n[SECTION3] 1순위 사업 신청 가이드\n- 1순위 추천 사업명 명시\n- 핵심 심사 포인트 3가지\n- 사업계획서에서 반드시 강조해야 할 내용\n- 준비 서류 체크리스트\n- 합격률을 높이는 실전 꿀팁 2~3가지\n\n[SECTION4] 전문가 한마디\n- 이 기업 대표님께 드리는 컨설턴트로서의 진심 어린 조언 (3~4문장)\n- 격려와 실행 가능한 다음 액션 1가지 포함`;
+  try{
+    const result=await callClaudeAPI(prompt,3000);
+    renderReportHTML(result,cd,industryData,myMargin);
+    btn.textContent='✅ 리포트 생성 완료';
+  }catch(e){
+    document.getElementById('report-body').innerHTML='<div class="report-loading"><p style="color:var(--danger)">리포트 생성 중 오류가 발생했습니다.<br>잠시 후 다시 시도해주세요.</p></div>';
+    btn.disabled=false;btn.textContent='📋 AI 진단 리포트 생성하기';
+  }
+}
+
+function renderReportHTML(rawText,cd,industryData,myMargin){
+  const m1=rawText.match(/\[SECTION1\]([\s\S]*?)(?=\[SECTION2\]|$)/);
+  const m2=rawText.match(/\[SECTION2\]([\s\S]*?)(?=\[SECTION3\]|$)/);
+  const m3=rawText.match(/\[SECTION3\]([\s\S]*?)(?=\[SECTION4\]|$)/);
+  const m4=rawText.match(/\[SECTION4\]([\s\S]*?)$/);
+  const s1=m1?m1[1].trim():'분석 중...';
+  const s2=m2?m2[1].trim():'분석 중...';
+  const s3=m3?m3[1].trim():'분석 중...';
+  const s4=m4?m4[1].trim():'분석 중...';
+  const revenue=cd.annual_revenue||0;
+  const profit=cd.operating_profit||0;
+  let financeHTML='';
+  if(revenue>0){
+    const mv=profit>0?Math.round((profit/revenue)*100):null;
+    const ms=mv!==null?(mv>=industryData.margin?'good':mv>=industryData.margin*0.7?'warn':'bad'):'';
+    financeHTML=`<div class="finance-box">
+      <div class="finance-row"><span class="finance-label">전년도 매출액</span><span class="finance-value">${revenue.toLocaleString()}원</span></div>
+      ${profit>0?`<div class="finance-row"><span class="finance-label">영업이익</span><span class="finance-value">${profit.toLocaleString()}원</span></div>`:''}
+      ${mv!==null?`<div class="finance-row"><span class="finance-label">우리 기업 마진율</span><span class="finance-value ${ms}">${mv}%</span></div>`:''}
+      <div class="finance-row"><span class="finance-label">업종 평균 마진율 (${industryData.label})</span><span class="finance-value">${industryData.margin}%</span></div>
+      <div class="finance-row"><span class="finance-label">업종 평균 순이익률</span><span class="finance-value">${industryData.net}%</span></div>
+    </div>`;
+  }
+  document.getElementById('report-body').innerHTML=`
+    <div class="report-section">
+      <div class="report-section-title"><div class="report-section-icon icon-blue">🏢</div>기업 현황 진단</div>
+      ${financeHTML}<div class="report-content" style="margin-top:${revenue>0?'16px':'0'}">${s1}</div>
+    </div>
+    <div class="report-section">
+      <div class="report-section-title"><div class="report-section-icon icon-green">📈</div>지원사업 성장 로드맵</div>
+      <div class="report-content">${s2}</div>
+    </div>
+    <div class="report-section">
+      <div class="report-section-title"><div class="report-section-icon icon-orange">🎯</div>1순위 사업 신청 가이드</div>
+      <div class="report-content">${s3}</div>
+    </div>
+    <div class="report-section" style="background:linear-gradient(135deg,#fafafe,#f5f3ff)">
+      <div class="report-section-title"><div class="report-section-icon icon-purple">💬</div>전문가 한마디</div>
+      <div class="report-content" style="color:var(--primary-dark);font-weight:500">${s4}</div>
+    </div>`;
+}
+
+function getSampleMatches(company){
+  const r=company?.region||'';
+  return[
+    {id:'s1',match_score:94,is_saved:false,program:{title:`2026 ${r} 소상공인 경영안정자금`,organization:'소상공인시장진흥공단',category:'융자',tags:['소상공인','경영안정','융자'],max_support_amount:200000000,deadline:'2026-06-30',eligibility:'소상공인 해당 업종',source_url:'https://www.semas.or.kr'}},
+    {id:'s2',match_score:88,is_saved:false,program:{title:'스마트공방 기술보급사업',organization:'중소벤처기업부',category:'사업화',tags:['제조','스마트','기술'],max_support_amount:150000000,deadline:'2026-05-15',eligibility:'제조업 소상공인',source_url:'#'}},
+    {id:'s3',match_score:82,is_saved:false,program:{title:'지역 신사업 창업사관학교',organization:'창업진흥원',category:'창업',tags:['창업','교육','지원'],max_support_amount:100000000,deadline:'2026-07-01',eligibility:'예비창업자·초기창업자',source_url:'#'}},
+    {id:'s4',match_score:76,is_saved:false,program:{title:'AI 바우처 지원사업 (NIPA)',organization:'NIPA',category:'바우처',tags:['AI','IT','바우처'],max_support_amount:30000000,deadline:'2026-05-31',eligibility:'중소기업',source_url:'#'}},
+    {id:'s5',match_score:71,is_saved:false,program:{title:'온라인 판로 개척 지원',organization:'소상공인시장진흥공단',category:'마케팅',tags:['온라인','마케팅','판로'],max_support_amount:5000000,deadline:'2026-08-31',eligibility:'소상공인',source_url:'#'}},
   ];
 }
-
-async function loadResults() {
-  if (allMatches.length===0&&currentCompanyId) {
-    const { data } = await db.from('matches').select('*, program:programs(*)').eq('company_id', currentCompanyId).order('match_score',{ascending:false});
-    if (data) allMatches = data;
-  }
+async function loadResults(){
+  if(allMatches.length===0&&currentCompanyId){const{data}=await db.from('matches').select('*, program:programs(*)').eq('company_id',currentCompanyId).order('match_score',{ascending:false});if(data)allMatches=data;}
   renderResults(allMatches);
 }
-
-function renderResults(matches) {
-  const filtered = currentCategory==='전체' ? matches : matches.filter(m => m.program?.category===currentCategory);
-  if (filtered.length===0) {
-    document.getElementById('results-list').innerHTML = '<div class="empty-state"><h3>해당 카테고리 결과가 없어요</h3><p>다른 카테고리를 선택해보세요</p></div>';
-    return;
-  }
-
-  const scores = filtered.map(m=>m.match_score);
-  const maxScore = Math.max(...scores);
-  const maxAmount = Math.max(...filtered.map(m=>m.program?.max_support_amount||0));
-  const today = new Date();
-  const minDays = Math.min(...filtered.map(m => { if(!m.program?.deadline) return 999; return Math.ceil((new Date(m.program.deadline)-today)/86400000); }).filter(d=>d>0));
-
-  document.getElementById('stat-count').textContent = filtered.length;
-  document.getElementById('stat-top-score').textContent = maxScore;
-  document.getElementById('stat-max-amount').textContent = maxAmount>=100000000?(maxAmount/100000000).toFixed(1):(maxAmount/10000).toFixed(0)+'만';
-  document.getElementById('stat-deadline').textContent = minDays<999?minDays:'-';
-  document.getElementById('result-subtitle').textContent = `${filtered.length}개 지원사업이 발견되었습니다.`;
-  document.getElementById('match-count').textContent = filtered.length;
-
-  // 1순위와 나머지 분리
-  const topMatch = filtered[0];
-  const restMatches = filtered.slice(1);
-
-  const renderCard = (m, isTop) => {
-    const p = m.program||{};
-    const score = m.match_score;
-    const isHigh = score>=85;
-    const isMid = score>=70 && score<85;
-    const circleClass = isHigh?'high':isMid?'mid':'low';
-    const badgeClass = isHigh?'best':isMid?'good':'normal';
-    const badgeText = isHigh?'최적합':isMid?'적합':'검토';
-    const tags = Array.isArray(p.tags)?p.tags.map(t=>`<span class="tag">${t}</span>`).join(''):'';
-    const daysLeft = p.deadline?Math.ceil((new Date(p.deadline)-today)/86400000):null;
-    const amountStr = p.max_support_amount>=100000000?`최대 ${(p.max_support_amount/100000000).toFixed(1)}억원`:p.max_support_amount?`최대 ${(p.max_support_amount/10000).toFixed(0)}만원`:'-';
-    const reason = m.match_reason?`<div class="check-item"><span class="check-icon">✓</span> ${m.match_reason}</div>`:`<div class="check-item"><span class="check-icon">✓</span> ${p.eligibility||'지원 조건 확인 필요'}</div>`;
-    const isSaved = m.is_saved;
-    return `
-    <div class="program-card ${isTop?'top-pick':''}" id="card-${m.id}">
-      <div class="score-ring">
-        <div class="score-circle ${circleClass}">
-          <div class="score-num">${score}</div>
-          <div class="score-pct">점</div>
-        </div>
-        <div class="score-badge ${badgeClass}">${badgeText}</div>
-      </div>
+function renderResults(matches){
+  const filtered=currentCategory==='전체'?matches:matches.filter(m=>m.program?.category===currentCategory);
+  if(filtered.length===0){document.getElementById('results-list').innerHTML='<div class="empty-state"><h3>해당 카테고리 결과가 없어요</h3><p>다른 카테고리를 선택해보세요</p></div>';return;}
+  const maxScore=Math.max(...filtered.map(m=>m.match_score));
+  const maxAmount=Math.max(...filtered.map(m=>m.program?.max_support_amount||0));
+  const today=new Date();
+  const daysArr=filtered.map(m=>{if(!m.program?.deadline)return 999;return Math.ceil((new Date(m.program.deadline)-today)/86400000);}).filter(d=>d>0);
+  const minDays=daysArr.length?Math.min(...daysArr):999;
+  document.getElementById('stat-count').textContent=filtered.length;
+  document.getElementById('stat-top-score').textContent=maxScore;
+  document.getElementById('stat-max-amount').textContent=maxAmount>=100000000?(maxAmount/100000000).toFixed(1)+'억원':maxAmount?Math.round(maxAmount/10000)+'만원':'-';
+  document.getElementById('stat-deadline').textContent=minDays<999?minDays:'-';
+  document.getElementById('result-subtitle').textContent=`${filtered.length}개 지원사업이 발견되었습니다.`;
+  document.getElementById('match-count').textContent=filtered.length;
+  const renderCard=(m,isTop)=>{
+    const p=m.program||{};
+    const score=m.match_score;
+    const cc=score>=85?'high':score>=70?'mid':'low';
+    const bc=score>=85?'best':score>=70?'good':'normal';
+    const bt=score>=85?'최적합':score>=70?'적합':'검토';
+    const tags=Array.isArray(p.tags)?p.tags.map(t=>`<span class="tag">${t}</span>`).join(''):'';
+    const dl=p.deadline?Math.ceil((new Date(p.deadline)-today)/86400000):null;
+    const amt=p.max_support_amount>=100000000?`최대 ${(p.max_support_amount/100000000).toFixed(1)}억원`:p.max_support_amount?`최대 ${Math.round(p.max_support_amount/10000)}만원`:'-';
+    const reason=m.match_reason?`<div class="check-item"><span class="check-icon">✓</span>${m.match_reason}</div>`:`<div class="check-item"><span class="check-icon">✓</span>${p.eligibility||'지원 조건 확인 필요'}</div>`;
+    return `<div class="program-card ${isTop?'top-pick':''}" id="card-${m.id}">
+      <div class="score-ring"><div class="score-circle ${cc}"><div class="score-num">${score}</div><div class="score-pct">점</div></div><div class="score-badge ${bc}">${bt}</div></div>
       <div class="program-info">
         <div class="program-title">${p.title||'지원사업명'}</div>
         <div class="program-org">${p.organization||''}</div>
         ${tags?`<div class="program-tags">${tags}</div>`:''}
         <div class="program-checks">${reason}</div>
-        <div class="program-meta">
-          <span>${amountStr}</span>
-          ${daysLeft&&daysLeft>0?`<span class="${daysLeft<=14?'deadline':''}">마감 D-${daysLeft}</span>`:''}
-          ${p.category?`<span>${p.category}</span>`:''}
-        </div>
+        <div class="program-meta"><span>${amt}</span>${dl&&dl>0?`<span class="${dl<=14?'deadline':''}">마감 D-${dl}</span>`:''}${p.category?`<span>${p.category}</span>`:''}</div>
       </div>
       <div class="program-actions">
         ${isTop?'<span class="badge-recommend">⭐ 1순위 추천</span>':''}
-        <button class="btn-save ${isSaved?'saved':''}" id="save-btn-${m.id}" onclick="toggleSave('${m.id}', this)">
-          ${isSaved?'★ 관심 저장됨':'☆ 관심 저장'}
-        </button>
+        <button class="btn-save ${m.is_saved?'saved':''}" id="save-btn-${m.id}" onclick="toggleSave('${m.id}',this)">${m.is_saved?'★ 관심 저장됨':'☆ 관심 저장'}</button>
         ${p.source_url&&p.source_url!=='#'?`<a href="${p.source_url}" target="_blank"><button class="btn-detail">자세히 보기 →</button></a>`:'<button class="btn-detail">자세히 보기 →</button>'}
       </div>
     </div>`;
   };
-
-  let html = '';
-  // 1순위 별도 섹션
-  html += `<div class="top-pick-section"><div class="top-pick-label">1순위 추천</div>${renderCard(topMatch, true)}</div>`;
-  // 나머지
-  if (restMatches.length > 0) {
-    html += `<div class="other-results-label">그 외 추천 지원사업 (${restMatches.length}건)</div>`;
-    html += restMatches.map(m => renderCard(m, false)).join('');
-  }
-
-  document.getElementById('results-list').innerHTML = html;
+  let html=`<div class="top-pick-section"><div class="top-pick-label">1순위 추천</div>${renderCard(filtered[0],true)}</div>`;
+  if(filtered.length>1){html+=`<div class="other-results-label">그 외 추천 지원사업 (${filtered.length-1}건)</div>`;html+=filtered.slice(1).map(m=>renderCard(m,false)).join('');}
+  document.getElementById('results-list').innerHTML=html;
 }
-
-async function toggleSave(matchId, btn) {
-  const match = allMatches.find(m=>m.id===matchId);
-  if (!match) return;
-  const newVal = !match.is_saved;
-  match.is_saved = newVal;
-  btn.textContent = newVal?'★ 관심 저장됨':'☆ 관심 저장';
-  btn.className = 'btn-save'+(newVal?' saved':'');
-  savedMatches = allMatches.filter(m=>m.is_saved);
-  document.getElementById('saved-count').textContent = savedMatches.length;
-  showToast(newVal?'관심 저장했습니다':'저장을 취소했습니다');
+function toggleSave(matchId,btn){
+  const match=allMatches.find(m=>m.id===matchId);if(!match)return;
+  match.is_saved=!match.is_saved;
+  btn.textContent=match.is_saved?'★ 관심 저장됨':'☆ 관심 저장';
+  btn.className='btn-save'+(match.is_saved?' saved':'');
+  savedMatches=allMatches.filter(m=>m.is_saved);
+  document.getElementById('saved-count').textContent=savedMatches.length;
+  showToast(match.is_saved?'관심 저장했습니다':'저장을 취소했습니다');
 }
-
-function renderSaved() {
-  savedMatches = allMatches.filter(m=>m.is_saved);
-  document.getElementById('saved-count').textContent = savedMatches.length;
-  if (savedMatches.length===0) {
-    document.getElementById('saved-list').innerHTML = '<div class="empty-state"><h3>아직 저장한 지원사업이 없어요</h3><p>매칭 결과에서 ☆ 관심 저장을 눌러보세요</p></div>';
-    return;
-  }
-  const today = new Date();
-  document.getElementById('saved-list').innerHTML = savedMatches.map((m) => {
-    const p = m.program||{};
-    const score = m.match_score;
-    const isHigh = score>=85;
-    const tags = Array.isArray(p.tags)?p.tags.map(t=>`<span class="tag">${t}</span>`).join(''):'';
-    const daysLeft = p.deadline?Math.ceil((new Date(p.deadline)-today)/86400000):null;
-    const amountStr = p.max_support_amount>=100000000?`최대 ${(p.max_support_amount/100000000).toFixed(1)}억원`:p.max_support_amount?`최대 ${(p.max_support_amount/10000).toFixed(0)}만원`:'-';
-    return `
-    <div class="program-card" id="saved-card-${m.id}">
-      <div class="score-ring">
-        <div class="score-circle ${isHigh?'high':'mid'}"><div class="score-num">${score}</div><div class="score-pct">점</div></div>
-        <div class="score-badge ${isHigh?'best':'good'}">${isHigh?'최적합':'적합'}</div>
+function renderSaved(){
+  savedMatches=allMatches.filter(m=>m.is_saved);
+  document.getElementById('saved-count').textContent=savedMatches.length;
+  if(savedMatches.length===0){document.getElementById('saved-list').innerHTML='<div class="empty-state"><h3>아직 저장한 지원사업이 없어요</h3><p>매칭 결과에서 ☆ 관심 저장을 눌러보세요</p></div>';return;}
+  const today=new Date();
+  document.getElementById('saved-list').innerHTML=savedMatches.map(m=>{
+    const p=m.program||{};const score=m.match_score;
+    const tags=Array.isArray(p.tags)?p.tags.map(t=>`<span class="tag">${t}</span>`).join(''):'';
+    const dl=p.deadline?Math.ceil((new Date(p.deadline)-today)/86400000):null;
+    const amt=p.max_support_amount>=100000000?`최대 ${(p.max_support_amount/100000000).toFixed(1)}억원`:p.max_support_amount?`최대 ${Math.round(p.max_support_amount/10000)}만원`:'-';
+    return `<div class="program-card">
+      <div class="score-ring"><div class="score-circle ${score>=85?'high':'mid'}"><div class="score-num">${score}</div><div class="score-pct">점</div></div><div class="score-badge ${score>=85?'best':'good'}">${score>=85?'최적합':'적합'}</div></div>
+      <div class="program-info"><div class="program-title">${p.title||'지원사업명'}</div><div class="program-org">${p.organization||''}</div>${tags?`<div class="program-tags">${tags}</div>`:''}${m.match_reason?`<div class="program-checks"><div class="check-item"><span class="check-icon">✓</span>${m.match_reason}</div></div>`:''}
+        <div class="program-meta"><span>${amt}</span>${dl&&dl>0?`<span class="${dl<=14?'deadline':''}">마감 D-${dl}</span>`:''}</div>
       </div>
-      <div class="program-info">
-        <div class="program-title">${p.title||'지원사업명'}</div>
-        <div class="program-org">${p.organization||''}</div>
-        ${tags?`<div class="program-tags">${tags}</div>`:''}
-        ${m.match_reason?`<div class="program-checks"><div class="check-item"><span class="check-icon">✓</span> ${m.match_reason}</div></div>`:''}
-        <div class="program-meta">
-          <span>${amountStr}</span>
-          ${daysLeft&&daysLeft>0?`<span class="${daysLeft<=14?'deadline':''}">마감 D-${daysLeft}</span>`:''}
-        </div>
-      </div>
-      <div class="program-actions">
-        <button class="btn-save saved" onclick="toggleSaveFromSaved('${m.id}', this)">★ 관심 저장됨</button>
-        ${p.source_url&&p.source_url!=='#'?`<a href="${p.source_url}" target="_blank"><button class="btn-detail">자세히 보기 →</button></a>`:'<button class="btn-detail">자세히 보기 →</button>'}
-      </div>
+      <div class="program-actions"><button class="btn-save saved" onclick="toggleSaveFromSaved('${m.id}')">★ 관심 저장됨</button>${p.source_url&&p.source_url!=='#'?`<a href="${p.source_url}" target="_blank"><button class="btn-detail">자세히 보기 →</button></a>`:'<button class="btn-detail">자세히 보기 →</button>'}</div>
     </div>`;
   }).join('');
 }
-
-function toggleSaveFromSaved(matchId, btn) {
-  const match = allMatches.find(m=>m.id===matchId);
-  if (!match) return;
-  match.is_saved = false;
-  savedMatches = allMatches.filter(m=>m.is_saved);
-  document.getElementById('saved-count').textContent = savedMatches.length;
-  showToast('저장을 취소했습니다');
-  renderSaved();
+function toggleSaveFromSaved(matchId){
+  const match=allMatches.find(m=>m.id===matchId);if(!match)return;
+  match.is_saved=false;savedMatches=allMatches.filter(m=>m.is_saved);
+  document.getElementById('saved-count').textContent=savedMatches.length;
+  showToast('저장을 취소했습니다');renderSaved();
 }
-
-function filterCategory(cat, el) {
-  currentCategory = cat;
-  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
+function filterCategory(cat,el){currentCategory=cat;document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');renderResults(allMatches);}
+function sortResults(by){
+  if(by==='score')allMatches.sort((a,b)=>b.match_score-a.match_score);
+  if(by==='amount')allMatches.sort((a,b)=>(b.program?.max_support_amount||0)-(a.program?.max_support_amount||0));
+  if(by==='deadline')allMatches.sort((a,b)=>new Date(a.program?.deadline||'9999')-new Date(b.program?.deadline||'9999'));
   renderResults(allMatches);
 }
-
-function sortResults(by) {
-  if (by==='score') allMatches.sort((a,b)=>b.match_score-a.match_score);
-  if (by==='amount') allMatches.sort((a,b)=>(b.program?.max_support_amount||0)-(a.program?.max_support_amount||0));
-  if (by==='deadline') allMatches.sort((a,b)=>new Date(a.program?.deadline||'9999')-new Date(b.program?.deadline||'9999'));
-  renderResults(allMatches);
-}
-
-function exportResults() {
-  const rows = [['순위','사업명','기관','적합도','지원금액','마감일','매칭이유']];
-  allMatches.forEach((m,i)=>{ const p=m.program||{}; rows.push([i+1,p.title||'',p.organization||'',m.match_score+'%',p.max_support_amount||'',p.deadline||'',m.match_reason||'']); });
-  const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
-  a.download = '매치업_결과.csv';
-  a.click();
+function exportResults(){
+  const rows=[['순위','사업명','기관','적합도','지원금액','마감일','매칭이유']];
+  allMatches.forEach((m,i)=>{const p=m.program||{};rows.push([i+1,p.title||'',p.organization||'',m.match_score+'점',p.max_support_amount||'',p.deadline||'',m.match_reason||'']);});
+  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);a.download='매치업_결과.csv';a.click();
   showToast('CSV 다운로드 완료');
 }
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2500);
-}
-function rematch() {
-  allMatches = [];
-  currentCompanyId = null;
-  currentCategory = '전체';
-  document.getElementById('match-count').textContent = '0';
-  goStep1();
-  navigate('onboarding');
-}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 </script>
 </body>
 </html>
