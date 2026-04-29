@@ -638,7 +638,7 @@ async function callClaudeAPI(prompt) {
   const apiKey = getApiKey();
   if (!apiKey) throw new Error('API_KEY_MISSING');
 
-  const response = await fetch('/api/claude', {
+  const response = await fetch('/api/match', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
