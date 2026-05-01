@@ -651,7 +651,9 @@ function navigate(page){
 function rematch(){
   // 매칭 결과·상태만 초기화, 입력 폼 데이터는 유지
   matchingDone=false;
-  allMatches=[];companyId=null;companyData=null;currentCat='전체';selNeeds=[];
+  allMatches=[];companyId=null;companyData=null;currentCat='전체';
+  // selNeeds는 초기화하지 않음 — UI 체크 상태와 동기화 유지
+  selNeeds=Array.from(document.querySelectorAll('.need-chip.selected')).map(c=>c.dataset.val);
   document.getElementById('match-count').textContent='0';
   // summary-card 초기화
   document.getElementById('summary-card').classList.remove('show');
