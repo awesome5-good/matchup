@@ -706,15 +706,88 @@ async function runMatching(company){
   const {data:programs}=await db.from('programs').select('*').eq('is_active',true).limit(80);
   const cd=companyData;
   if(!programs||programs.length===0){allMatches=getSampleMatches(company);document.getElementById('match-count').textContent=allMatches.length;showToast('✅ '+allMatches.length+'건 매칭 완료! (샘플)');matchingDone=true;navigate('results');startSummaryGen();return;}
-  const pl=programs.slice(0,50).map(p=>({id:p.id,title:p.title,organization:p.organization||'',category:p.category||'',eligibility:(p.eligibility||'').slice(0,100),deadline:p.deadline||''}));
-  const ageStr=cd.age_years!=null?`창업 ${cd.age_years}년차`:'';
-  const prompt=`정부 지원사업 매칭 전문가.\n기업: ${company.company_name} / ${cd.biz_type} / ${company.industry}${company.industry_detail?' ('+company.industry_detail+')':''} / ${company.region}${company.district?' '+company.district:''} / ${ageStr} / 상시직원(대표제외) ${cd.employee_count!=null?cd.employee_count+'명':'?'} / 매출 ${company.annual_revenue?company.annual_revenue.toLocaleString()+'원':'?'}\n필요: ${(cd.needs||[]).join(', ')}\n소개: ${company.description}\n\n사업목록:\n${JSON.stringify(pl)}\n\nTOP 10 JSON만 답변:\n[{"program_id":"UUID","score":85,"reason":"이유"}]`;
+  const pl=programs.slice(0,60).map(p=>({
+    id:p.id,title:p.title,organization:p.organization||'',
+    category:p.category||'',
+    eligibility:(p.eligibility||'').slice(0,150),
+    region:p.region||'전국',
+    deadline:p.deadline||'',
+    max_support_amount:p.max_support_amount||0
+  }));
+  const ageStr=cd.age_years!=null?`창업 ${cd.age_years}년차`:'업력 미입력';
+  const empStr=cd.employee_count!=null?`상시직원(대표제외) ${cd.employee_count}명`:'직원수 미입력';
+  const revStr=company.annual_revenue?`연매출 ${company.annual_revenue.toLocaleString()}원`:'매출 미입력';
+
+  const prompt=`당신은 정부 지원사업 매칭 전문가입니다.
+
+## 기업 정보
+- 기업명: ${company.company_name}
+- 사업자 구분: ${cd.biz_type||'미상'}
+- 업태/종목: ${company.industry}${company.industry_detail?' / '+company.industry_detail:''}
+- 소재지: ${company.region}${company.district?' '+company.district:''}
+- 업력: ${ageStr}
+- 규모: ${empStr} / ${revStr}
+- 현재 필요한 것: ${(cd.needs||[]).join(', ')||'미입력'}
+- 기업 소개: ${company.description}
+
+## 지원사업 목록 (${pl.length}건)
+${JSON.stringify(pl)}
+
+## 선정 기준 (반드시 준수)
+1. 이 기업의 업종·지역·사업자구분·규모가 신청 자격에 실제로 부합하는 것만 선정할 것
+2. 관련성이 낮거나 자격이 안 되면 억지로 채우지 말 것 — 진짜 맞는 것만
+3. 적합도 점수 65점 미만은 제외
+4. 최대 10건, 맞는 게 적으면 적은 대로, 없으면 빈 배열 반환
+5. 전국 공고는 지역 무관하게 포함 가능, 특정 지역 공고는 기업 소재지와 일치해야 함
+6. 기업이 선택한 "현재 필요한 것" 분야와 관련된 사업에 가중치 부여
+
+JSON 배열만 답변 (다른 텍스트 절대 금지):
+[{"program_id":"UUID","score":85,"reason":"이유 한 문장 (왜 이 기업에 맞는지)"}]
+
+맞는 사업이 없으면 반드시: []`;
+
   let ai=[];
-  try{const raw=await callAPI(prompt,2000);const c=raw.replace(/```json|```/g,'').trim();const s=c.indexOf('['),e=c.lastIndexOf(']')+1;if(s>=0&&e>s)ai=JSON.parse(c.slice(s,e));}catch(e){console.error(e);}
-  if(!ai||ai.length===0){allMatches=getSampleMatches(company);}
-  else{allMatches=ai.map(m=>{const p=programs.find(x=>x.id===m.program_id);return p?{id:'m_'+m.program_id,match_score:m.score,match_reason:m.reason,is_saved:false,program:p}:null;}).filter(Boolean);}
+  try{
+    const raw=await callAPI(prompt,2500);
+    const c=raw.replace(/```json|```/g,'').trim();
+    const s=c.indexOf('['),e=c.lastIndexOf(']')+1;
+    if(s>=0&&e>s)ai=JSON.parse(c.slice(s,e));
+  }catch(e){console.error('매칭 파싱 오류:',e);}
+
+  // 65점 미만 한번 더 필터링 (AI가 기준 안 지킬 경우 대비)
+  ai=ai.filter(m=>m.score>=65);
+
+  if(!ai||ai.length===0){
+    // 진짜 맞는 사업 없음 — 샘플 대신 빈 결과
+    allMatches=[];
+    document.getElementById('match-count').textContent='0';
+    matchingDone=true;
+    navigate('results');
+    // 요약 카드는 결과 없을 때 별도 처리
+    document.getElementById('summary-card').classList.add('show');
+    document.getElementById('sum-loading').style.display='none';
+    document.getElementById('sum-body').style.display='none';
+    document.getElementById('summary-card').innerHTML=`
+      <div style="background:linear-gradient(135deg,#1a1740,#0d1a2e);border-radius:16px;padding:28px;text-align:center;color:rgba(255,255,255,0.7)">
+        <div style="font-size:36px;margin-bottom:12px">🔍</div>
+        <div style="font-size:16px;font-weight:700;color:white;margin-bottom:8px">현재 귀사에 딱 맞는 지원사업이 없습니다</div>
+        <div style="font-size:13px;line-height:1.7">지원사업 DB는 매월 업데이트됩니다.<br>기업 소개를 더 상세히 입력하거나, 다음 달에 다시 확인해보세요.<br><br>
+        <button onclick="rematch()" style="background:rgba(79,70,229,0.5);border:1px solid rgba(99,102,241,0.6);color:white;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;margin-top:8px">↺ 정보 수정 후 다시 매칭하기</button></div>
+      </div>`;
+    showToast('현재 귀사에 맞는 지원사업을 찾지 못했습니다');
+    return;
+  }
+
+  allMatches=ai.map(m=>{
+    const p=programs.find(x=>x.id===m.program_id);
+    return p?{id:'m_'+m.program_id,match_score:m.score,match_reason:m.reason,is_saved:false,program:p}:null;
+  }).filter(Boolean);
+
+  // 점수 내림차순 정렬
+  allMatches.sort((a,b)=>b.match_score-a.match_score);
+
   document.getElementById('match-count').textContent=allMatches.length;
-  showToast('✅ AI가 '+allMatches.length+'건 매칭 완료!');
+  showToast(`✅ AI가 ${allMatches.length}건 매칭 완료! (관련성 높은 것만 선별)`);
   matchingDone=true;
   navigate('results');
   startSummaryGen();
