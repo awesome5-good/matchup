@@ -311,6 +311,136 @@
     select.form-control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
     .prose{font-size:14px;color:var(--gray-700);line-height:1.9;}
     .prose strong{font-weight:700;color:var(--gray-900);}
+
+    /* ═══════════════════════════════════════
+       모바일 최적화 (768px 이하)
+    ═══════════════════════════════════════ */
+    @media (max-width: 768px) {
+      /* 사이드바 숨기기 */
+      .sidebar { display: none; }
+
+      /* 메인 영역 풀너비 */
+      .main { margin-left: 0; }
+
+      /* 상단바 조정 */
+      .topbar { padding: 0 16px; height: 52px; }
+      .search-box { display: none; }
+      .topbar-actions { display: none; }
+      .breadcrumb { font-size: 13px; }
+
+      /* 콘텐츠 패딩 */
+      .content { padding: 16px 16px 80px; }
+
+      /* 폼 그리드 → 1열 */
+      .form-grid { grid-template-columns: 1fr; gap: 14px; }
+      .form-group[style*="grid-column:1/-1"] { grid-column: 1; }
+
+      /* 스텝 */
+      .steps { gap: 0; margin-bottom: 20px; }
+      .step-line { width: 32px; }
+      .step-label { display: none; }
+
+      /* 결과 헤더 */
+      .result-header { flex-direction: column; gap: 12px; }
+      .result-actions { width: 100%; }
+      .result-actions button { flex: 1; font-size: 12px; padding: 8px 10px; }
+
+      /* 스탯 그리드 → 2열 */
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+      .stat-card { padding: 14px; }
+      .stat-value { font-size: 22px; }
+      .stat-label { font-size: 11px; }
+
+      /* 프로그램 카드 */
+      .program-card { flex-direction: column; gap: 12px; padding: 16px; }
+      .score-ring { display: flex; align-items: center; gap: 10px; }
+      .score-circle { width: 52px; height: 52px; }
+      .score-num { font-size: 14px; }
+      .program-actions { flex-direction: row; align-items: center; flex-wrap: wrap; gap: 8px; width: 100%; }
+      .program-actions .badge-recommend { order: -1; }
+      .btn-save, .btn-detail { flex: 1; text-align: center; font-size: 12px; padding: 8px 10px; }
+
+      /* 필터 바 */
+      .filter-bar { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+      .filter-bar::-webkit-scrollbar { display: none; }
+      .sort-select { min-width: 90px; font-size: 11px; }
+
+      /* 요약 카드 */
+      .sum-topbar { flex-wrap: wrap; gap: 6px; padding: 14px 16px 12px; }
+      .sum-main { padding: 14px 16px; }
+      .sum-cta { padding: 0 16px 16px; }
+      .btn-report-cta { font-size: 14px; padding: 14px 20px; }
+
+      /* 리포트 탭 */
+      .rpt-tabs { gap: 0; }
+      .rpt-tab { font-size: 12px; padding: 10px 12px; }
+      .rpt-card { padding: 18px; }
+      .kpi-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .str-grid { grid-template-columns: 1fr; }
+      .fin-table { overflow-x: auto; display: block; }
+      .judge-grid .judge-item { flex-direction: column; gap: 8px; }
+
+      /* 로딩 */
+      .loading { padding: 40px 20px; }
+      .rpt-generating { padding: 40px 20px; }
+
+      /* 온보딩 헤더 */
+      .onboarding-header h1 { font-size: 20px; }
+      .onboarding-header p { font-size: 13px; }
+
+      /* 폼 카드 */
+      .form-card { padding: 18px; }
+      .form-footer { flex-direction: column; gap: 10px; }
+      .form-footer button { width: 100%; justify-content: center; }
+
+      /* need-chips */
+      .need-chips { gap: 6px; }
+      .need-chip { font-size: 12px; padding: 6px 10px; }
+
+      /* 리포트 페이지 헤더 */
+      .rpt-page-header h1 { font-size: 20px; }
+
+      /* 전문가 카드 */
+      .expert-quote-card { padding: 20px; }
+      .expert-quote-mark { font-size: 60px; top: 8px; left: 16px; }
+      .expert-text { font-size: 14px; }
+    }
+
+    /* ═══════════════════════════════════════
+       하단 탭바 (모바일 전용)
+    ═══════════════════════════════════════ */
+    .mobile-tabbar {
+      display: none;
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+      background: #fff; border-top: 1px solid #E5E7EB;
+      padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+      display: none;
+    }
+    .mobile-tabbar-inner {
+      display: flex; align-items: flex-start; justify-content: space-around;
+    }
+    .tab-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      background: none; border: none; cursor: pointer;
+      padding: 4px 12px; min-width: 60px;
+      color: var(--gray-400); font-size: 10px; font-weight: 600;
+      font-family: inherit; transition: color 0.15s;
+      position: relative;
+    }
+    .tab-btn.active { color: var(--primary); }
+    .tab-btn svg { width: 22px; height: 22px; }
+    .tab-badge {
+      position: absolute; top: 0; right: 8px;
+      background: var(--primary); color: white;
+      font-size: 9px; font-weight: 700;
+      padding: 1px 4px; border-radius: 8px; min-width: 14px; text-align: center;
+    }
+    .tab-badge.yellow { background: var(--warning); }
+    .tab-badge.purple { background: #7C3AED; }
+
+    @media (max-width: 768px) {
+      .mobile-tabbar { display: block; }
+    }
   </style>
 </head>
 <body>
@@ -600,6 +730,32 @@
     </div>
   </div>
 </main>
+
+<!-- 모바일 하단 탭바 -->
+<nav class="mobile-tabbar" id="mobile-tabbar">
+  <div class="mobile-tabbar-inner">
+    <button class="tab-btn active" id="tab-onboarding" onclick="navigate('onboarding')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      매칭
+    </button>
+    <button class="tab-btn" id="tab-results" onclick="navigate('results')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      결과
+      <span class="tab-badge" id="tab-match-count" style="display:none">0</span>
+    </button>
+    <button class="tab-btn" id="tab-report" onclick="navigate('report')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      리포트
+      <span class="tab-badge purple" id="tab-report-badge" style="display:none">NEW</span>
+    </button>
+    <button class="tab-btn" id="tab-saved" onclick="navigate('saved')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      저장
+      <span class="tab-badge yellow" id="tab-saved-count" style="display:none">0</span>
+    </button>
+  </div>
+</nav>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -644,8 +800,15 @@ function navigate(page){
   document.getElementById('page-'+page).classList.add('active');
   const labels={onboarding:'지원사업 매칭',results:'매칭 결과',report:'기업 진단 리포트',saved:'관심 저장 목록'};
   document.getElementById('breadcrumb-text').textContent=labels[page]||page;
+  // 모바일 탭바 동기화
+  ['onboarding','results','report','saved'].forEach(p=>{
+    const btn=document.getElementById('tab-'+p);
+    if(btn)btn.classList.toggle('active',p===page);
+  });
   if(page==='results')loadResults();
   if(page==='saved')renderSaved();
+  // 모바일에서 페이지 이동 시 상단으로 스크롤
+  window.scrollTo(0,0);
 }
 
 function rematch(){
@@ -723,7 +886,10 @@ async function submitAndMatch(){
 async function runMatching(company){
   const {data:programs}=await db.from('programs').select('*').eq('is_active',true).limit(80);
   const cd=companyData;
-  if(!programs||programs.length===0){allMatches=getSampleMatches(company);document.getElementById('match-count').textContent=allMatches.length;showToast('✅ '+allMatches.length+'건 매칭 완료! (샘플)');matchingDone=true;navigate('results');startSummaryGen();return;}
+  if(!programs||programs.length===0){allMatches=getSampleMatches(company);document.getElementById('match-count').textContent=allMatches.length;
+  // 모바일 탭 배지 업데이트
+  const tmc=document.getElementById('tab-match-count');
+  if(tmc){tmc.textContent=allMatches.length;tmc.style.display=allMatches.length>0?'block':'none';}showToast('✅ '+allMatches.length+'건 매칭 완료! (샘플)');matchingDone=true;navigate('results');startSummaryGen();return;}
   const pl=programs.slice(0,60).map(p=>({
     id:p.id,title:p.title,organization:p.organization||'',
     category:p.category||'',
@@ -866,6 +1032,8 @@ function goToReport(){navigate('report');generateFullReport();}
 
 async function generateFullReport(){
   document.getElementById('report-badge').style.display='inline';
+  const trb=document.getElementById('tab-report-badge');
+  if(trb)trb.style.display='block';
   const cd=companyData||{};
   document.getElementById('report-subtitle').textContent=`${cd.company_name||'기업'} · ${new Date().toLocaleDateString('ko-KR')} 생성`;
   document.getElementById('report-area').innerHTML=`
@@ -1134,7 +1302,10 @@ function renderResults(m){
   if(fi.length>1){html+=`<div class="other-results-label">그 외 추천 지원사업 (${fi.length-1}건)</div>`;html+=fi.slice(1).map(x=>rc(x,false)).join('');}
   document.getElementById('results-list').innerHTML=html;
 }
-function toggleSave(mid,btn){const m=allMatches.find(x=>x.id===mid);if(!m)return;m.is_saved=!m.is_saved;btn.textContent=m.is_saved?'★ 관심 저장됨':'☆ 관심 저장';btn.className='btn-save'+(m.is_saved?' saved':'');savedMatches=allMatches.filter(x=>x.is_saved);document.getElementById('saved-count').textContent=savedMatches.length;showToast(m.is_saved?'관심 저장했습니다':'저장을 취소했습니다');}
+function toggleSave(mid,btn){const m=allMatches.find(x=>x.id===mid);if(!m)return;m.is_saved=!m.is_saved;btn.textContent=m.is_saved?'★ 관심 저장됨':'☆ 관심 저장';btn.className='btn-save'+(m.is_saved?' saved':'');savedMatches=allMatches.filter(x=>x.is_saved);document.getElementById('saved-count').textContent=savedMatches.length;
+  const tsc=document.getElementById('tab-saved-count');
+  if(tsc){tsc.textContent=savedMatches.length;tsc.style.display=savedMatches.length>0?'block':'none';}
+  showToast(m.is_saved?'관심 저장했습니다':'저장을 취소했습니다');}
 function renderSaved(){savedMatches=allMatches.filter(x=>x.is_saved);document.getElementById('saved-count').textContent=savedMatches.length;if(savedMatches.length===0){document.getElementById('saved-list').innerHTML='<div class="empty-state"><h3>아직 저장한 지원사업이 없어요</h3><p>매칭 결과에서 ☆ 관심 저장을 눌러보세요</p></div>';return;}const today=new Date();document.getElementById('saved-list').innerHTML=savedMatches.map(m=>{const p=m.program||{};const sc=m.match_score;const tags=Array.isArray(p.tags)?p.tags.map(t=>`<span class="tag">${t}</span>`).join(''):'';const dl=p.deadline?Math.ceil((new Date(p.deadline)-today)/86400000):null;const amt=p.max_support_amount>=100000000?`최대 ${(p.max_support_amount/100000000).toFixed(1)}억원`:p.max_support_amount?`최대 ${Math.round(p.max_support_amount/10000)}만원`:'-';return `<div class="program-card"><div class="score-ring"><div class="score-circle ${sc>=85?'high':'mid'}"><div class="score-num">${sc}</div><div class="score-pct">점</div></div><div class="score-badge ${sc>=85?'best':'good'}">${sc>=85?'최적합':'적합'}</div></div><div class="program-info"><div class="program-title">${p.title||''}</div><div class="program-org">${p.organization||''}</div>${tags?`<div class="program-tags">${tags}</div>`:''}${m.match_reason?`<div class="program-checks"><div class="check-item"><span class="check-icon">✓</span>${m.match_reason}</div></div>`:''}  <div class="program-meta"><span>${amt}</span>${dl&&dl>0?`<span class="${dl<=14?'deadline':''}">마감 D-${dl}</span>`:''}</div></div><div class="program-actions"><button class="btn-save saved" onclick="toggleSaveFromSaved('${m.id}')">★ 관심 저장됨</button>${p.source_url&&p.source_url!=='#'?`<a href="${p.source_url}" target="_blank"><button class="btn-detail">자세히 보기 →</button></a>`:'<button class="btn-detail">자세히 보기 →</button>'}</div></div>`;}).join('');}
 function toggleSaveFromSaved(mid){const m=allMatches.find(x=>x.id===mid);if(!m)return;m.is_saved=false;savedMatches=allMatches.filter(x=>x.is_saved);document.getElementById('saved-count').textContent=savedMatches.length;showToast('저장을 취소했습니다');renderSaved();}
 function filterCategory(c,el){currentCat=c;document.querySelectorAll('.filter-chip').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderResults(allMatches);}
