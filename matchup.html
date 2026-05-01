@@ -642,8 +642,8 @@
       <div id="no-result-box" style="display:none;margin-bottom:24px">
         <div style="background:linear-gradient(135deg,#1a1740,#0d1a2e);border-radius:16px;padding:36px;text-align:center;color:rgba(255,255,255,0.7)">
           <div style="font-size:40px;margin-bottom:14px">🔍</div>
-          <div style="font-size:18px;font-weight:700;color:white;margin-bottom:10px">현재 귀사에 딱 맞는 지원사업이 없습니다</div>
-          <div style="font-size:13px;line-height:1.8;margin-bottom:20px">지원사업 DB는 매월 업데이트됩니다.<br>기업 소개를 더 상세히 입력하거나, 다음 달에 다시 확인해보세요.</div>
+          <div style="font-size:18px;font-weight:700;color:white;margin-bottom:10px">귀사에 딱 맞는<br>지원사업이 없습니다</div>
+          <div style="font-size:13px;line-height:1.8;margin-bottom:20px">기업 소개를 더 상세히 입력하거나,<br>다음 달에 다시 확인해보세요.</div>
           <button id="no-result-rematch-btn" style="background:linear-gradient(135deg,#4F46E5,#7C3AED);border:none;color:white;padding:14px 28px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(79,70,229,0.4)">↺ 정보 수정 후 다시 매칭하기</button>
         </div>
       </div>
@@ -1038,9 +1038,9 @@ async function generateFullReport(){
   document.getElementById('report-subtitle').textContent=`${cd.company_name||'기업'} · ${new Date().toLocaleDateString('ko-KR')} 생성`;
   document.getElementById('report-area').innerHTML=`
     <div class="rpt-generating">
-      <div class="rpt-gen-icons">🧑‍💼📊</div>
-      <div class="rpt-gen-title">전문 경영컨설턴트가 직접 분석 중입니다</div>
-      <div class="rpt-gen-sub">500여 개 기업의 컨설팅·멘토링 데이터를 바탕으로<br><strong>귀사만을 위한 맞춤 진단 리포트</strong>를 작성하고 있습니다<br><br>업종·지역·업력·필요분야를 종합 분석 중...</div>
+      <div class="rpt-gen-icons">🧑‍💼📋</div>
+      <div class="rpt-gen-title">전문 컨설턴트가 직접 리포트를 작성 중입니다</div>
+      <div class="rpt-gen-sub">지금까지 <strong>500여 개 기업</strong>을 직접 만나며 쌓아온<br>컨설팅·멘토링 노하우와 누적 데이터,<br>그리고 입력해주신 귀사 정보를 종합하여<br><strong>귀사만을 위한 맞춤 진단 리포트</strong>를 작성하고 있습니다.<br><br>잠시만 기다려 주세요 ☕</div>
       <div class="rpt-gen-bar"><div class="rpt-gen-fill"></div></div>
     </div>`;
 
