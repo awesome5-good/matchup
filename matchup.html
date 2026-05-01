@@ -610,8 +610,7 @@ let matchingDone=false; // 매칭 완료 여부 추적
 
 // 로고 클릭 = 홈으로
 function goHome(){
-  if(matchingDone){rematch();}
-  else{navigate('onboarding');}
+  rematch();
 }
 
 function toggleNeed(el){el.classList.toggle('selected');selNeeds=Array.from(document.querySelectorAll('.need-chip.selected')).map(c=>c.dataset.val);}
@@ -641,6 +640,7 @@ function navigate(page){
 }
 
 function rematch(){
+  // 매칭 결과·상태만 초기화, 입력 폼 데이터는 유지
   matchingDone=false;
   allMatches=[];companyId=null;companyData=null;currentCat='전체';selNeeds=[];
   document.getElementById('match-count').textContent='0';
@@ -648,15 +648,18 @@ function rematch(){
   document.getElementById('sum-body').style.display='none';
   document.getElementById('sum-loading').style.display='flex';
   document.getElementById('report-badge').style.display='none';
-  document.querySelectorAll('.need-chip').forEach(c=>c.classList.remove('selected'));
-  // 폼 필드 초기화
-  ['company_name','business_number','ceo_name','founded_date','industry_detail','district','homepage','description'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  ['biz_type','industry','region'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  ['employee_count','annual_revenue'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('user-avatar').textContent='?';
-  document.getElementById('user-name').textContent='기업명 미입력';
-  document.getElementById('user-company').textContent='정보를 입력해주세요';
-  goStep1();navigate('onboarding');
+  // need-chip 선택 상태는 유지 (selNeeds는 초기화했지만 UI는 유지)
+  // 입력된 기업 정보는 그대로 — Step 1 화면만 보여줌
+  document.getElementById('form-step-1').style.display='block';
+  document.getElementById('form-step-2').style.display='none';
+  document.getElementById('form-step-3').style.display='none';
+  setStep(1);
+  // 지원사업 매칭 페이지로 이동
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-onboarding').classList.add('active');
+  document.querySelectorAll('.nav-item')[0].classList.add('active');
+  document.getElementById('breadcrumb-text').textContent='지원사업 매칭';
 }
 
 function goStep1(){document.getElementById('form-step-1').style.display='block';document.getElementById('form-step-2').style.display='none';document.getElementById('form-step-3').style.display='none';setStep(1);}
