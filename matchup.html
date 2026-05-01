@@ -508,6 +508,15 @@
         <div class="stat-card"><div class="stat-label">임박 마감</div><div class="stat-value danger" id="stat-deadline">-</div><div class="stat-sub">일 이내</div></div>
       </div>
 
+      <!-- 0건 결과 박스 -->
+      <div id="no-result-box" style="display:none;margin-bottom:24px">
+        <div style="background:linear-gradient(135deg,#1a1740,#0d1a2e);border-radius:16px;padding:36px;text-align:center;color:rgba(255,255,255,0.7)">
+          <div style="font-size:40px;margin-bottom:14px">🔍</div>
+          <div style="font-size:18px;font-weight:700;color:white;margin-bottom:10px">현재 귀사에 딱 맞는 지원사업이 없습니다</div>
+          <div style="font-size:13px;line-height:1.8;margin-bottom:20px">지원사업 DB는 매월 업데이트됩니다.<br>기업 소개를 더 상세히 입력하거나, 다음 달에 다시 확인해보세요.</div>
+          <button id="no-result-rematch-btn" style="background:linear-gradient(135deg,#4F46E5,#7C3AED);border:none;color:white;padding:14px 28px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(79,70,229,0.4)">↺ 정보 수정 후 다시 매칭하기</button>
+        </div>
+      </div>
       <!-- 기업 분석 요약 카드 -->
       <div class="summary-card" id="summary-card">
         <div class="sum-loading-wrap" id="sum-loading">
@@ -644,11 +653,15 @@ function rematch(){
   matchingDone=false;
   allMatches=[];companyId=null;companyData=null;currentCat='전체';selNeeds=[];
   document.getElementById('match-count').textContent='0';
+  // summary-card 초기화
   document.getElementById('summary-card').classList.remove('show');
+  document.getElementById('summary-card').style.display='';
   document.getElementById('sum-body').style.display='none';
   document.getElementById('sum-loading').style.display='flex';
   document.getElementById('report-badge').style.display='none';
-  // need-chip 선택 상태는 유지 (selNeeds는 초기화했지만 UI는 유지)
+  // 0건 박스 숨기기
+  const noBox=document.getElementById('no-result-box');
+  if(noBox)noBox.style.display='none';
   // 입력된 기업 정보는 그대로 — Step 1 화면만 보여줌
   document.getElementById('form-step-1').style.display='block';
   document.getElementById('form-step-2').style.display='none';
@@ -767,16 +780,9 @@ JSON 배열만 답변 (다른 텍스트 절대 금지):
     matchingDone=true;
     navigate('results');
     // 요약 카드는 결과 없을 때 별도 처리
-    document.getElementById('summary-card').classList.add('show');
-    document.getElementById('sum-loading').style.display='none';
-    document.getElementById('sum-body').style.display='none';
-    document.getElementById('summary-card').innerHTML=`
-      <div style="background:linear-gradient(135deg,#1a1740,#0d1a2e);border-radius:16px;padding:28px;text-align:center;color:rgba(255,255,255,0.7)">
-        <div style="font-size:36px;margin-bottom:12px">🔍</div>
-        <div style="font-size:16px;font-weight:700;color:white;margin-bottom:8px">현재 귀사에 딱 맞는 지원사업이 없습니다</div>
-        <div style="font-size:13px;line-height:1.7">지원사업 DB는 매월 업데이트됩니다.<br>기업 소개를 더 상세히 입력하거나, 다음 달에 다시 확인해보세요.<br><br>
-        <button onclick="rematch()" style="background:rgba(79,70,229,0.5);border:1px solid rgba(99,102,241,0.6);color:white;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;margin-top:8px">↺ 정보 수정 후 다시 매칭하기</button></div>
-      </div>`;
+    // 0건 — 별도 no-result 박스 표시
+    document.getElementById('no-result-box').style.display='block';
+    document.getElementById('summary-card').style.display='none';
     showToast('현재 귀사에 맞는 지원사업을 찾지 못했습니다');
     return;
   }
@@ -1132,6 +1138,11 @@ function toggleSaveFromSaved(mid){const m=allMatches.find(x=>x.id===mid);if(!m)r
 function filterCategory(c,el){currentCat=c;document.querySelectorAll('.filter-chip').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderResults(allMatches);}
 function sortResults(by){if(by==='score')allMatches.sort((a,b)=>b.match_score-a.match_score);if(by==='amount')allMatches.sort((a,b)=>(b.program?.max_support_amount||0)-(a.program?.max_support_amount||0));if(by==='deadline')allMatches.sort((a,b)=>new Date(a.program?.deadline||'9999')-new Date(b.program?.deadline||'9999'));renderResults(allMatches);}
 function exportResults(){const rows=[['순위','사업명','기관','적합도','지원금액','마감일','매칭이유']];allMatches.forEach((m,i)=>{const p=m.program||{};rows.push([i+1,p.title||'',p.organization||'',m.match_score+'점',p.max_support_amount||'',p.deadline||'',m.match_reason||'']);});const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);a.download='매치업_결과.csv';a.click();showToast('CSV 다운로드 완료');}
+// no-result 버튼 이벤트 (동적 생성이므로 이벤트 위임)
+document.addEventListener('click', function(e){
+  if(e.target && e.target.id==='no-result-rematch-btn'){rematch();}
+});
+
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 </script>
 </body>
