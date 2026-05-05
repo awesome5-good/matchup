@@ -1308,7 +1308,7 @@ VISION: 3년 후 비전 (해당 업종·규모 기준)`;
 }
 
 function escapeHtml(str){return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function normalizeReportRaw(raw){return String(raw||'').replace(/\r\n?/g,'\n').replace(/(^|\n)\s*TAB([1-4])\s*[:\-\)]?\s*/gmi,'$1[TAB$2]\n').replace(/(^|\n)\s*\[S([1-4])\]/gmi,'$1[TAB$2]');}
+function normalizeReportRaw(raw){return String(raw||'').replace(/\r\n?/g,'\n').replace(/^(\s*)TAB([1-4])\s*[:\-\)]?\s*/gmi,'$1[TAB$2]\n').replace(/^(\s*)\[S([1-4])\]/gmi,'$1[TAB$2]');}
 function ps(raw,tag){const normalized=normalizeReportRaw(raw);const r=normalized.match(new RegExp(`\\[${tag}\\]([\\s\\S]*?)(?=(\\[TAB[1-4]\\]|$))`,`i`));return r?r[1].trim():'';}
 function pf(sec,tag){if(!sec) return '';const r=sec.match(new RegExp(`(?:^|\n)\\s*${tag}\\s*:\\s*([\\s\\S]*?)(?=\\n\\s*(?:[A-Z][A-Z0-9_]*\\s*:|\\[TAB[1-4]\\]|$))`,'i'));console.log(`Parsing ${tag} from section:`, sec, 'Result:', r?r[1].trim():'');return r?r[1].trim():'';}
 function formatText(txt){return escapeHtml(String(txt||'')).replace(/\r\n?/g,'\n').replace(/\n{2,}/g,'<br><br>').replace(/\n/g,'<br>');}
@@ -1324,7 +1324,8 @@ function parseFullReport(raw){
   const normalized=normalizeReportRaw(raw);
   const sections={};
   ['TAB1','TAB2','TAB3','TAB4'].forEach(tag=>{
-    const regex=new RegExp('\\['+tag+'\\]([\\s\\S]*?)(?=(\\[TAB[1-4]\\]|$))','i');
+    const nextTag = tag === 'TAB4' ? '' : 'TAB[' + (parseInt(tag.slice(3)) + 1) + '-4]';
+    const regex=new RegExp('(?<=^|\\n)\\['+tag+'\\]\\n?([\\s\\S]*?)(?=\\n\\['+nextTag+'\\]|$)', 'i');
     const match=normalized.match(regex);
     sections[tag]=match?match[1].trim():'';
   });
