@@ -927,6 +927,7 @@ JSON 배열만 답변 (다른 텍스트 절대 금지):
   document.getElementById('match-count').textContent=allMatches.length;
   showToast(`✅ AI가 ${allMatches.length}건 매칭 완료! (관련성 높은 것만 선별)`);
   matchingDone=true;
+document.getElementById('no-result-box').style.display='none';
   navigate('results');
   startSummaryGen();
 }
@@ -1392,7 +1393,7 @@ sc.style.display=savedMatches.length>0?'inline':'none';localStorage.setItem('mat
 async function renderSaved(){
   const {data:{session}}=await db.auth.getSession();
   if(session){
-    const {data:saved}=await db.from('saved_programs').select('*, program:programs(*)').eq('user_id',session.user.id).order('created_at',{ascending:false});
+    const {data:saved}=await db.from('saved_programs').select('*, program:programs(*)').eq('user_id',session.user.id).order('created_at',{ascending:false}).limit(50);
     if(saved&&saved.length>0){
       savedMatches=saved.map(s=>({id:'s_'+s.program_id,match_score:s.match_score,match_reason:s.match_reason,is_saved:true,program:s.program}));
     } else {
