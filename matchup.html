@@ -412,7 +412,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>기업 진단 리포트<span class="nav-badge" id="report-badge" style="background:#7C3AED;display:none">NEW</span>
     </div>
     <div class="nav-item" onclick="navigate('saved')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>관심 저장 목록<span class="nav-badge" id="saved-count" style="display:none">0</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>관심 저장 목록<span class="nav-badge" id="saved-count" style="background:#F59E0B;display:none">0</span>
     </div>
   </div>
   <div class="sidebar-footer">
@@ -987,8 +987,8 @@ async function startSummaryGen(){
 }
 
 function goToReport(){
-  matchingDone=true;
   navigate('report');
+  matchingDone=true;
   generateFullReport();
 }
 
@@ -1368,14 +1368,20 @@ function renderResults(m){
   document.getElementById('results-list').innerHTML=html;
 }
 
-function toggleSave(mid,btn){const m=allMatches.find(x=>x.id===mid);if(!m)return;m.is_saved=!m.is_saved;btn.textContent=m.is_saved?'★ 관심 저장됨':'☆ 관심 저장';btn.className='btn-save'+(m.is_saved?' saved':'');savedMatches=allMatches.filter(x=>x.is_saved);document.getElementById('saved-count').textContent=savedMatches.length;localStorage.setItem('matchup_saved',JSON.stringify(savedMatches));
+function toggleSave(mid,btn){const m=allMatches.find(x=>x.id===mid);if(!m)return;m.is_saved=!m.is_saved;btn.textContent=m.is_saved?'★ 관심 저장됨':'☆ 관심 저장';btn.className='btn-save'+(m.is_saved?' saved':'');savedMatches=allMatches.filter(x=>x.is_saved);document.getElementById('saved-count').textContent=savedMatches.length;
+const sc=document.getElementById('saved-count');
+sc.style.display=savedMatches.length>0?'inline':'none';localStorage.setItem('matchup_saved',JSON.stringify(savedMatches));
   const tsc=document.getElementById('tab-saved-count');
   if(tsc){tsc.textContent=savedMatches.length;tsc.style.display=savedMatches.length>0?'block':'none';}
   showToast(m.is_saved?'관심 저장했습니다':'저장을 취소했습니다');}
 
-function renderSaved(){savedMatches=allMatches.filter(x=>x.is_saved);document.getElementById('saved-count').textContent=savedMatches.length;if(savedMatches.length===0){document.getElementById('saved-list').innerHTML='<div class="empty-state"><h3>아직 저장한 지원사업이 없어요</h3><p>매칭 결과에서 ☆ 관심 저장을 눌러보세요</p></div>';return;}const today=new Date();document.getElementById('saved-list').innerHTML=savedMatches.map(m=>{const p=m.program||{};const sc=m.match_score;const tags=Array.isArray(p.tags)?p.tags.map(t=>`<span class="tag">${t}</span>`).join(''):'';const dl=p.deadline?Math.ceil((new Date(p.deadline)-today)/86400000):null;const amt=p.max_support_amount>=100000000?`최대 ${(p.max_support_amount/100000000).toFixed(1)}억원`:p.max_support_amount?`최대 ${Math.round(p.max_support_amount/10000)}만원`:'-';return `<div class="program-card"><div class="score-ring"><div class="score-circle ${sc>=85?'high':'mid'}"><div class="score-num">${sc}</div><div class="score-pct">점</div></div><div class="score-badge ${sc>=85?'best':'good'}">${sc>=85?'최적합':'적합'}</div></div><div class="program-info"><div class="program-title">${p.title||''}</div><div class="program-org">${p.organization||''}</div>${tags?`<div class="program-tags">${tags}</div>`:''}${m.match_reason?`<div class="program-checks"><div class="check-item"><span class="check-icon">✓</span>${m.match_reason}</div></div>`:''}  <div class="program-meta"><span>${amt}</span>${dl&&dl>0?`<span class="${dl<=14?'deadline':''}">마감 D-${dl}</span>`:''}</div></div><div class="program-actions"><button class="btn-save saved" onclick="toggleSaveFromSaved('${m.id}')">★ 관심 저장됨</button>${p.source_url&&p.source_url!=='#'?`<a href="${p.source_url}" target="_blank"><button class="btn-detail">자세히 보기 →</button></a>`:'<button class="btn-detail">자세히 보기 →</button>'}</div></div>`;}).join('');}
+function renderSaved(){savedMatches=allMatches.filter(x=>x.is_saved);document.getElementById('saved-count').textContent=savedMatches.length;
+const sc=document.getElementById('saved-count');
+sc.style.display=savedMatches.length>0?'inline':'none';if(savedMatches.length===0){document.getElementById('saved-list').innerHTML='<div class="empty-state"><h3>아직 저장한 지원사업이 없어요</h3><p>매칭 결과에서 ☆ 관심 저장을 눌러보세요</p></div>';return;}const today=new Date();document.getElementById('saved-list').innerHTML=savedMatches.map(m=>{const p=m.program||{};const sc=m.match_score;const tags=Array.isArray(p.tags)?p.tags.map(t=>`<span class="tag">${t}</span>`).join(''):'';const dl=p.deadline?Math.ceil((new Date(p.deadline)-today)/86400000):null;const amt=p.max_support_amount>=100000000?`최대 ${(p.max_support_amount/100000000).toFixed(1)}억원`:p.max_support_amount?`최대 ${Math.round(p.max_support_amount/10000)}만원`:'-';return `<div class="program-card"><div class="score-ring"><div class="score-circle ${sc>=85?'high':'mid'}"><div class="score-num">${sc}</div><div class="score-pct">점</div></div><div class="score-badge ${sc>=85?'best':'good'}">${sc>=85?'최적합':'적합'}</div></div><div class="program-info"><div class="program-title">${p.title||''}</div><div class="program-org">${p.organization||''}</div>${tags?`<div class="program-tags">${tags}</div>`:''}${m.match_reason?`<div class="program-checks"><div class="check-item"><span class="check-icon">✓</span>${m.match_reason}</div></div>`:''}  <div class="program-meta"><span>${amt}</span>${dl&&dl>0?`<span class="${dl<=14?'deadline':''}">마감 D-${dl}</span>`:''}</div></div><div class="program-actions"><button class="btn-save saved" onclick="toggleSaveFromSaved('${m.id}')">★ 관심 저장됨</button>${p.source_url&&p.source_url!=='#'?`<a href="${p.source_url}" target="_blank"><button class="btn-detail">자세히 보기 →</button></a>`:'<button class="btn-detail">자세히 보기 →</button>'}</div></div>`;}).join('');}
 
-function toggleSaveFromSaved(mid){const m=allMatches.find(x=>x.id===mid);if(!m)return;m.is_saved=false;savedMatches=allMatches.filter(x=>x.is_saved);document.getElementById('saved-count').textContent=savedMatches.length;showToast('저장을 취소했습니다');renderSaved();}
+function toggleSaveFromSaved(mid){const m=allMatches.find(x=>x.id===mid);if(!m)return;m.is_saved=false;savedMatches=allMatches.filter(x=>x.is_saved);document.getElementById('saved-count').textContent=savedMatches.length;
+const sc=document.getElementById('saved-count');
+sc.style.display=savedMatches.length>0?'inline':'none';showToast('저장을 취소했습니다');renderSaved();}
 function filterCategory(c,el){currentCat=c;document.querySelectorAll('.filter-chip').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderResults(allMatches);}
 function sortResults(by){if(by==='score')allMatches.sort((a,b)=>b.match_score-a.match_score);if(by==='amount')allMatches.sort((a,b)=>(b.program?.max_support_amount||0)-(a.program?.max_support_amount||0));if(by==='deadline')allMatches.sort((a,b)=>new Date(a.program?.deadline||'9999')-new Date(b.program?.deadline||'9999'));renderResults(allMatches);}
 function exportResults(){const rows=[['순위','사업명','기관','적합도','지원금액','마감일','매칭이유']];allMatches.forEach((m,i)=>{const p=m.program||{};rows.push([i+1,p.title||'',p.organization||'',m.match_score+'점',p.max_support_amount||'',p.deadline||'',m.match_reason||'']);});const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);a.download='매치업_결과.csv';a.click();showToast('CSV 다운로드 완료');}
