@@ -778,6 +778,7 @@ function navigate(page){
   });
   if(page==='results')loadResults();
   if(page==='saved')renderSaved();
+  if(page==='report'&&!matchingDone)loadReportHistory();
   window.scrollTo(0,0);
 }
 
@@ -987,6 +988,70 @@ async function startSummaryGen(){
 
 function goToReport(){navigate('report');generateFullReport();}
 
+async function loadReportHistory(){
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){
+    document.getElementById('report-area').innerHTML=`
+      <div class="report-empty">
+        <div style="font-size:48px;margin-bottom:16px">🔒</div>
+        <h3>로그인이 필요해요</h3>
+        <p>리포트 히스토리는 로그인 후 확인할 수 있어요</p>
+        <button class="btn-primary" onclick="goToLogin()" style="margin:16px auto 0">로그인하기</button>
+      </div>`;
+    return;
+  }
+  const {data:reports}=await db.from('reports').select('*').eq('user_id',session.user.id).order('created_at',{ascending:false});
+  if(!reports||reports.length===0){
+    document.getElementById('report-area').innerHTML=`
+      <div class="report-empty">
+        <div style="font-size:48px;margin-bottom:16px">📋</div>
+        <h3>아직 리포트가 없어요</h3>
+        <p>매칭 결과 화면에서 리포트를 생성해보세요</p>
+        <button class="btn-primary" onclick="navigate('results')" style="margin:16px auto 0">매칭 결과로 이동 →</button>
+      </div>`;
+    return;
+  }
+  const listHtml=reports.map((r,i)=>`
+    <div class="rpt-card" style="cursor:pointer;transition:all 0.15s;" onclick="viewReport('${r.id}')" id="rpt-item-${r.id}">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-size:16px;font-weight:700;margin-bottom:4px;">${r.company_name||'기업'}</div>
+          <div style="font-size:13px;color:var(--gray-500);">${r.industry||''} · ${r.region||''} · 매칭 ${r.match_count||0}건</div>
+          <div style="font-size:12px;color:var(--gray-400);margin-top:4px;">${new Date(r.created_at).toLocaleDateString('ko-KR')} 생성</div>
+        </div>
+        <div style="color:var(--primary);font-size:13px;font-weight:600;">보기 →</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('report-area').innerHTML=`
+    <div style="margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-size:16px;font-weight:700;">리포트 히스토리 (${reports.length}건)</div>
+    </div>
+    ${listHtml}`;
+  // 리포트 데이터 저장
+  window._reportCache={};
+  reports.forEach(r=>window._reportCache[r.id]=r);
+}
+
+function viewReport(id){
+  const r=window._reportCache?.[id];
+  if(!r)return;
+  const cd={company_name:r.company_name,industry:r.industry,region:r.region};
+  const iData=IMARG[r.industry]||IMARG['기타'];
+  document.getElementById('report-subtitle').textContent=`${r.company_name} · ${new Date(r.created_at).toLocaleDateString('ko-KR')} 생성`;
+  renderFullReport(r.report_data,cd,iData,0);
+  // 목록으로 돌아가기 버튼 추가
+  const tabs=document.querySelector('.rpt-tabs');
+  if(tabs&&!document.getElementById('btn-back-history')){
+    const backBtn=document.createElement('button');
+    backBtn.id='btn-back-history';
+    backBtn.className='btn-secondary';
+    backBtn.style='margin-bottom:16px;';
+    backBtn.textContent='← 목록으로';
+    backBtn.onclick=loadReportHistory;
+    document.getElementById('report-area').prepend(backBtn);
+  }
+}
+
 async function generateFullReport(){
   document.getElementById('report-badge').style.display='inline';
   const trb=document.getElementById('tab-report-badge');
@@ -1062,6 +1127,18 @@ ACTION: 내일 당장 할 한 가지 행동 (구체적인 행동 명시, 1문장
   try{
     const result=await callAPI(prompt,5000);
     renderFullReport(result,cd,iData,rev);
+    // 리포트 Supabase 저장
+    const {data:{session}}=await db.auth.getSession();
+    if(session){
+      await db.from('reports').insert({
+        user_id:session.user.id,
+        company_name:cd.company_name||'',
+        industry:cd.industry||'',
+        region:cd.region||'',
+        match_count:allMatches.length,
+        report_data:result
+      });
+    }
   }catch(e){
     document.getElementById('report-area').innerHTML='<div class="rpt-generating"><p style="color:var(--danger)">리포트 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</p></div>';
   }
