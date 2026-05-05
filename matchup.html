@@ -186,9 +186,9 @@
     .rpt-gen-title{font-size:20px;font-weight:800;color:var(--gray-900);margin-bottom:12px;}
     .rpt-gen-sub{font-size:14px;color:var(--gray-500);line-height:1.8;max-width:420px;margin:0 auto;}
     .rpt-gen-sub strong{color:var(--primary);}
-    .rpt-gen-bar{width:280px;height:4px;background:var(--gray-200);border-radius:4px;margin:24px auto 0;overflow:hidden;}
-    .rpt-gen-fill{height:100%;background:linear-gradient(90deg,var(--primary),#7C3AED);border-radius:4px;animation:lbar 2.5s ease-in-out infinite;}
-    @keyframes lbar{0%{width:0%;margin-left:0}50%{width:70%}100%{width:0%;margin-left:100%}}
+    .rpt-gen-bar{width:280px;height:12px;background:#E9E7FF;border-radius:999px;margin:24px auto 8px;overflow:hidden;}
+    .rpt-gen-fill{width:0%;height:100%;background:linear-gradient(90deg,#534AB7,#7C3AED);border-radius:999px;transition:width 0.2s ease;}
+    .rpt-gen-progress{font-size:13px;color:var(--gray-500);font-weight:700;letter-spacing:0.04em;}
     .rpt-tabs{display:flex;border-bottom:2px solid var(--gray-200);margin-bottom:28px;overflow-x:auto;}
     .rpt-tab{padding:12px 20px;font-size:14px;font-weight:600;color:var(--gray-500);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all 0.15s;}
     .rpt-tab:hover{color:var(--gray-900);}
@@ -1091,8 +1091,22 @@ async function generateFullReport(){
       <div class="rpt-gen-icons">🧑‍💼📋</div>
       <div class="rpt-gen-title">귀사만을 위한 맞춤 진단 리포트를<br>작성하고 있습니다</div>
       <div class="rpt-gen-sub">지금까지 <strong>500여 개 기업</strong>을 직접 만나며 쌓아온<br>컨설팅·멘토링 노하우와 누적 데이터,<br>그리고 입력해주신 귀사 정보를 종합하여 분석 중입니다.<br><br>잠시만 기다려 주세요 ☕</div>
-      <div class="rpt-gen-bar"><div class="rpt-gen-fill"></div></div>
+      <div class="rpt-gen-bar"><div class="rpt-gen-fill" id="rpt-gen-fill"></div></div>
+      <div class="rpt-gen-progress" id="rpt-gen-progress">0%</div>
     </div>`;
+
+  const fillEl=document.getElementById('rpt-gen-fill');
+  const progressEl=document.getElementById('rpt-gen-progress');
+  let progress=0;
+  if(window._reportProgressTimer){clearInterval(window._reportProgressTimer);}
+  window._reportProgressTimer=setInterval(()=>{
+    if(progress < 92){
+      progress += Math.floor(Math.random()*6)+3;
+      if(progress > 92) progress = 92;
+      if(fillEl) fillEl.style.width = `${progress}%`;
+      if(progressEl) progressEl.textContent = `${progress}%`;
+    }
+  }, 180);
 
   const top3=allMatches.slice(0,3).map((m,i)=>`${i+1}순위: ${m.program?.title||''} (${m.match_score}점) — ${m.match_reason||''}`).join('\n');
   const iData=IMARG[cd.industry]||IMARG['기타'];
@@ -1161,6 +1175,11 @@ VISION: 3년 후 비전 (해당 업종·규모 기준)`;
 
   try{
     const result=await callAPI(prompt,5000);
+    if(window._reportProgressTimer){clearInterval(window._reportProgressTimer);window._reportProgressTimer=null;}
+    const fillEl=document.getElementById('rpt-gen-fill');
+    const progressEl=document.getElementById('rpt-gen-progress');
+    if(fillEl) fillEl.style.width='100%';
+    if(progressEl) progressEl.textContent='100%';
     renderFullReport(result,cd,iData,rev);
     // 리포트 Supabase 저장
     const {data:{session}}=await db.auth.getSession();
@@ -1175,6 +1194,7 @@ VISION: 3년 후 비전 (해당 업종·규모 기준)`;
       });
     }
   }catch(e){
+    if(window._reportProgressTimer){clearInterval(window._reportProgressTimer);window._reportProgressTimer=null;}
     document.getElementById('report-area').innerHTML='<div class="rpt-generating"><p style="color:var(--danger)">리포트 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</p></div>';
   }
 }
