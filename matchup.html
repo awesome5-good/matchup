@@ -1321,42 +1321,44 @@ function parseProgramLines(section){const lines=String(section||'').match(/^\s*P
 function parseJudgePoints(section){return ['JUDGE_POINT_1','JUDGE_POINT_2','JUDGE_POINT_3'].map(tag=>parseField(section,tag)).filter(Boolean).map(text=>{const parts=String(text).split('|').map(s=>s.trim());return{point:parts[0]||'',tip:parts[1]||''};});} 
 function parseChecklistItems(section){const raw=parseField(section,'CHECKLIST');return String(raw||'').split(/\||\n|•|-+/).map(s=>s.trim()).filter(Boolean);} 
 function parseFullReport(raw){
-  console.log('parseFullReport called with raw:', raw);
   const normalized=normalizeReportRaw(raw);
-  console.log('Normalized raw:', normalized);
   const sections={};
   ['TAB1','TAB2','TAB3','TAB4'].forEach(tag=>{
-    const regex=new RegExp(`\\[${tag}\\]([\\s\\S]*?)(?=(\\[TAB[1-4]\\]|$))`,`i`);
+    const regex=new RegExp('\\['+tag+'\\]([\\s\\S]*?)(?=(\\[TAB[1-4]\\]|$))','i');
     const match=normalized.match(regex);
     sections[tag]=match?match[1].trim():'';
   });
-  console.log('Sections:', sections);
-  return{
-  raw:normalized,
-  tab1:sections.TAB1,
-  tab2:sections.TAB2,
-  tab3:sections.TAB3,
-  tab4:sections.TAB4,
-  situation:parseField(sections.TAB1,'SITUATION'),
-  complication:parseField(sections.TAB1,'COMPLICATION'),
-  resolution:parseField(sections.TAB1,'RESOLUTION'),
-  usageGuidance:parseField(sections.TAB1,'USAGE_GUIDANCE')||parseField(sections.TAB1,'USAGE')||'',
-  matchScoreReason:parseField(sections.TAB2,'MATCH_SCORE_REASON')||parseField(sections.TAB2,'SUMMARY')||sections.TAB2,
-  programs:parseProgramLines(sections.TAB2),
-  strengths:parseFieldList(sections.TAB2,['STRENGTH_1','STRENGTH_2']),
-  weaknesses:parseFieldList(sections.TAB2,['WEAKNESS_1','WEAKNESS_2']),
-  features:parseFieldList(sections.TAB3,['FEATURE_1','FEATURE_2','FEATURE_3']),
-  judgePoints:parseJudgePoints(sections.TAB3),
-  checklistItems:parseChecklistItems(sections.TAB3),
-  practicalTips:parseFieldList(sections.TAB3,['PRACTICAL_TIP_1','PRACTICAL_TIP_2','PRACTICAL_TIP_3']),
-  timelineNow:parseField(sections.TAB4,'TIMELINE_NOW'),
-  timeline3m:parseField(sections.TAB4,'TIMELINE_3M'),
-  timeline1y:parseField(sections.TAB4,'TIMELINE_1Y'),
-  timeline3y:parseField(sections.TAB4,'TIMELINE_3Y'),
-  vision:parseField(sections.TAB4,'VISION'),
-  pipeline:parsePipeList(parseField(sections.TAB4,'PIPELINE'))
-};
-console.log('파싱 결과:', JSON.stringify(parsed, null, 2));
+  const parsed={
+    raw:normalized,
+    tab1:sections.TAB1,
+    tab2:sections.TAB2,
+    tab3:sections.TAB3,
+    tab4:sections.TAB4,
+    situation:parseField(sections.TAB1,'SITUATION'),
+    complication:parseField(sections.TAB1,'COMPLICATION'),
+    resolution:parseField(sections.TAB1,'RESOLUTION'),
+    usageGuidance:parseField(sections.TAB1,'USAGE_GUIDANCE')||'',
+    matchScoreReason:parseField(sections.TAB2,'MATCH_SCORE_REASON')||sections.TAB2,
+    programs:parseProgramLines(sections.TAB2),
+    strengths:parseFieldList(sections.TAB2,['STRENGTH_1','STRENGTH_2']),
+    weaknesses:parseFieldList(sections.TAB2,['WEAKNESS_1','WEAKNESS_2']),
+    features:parseFieldList(sections.TAB3,['FEATURE_1','FEATURE_2','FEATURE_3']),
+    judgePoints:parseJudgePoints(sections.TAB3),
+    checklistItems:parseChecklistItems(sections.TAB3),
+    practicalTips:parseFieldList(sections.TAB3,['PRACTICAL_TIP_1','PRACTICAL_TIP_2','PRACTICAL_TIP_3']),
+    timelineNow:parseField(sections.TAB4,'TIMELINE_NOW'),
+    timeline3m:parseField(sections.TAB4,'TIMELINE_3M'),
+    timeline1y:parseField(sections.TAB4,'TIMELINE_1Y'),
+    timeline3y:parseField(sections.TAB4,'TIMELINE_3Y'),
+    vision:parseField(sections.TAB4,'VISION'),
+    pipeline:parsePipeList(parseField(sections.TAB4,'PIPELINE'))
+  };
+  console.log('파싱 결과 situation:', parsed.situation);
+  console.log('파싱 결과 strengths:', parsed.strengths);
+  console.log('파싱 결과 features:', parsed.features);
+  console.log('파싱 결과 judgePoints:', parsed.judgePoints);
+  console.log('파싱 결과 timelineNow:', parsed.timelineNow);
+  return parsed;
 }
 
 function renderFullReport(raw,cd,iD,rev){
