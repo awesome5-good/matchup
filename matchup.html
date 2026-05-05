@@ -840,7 +840,8 @@ async function submitAndMatch(){
     description:desc,needs:selNeeds,
   };
   companyData=cd;
-  const {data:company,error}=await db.from('companies').insert({company_name:cd.company_name,business_number:cd.business_number,ceo_name:'',founded_date:cd.founded_date,industry:cd.industry,industry_detail:cd.industry_detail,region:cd.region,district:cd.district,employee_count:cd.employee_count,annual_revenue:cd.annual_revenue,homepage:cd.homepage,description:cd.description}).select().single();
+  const {data:{session}}=await db.auth.getSession();
+  const {data:company,error}=await db.from('companies').insert({company_name:cd.company_name,business_number:cd.business_number,ceo_name:'',founded_date:cd.founded_date,industry:cd.industry,industry_detail:cd.industry_detail,region:cd.region,district:cd.district,employee_count:cd.employee_count,annual_revenue:cd.annual_revenue,homepage:cd.homepage,description:cd.description,user_id:session?.user?.id||null}).select().single();
   if(error){showToast('저장 오류: '+error.message);goStep2();return;}
   companyId=company.id;
   document.getElementById('user-avatar').textContent=cd.company_name.charAt(0);
