@@ -1099,64 +1099,65 @@ async function generateFullReport(){
   const rev=cd.annual_revenue||0;
   const ageStr=cd.age_years!=null?`${cd.age_years}년차`:'';
 
-  const prompt=`당신은 소상공인·중소기업 전문 경영컨설턴트입니다. 500여 개 기업을 직접 컨설팅한 경험을 바탕으로 아래 기업의 진단 리포트를 작성하세요. 각 항목을 구체적이고 풍부하게, 대표님께 직접 말하는 따뜻하고 전문적인 톤으로 작성하세요.
+  const prompt=`당신은 소상공인·중소기업 맞춤형 경영컨설턴트입니다. 아래 기업 정보를 기반으로 고객에게 즉시 활용 가능한 실무 중심 보고서를 작성하세요. 결과는 반드시 입력된 기업 정보와 매칭 데이터를 기반으로 작성하며, 일반론은 사용하지 마세요.
 
 !! 중요: 마크다운 형식 절대 금지 !!
 - ** (굵게) 금지
 - ## (제목) 금지
 - * (기울임/리스트) 금지
-- 순수 텍스트와 [S1], [S2] 등 지정 구분자만 사용
+- 순수 텍스트와 [TAB1], [TAB2], [TAB3], [TAB4] 구분자만 사용
 
-기업: ${cd.company_name} / ${cd.biz_type||'?'} / ${cd.industry}${cd.industry_detail?' ('+cd.industry_detail+')':''} / ${cd.region}${cd.district?' '+cd.district:''} / 업력 ${ageStr||'미입력'} / 상시직원(대표제외) ${cd.employee_count!=null?cd.employee_count+'명':'미입력'} / 매출 ${rev>0?(rev/10000).toFixed(0)+'만원':'미입력'} / 업종평균마진율 ${iData.m}%
-필요분야: ${(cd.needs||[]).join(', ')||'미입력'}
-소개: ${cd.description}
+기업 정보:
+기업명: ${cd.company_name||'미입력'}
+사업자구분: ${cd.biz_type||'미입력'}
+업종: ${cd.industry||'미입력'}${cd.industry_detail?' ('+cd.industry_detail+')':''}
+지역: ${cd.region||'미입력'}${cd.district?' '+cd.district:''}
+업력: ${ageStr||'미입력'}
+직원수: ${cd.employee_count!=null?cd.employee_count+'명':'미입력'}
+연매출: ${rev>0?(rev/10000).toFixed(0)+'만원':'미입력'}
+현재 필요한 것: ${(cd.needs||[]).join(', ')||'미입력'}
+기업 소개: ${cd.description||'미입력'}
 
-매칭 TOP 3:
+매칭 Top 3 사업:
 ${top3}
 
-아래 형식대로 [S1][S2][S3][S4]로 구분하여 작성하세요.
+출력은 반드시 아래 4개 탭 구조로 작성하세요.
 
-[S1]
-INTRO: 이 기업의 본질을 꿰뚫는 한 문장 (컨설턴트가 처음 만나서 하는 첫 마디, 50자 이내)
-STR1_TITLE: 강점1 제목
-STR1_BODY: 강점1 상세 설명 (구체적 수치, 시장 맥락, 왜 이게 강점인지 3~4문장으로 충분히)
-STR2_TITLE: 강점2 제목
-STR2_BODY: 강점2 설명 (3~4문장)
-WEAK1_TITLE: 보완점1 제목
-WEAK1_BODY: 보완점1 (현실적 조언과 해결 방향 포함, 3~4문장)
-WEAK2_TITLE: 보완점2 제목 (있으면)
-WEAK2_BODY: 보완점2 설명
-${rev>0?`FINANCE: 연매출 ${(rev/10000).toFixed(0)}만원 기준 업종 평균 마진율 ${iData.m}%와 비교 분석, 현실적 재무 조언 (3~4문장)`:''}
+[TAB1]
+SITUATION: 해당 기업의 업종, 규모, 지역, 매출, 직원수, 업력 등 기반으로 한 현실 진단 (팩트 중심)
+COMPLICATION: 이 기업이 현재 직면한 가장 큰 리스크나 놓치고 있는 부분
+RESOLUTION: 지금 당장 실행할 수 있는 구체적 행동 1가지
+USAGE_GUIDANCE: 이 보고서를 어떻게 활용할지 3단계로 안내
 
-[S2]
-NOW_TITLE: 지금 당장 (3~5단어)
-NOW_BODY: 지금 신청해야 할 이유와 구체적인 액션 (매칭 결과 사업명 언급, 3~4문장)
-NOW_SPECS: 쌓이는스펙1|스펙2|스펙3
-Y1_TITLE: 1년 후 목표 (3~5단어)
-Y1_BODY: 1년 후 달성 가능한 성장 시나리오 (구체적 수치와 방향, 3~4문장)
-Y1_SPECS: 스펙1|스펙2
-Y3_TITLE: 3년 후 비전 (3~5단어)
-Y3_BODY: 3년 후 이 기업이 될 수 있는 모습 (구체적 목표와 전략, 3~4문장)
-Y3_SPECS: 스펙1|스펙2
-CALLOUT: 로드맵을 통해 얻는 핵심 인사이트 (2~3문장)
+[TAB2]
+MATCH_SCORE_REASON: 종합 매칭 점수 산출 근거를 한 문장으로 설명
+PROGRAM_1: 사업명 | 점수 | 이 기업에 맞는 이유 (2~3문장) | 태그 3개
+PROGRAM_2: 사업명 | 점수 | 이 기업에 맞는 이유 (2~3문장) | 태그 3개
+PROGRAM_3: 사업명 | 점수 | 이 기업에 맞는 이유 (2~3문장) | 태그 3개
+STRENGTH_1: 해당 기업의 핵심 강점 1 (구체적 수치 포함)
+STRENGTH_2: 해당 기업의 핵심 강점 2 (구체적 수치 포함)
+WEAKNESS_1: 보완이 필요한 영역 1 (지금 당장 할 수 있는 행동 포함)
+WEAKNESS_2: 보완이 필요한 영역 2 (지금 당장 할 수 있는 행동 포함)
 
-[S3]
-대상: ${allMatches[0]?.program?.title||'1순위 사업'}
-JUDGE1_T: 심사포인트1 제목
-JUDGE1_D: 심사관이 실제로 이 항목에서 무엇을 보는지, 어떻게 어필해야 하는지 (3~4문장)
-JUDGE2_T: 심사포인트2
-JUDGE2_D: 설명 (3~4문장)
-JUDGE3_T: 심사포인트3
-JUDGE3_D: 설명 (3~4문장)
-PLAN: 사업계획서 작성 전략 — 이 기업이 이 사업에 맞게 어떻게 써야 하는지 핵심 전략 (4~5문장)
-CHECKLIST: 서류1|서류2|서류3|서류4|서류5|서류6
-TIP1: 실전 합격 꿀팁1 (실제 심사에서 본 경험 기반, 2~3문장)
-TIP2: 꿀팁2 (2~3문장)
-TIP3: 꿀팁3 (2~3문장)
+[TAB3]
+FEATURE_1: 이 사업의 특징 1 및 해당 기업에 유리한 이유
+FEATURE_2: 이 사업의 특징 2 및 해당 기업에 유리한 이유
+FEATURE_3: 이 사업의 특징 3 및 해당 기업에 유리한 이유
+JUDGE_POINT_1: 심사 포인트 1 | 작성 팁 (해당 업종·규모에 맞춘 조언)
+JUDGE_POINT_2: 심사 포인트 2 | 작성 팁 (해당 업종·규모에 맞춘 조언)
+JUDGE_POINT_3: 심사 포인트 3 | 작성 팁 (해당 업종·규모에 맞춘 조언)
+CHECKLIST: 준비 체크리스트 8개를 | 로 구분하여 작성
+PRACTICAL_TIP_1: 업종 특화 실전 팁 1
+PRACTICAL_TIP_2: 업종 특화 실전 팁 2
+PRACTICAL_TIP_3: 업종 특화 실전 팁 3
 
-[S4]
-MESSAGE: 이 기업 대표님께 드리는 진심 어린 조언 — 5~6문장, 컨설턴트가 옆에 앉아 말하듯 따뜻하고 구체적으로, 격려와 현실적 방향 함께
-ACTION: 내일 당장 할 한 가지 행동 (구체적인 행동 명시, 1문장)`;
+[TAB4]
+TIMELINE_NOW: 지금 상태와 첫 번째 단계
+TIMELINE_3M: 3개월 후 목표와 실행 포인트
+TIMELINE_1Y: 1년 후 목표와 현실적 수치
+TIMELINE_3Y: 3년 후 비전과 규모
+PIPELINE: 다음 지원사업 파이프라인 3단계
+VISION: 3년 후 비전 (해당 업종·규모 기준)`;
 
   try{
     const result=await callAPI(prompt,5000);
@@ -1178,167 +1179,55 @@ ACTION: 내일 당장 할 한 가지 행동 (구체적인 행동 명시, 1문장
   }
 }
 
+function escapeHtml(str){return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function pf(sec,tag){const r=sec.match(new RegExp(`${tag}:\\s*(.+?)(?=\\n[A-Z0-9_]+:|$)`,'s'));if(!r)return '';let txt=r[1].trim();txt=txt.replace(/\*\*(.+?)\*\*/g,'$1');txt=txt.replace(/#{1,6}\s+/g,'');txt=txt.replace(/^\*\s+/gm,'');txt=txt.replace(/^-\s+/gm,'');return txt;}
-function ps(raw,tag){const r=raw.match(new RegExp(`\\[${tag}\\]([\\s\\S]*?)(?=\\[S[1-4]\\]|$)`));return r?r[1].trim():'';}
+function ps(raw,tag){const r=raw.match(new RegExp(`\\[${tag}\\]([\\s\\S]*?)(?=(\\[TAB[1-4]\\]|\\[S[1-4]\\]|$))`));return r?r[1].trim():'';}
 
 function renderFullReport(raw,cd,iD,rev){
-  const s1=ps(raw,'S1'),s2=ps(raw,'S2'),s3=ps(raw,'S3'),s4=ps(raw,'S4');
-  const f=(s,t)=>pf(s,t);
-  const intro=f(s1,'INTRO');
-  const st1t=f(s1,'STR1_TITLE'),st1b=f(s1,'STR1_BODY');
-  const st2t=f(s1,'STR2_TITLE'),st2b=f(s1,'STR2_BODY');
-  const w1t=f(s1,'WEAK1_TITLE'),w1b=f(s1,'WEAK1_BODY');
-  const w2t=f(s1,'WEAK2_TITLE'),w2b=f(s1,'WEAK2_BODY');
-  const fin=f(s1,'FINANCE');
-  const now_t=f(s2,'NOW_TITLE'),now_b=f(s2,'NOW_BODY'),now_sp=f(s2,'NOW_SPECS').split('|').filter(Boolean);
-  const y1_t=f(s2,'Y1_TITLE'),y1_b=f(s2,'Y1_BODY'),y1_sp=f(s2,'Y1_SPECS').split('|').filter(Boolean);
-  const y3_t=f(s2,'Y3_TITLE'),y3_b=f(s2,'Y3_BODY'),y3_sp=f(s2,'Y3_SPECS').split('|').filter(Boolean);
-  const co2=f(s2,'CALLOUT');
-  const j1t=f(s3,'JUDGE1_T'),j1d=f(s3,'JUDGE1_D');
-  const j2t=f(s3,'JUDGE2_T'),j2d=f(s3,'JUDGE2_D');
-  const j3t=f(s3,'JUDGE3_T'),j3d=f(s3,'JUDGE3_D');
-  const plan=f(s3,'PLAN');
-  const cl=f(s3,'CHECKLIST').split('|').filter(Boolean);
-  const t1=f(s3,'TIP1'),t2=f(s3,'TIP2'),t3=f(s3,'TIP3');
-  const msg=f(s4,'MESSAGE'),action=f(s4,'ACTION');
-
+  const t1=ps(raw,'TAB1');
+  const t2=ps(raw,'TAB2');
+  const t3=ps(raw,'TAB3');
+  const t4=ps(raw,'TAB4');
+  const renderSection=txt=>txt?`<div class="rpt-card"><div class="rpt-card-title">${escapeHtml(txt.split('\n')[0]||'')}</div><div class="prose">${escapeHtml(txt).replace(/\n/g,'<br>')}</div></div>`:'';
+  const commentHtml=renderSection(t1);
+  const summaryHtml=renderSection(t2);
+  const strategyHtml=renderSection(t3);
+  const roadmapHtml=renderSection(t4);
   const today=new Date();
   const tRows=allMatches.slice(0,5).map((m,i)=>{
     const p=m.program||{};
     const dl=p.deadline?Math.ceil((new Date(p.deadline)-today)/86400000):null;
     const amt=p.max_support_amount>=100000000?`${(p.max_support_amount/100000000).toFixed(0)}억원`:p.max_support_amount?`${Math.round(p.max_support_amount/10000)}만원`:'-';
-    return `<tr${i===0?' class="hl"':''}><td><strong>${i+1}순위</strong></td><td>${p.title||''}</td><td style="color:var(--primary);font-weight:700">${m.match_score}점</td><td>${amt}</td><td>${dl&&dl>0?`<span style="color:${dl<=14?'var(--danger)':'var(--gray-600)'}">D-${dl}</span>`:'-'}</td></tr>`;
+    return `<tr${i===0?' class="hl"':''}><td><strong>${i+1}순위</strong></td><td>${escapeHtml(p.title||'')}</td><td style="color:var(--primary);font-weight:700">${m.match_score}점</td><td>${amt}</td><td>${dl&&dl>0?`<span style="color:${dl<=14?'var(--danger)':'var(--gray-600)'}">D-${dl}</span>`:'-'}</td></tr>`;
   }).join('');
 
   document.getElementById('report-area').innerHTML=`
     <div class="rpt-tabs">
-      <div class="rpt-tab active" onclick="switchTab('t1',this)">🏢 기업 현황 진단</div>
-      <div class="rpt-tab" onclick="switchTab('t2',this)">📈 성장 로드맵</div>
-      <div class="rpt-tab" onclick="switchTab('t3',this)">🎯 1순위 신청 가이드</div>
-      <div class="rpt-tab" onclick="switchTab('t4',this)">💬 전문가 한마디</div>
+      <div class="rpt-tab active" onclick="switchTab('t1',this)">🧑‍💼 컨설턴트 코멘트</div>
+      <div class="rpt-tab" onclick="switchTab('t2',this)">📊 진단 요약</div>
+      <div class="rpt-tab" onclick="switchTab('t3',this)">🎯 지원사업 전략</div>
+      <div class="rpt-tab" onclick="switchTab('t4',this)">🚀 성장 로드맵</div>
     </div>
 
     <div class="rpt-tab-content active" id="t1">
-      ${intro?`<div class="consultant-intro"><div class="consultant-intro-label">🧑‍💼 컨설턴트 첫 마디</div><p>"${intro}"</p></div>`:''}
-      <div class="rpt-card">
-        <div class="rpt-card-title">📊 매칭 결과 요약 <span class="rpt-badge">${allMatches.length}건 매칭</span></div>
-        <div class="rpt-card-sub">귀사에 적합한 지원사업 상위 5건입니다</div>
-        <div class="fin-table"><table><thead><tr><th>순위</th><th>지원사업명</th><th>적합도</th><th>지원금액</th><th>마감</th></tr></thead><tbody>${tRows}</tbody></table></div>
-      </div>
-      ${rev>0?`<div class="rpt-card">
-        <div class="rpt-card-title">💰 재무 현황 분석</div>
-        <div class="rpt-card-sub">귀사 매출 기준 업종 평균 지표와 비교 분석했습니다</div>
-        <div class="kpi-grid">
-          <div class="kpi-card blue"><div class="kpi-label">전년도 매출액</div><div class="kpi-value">${Math.round(rev/10000).toLocaleString()}만원</div><div class="kpi-desc">기업 규모 판단 기준</div></div>
-          <div class="kpi-card green"><div class="kpi-label">업종 평균 마진율</div><div class="kpi-value">${iD.m}%</div><div class="kpi-desc">${iD.l} 업종 기준</div></div>
-          <div class="kpi-card purple"><div class="kpi-label">업종 평균 순이익률</div><div class="kpi-value">${iD.n}%</div><div class="kpi-desc">목표 기준치</div></div>
-        </div>
-        ${fin?`<div class="callout blue"><div class="callout-icon">📌</div><div class="callout-body"><div class="callout-title">재무 분석 및 컨설턴트 조언</div><div class="callout-text">${fin}</div></div></div>`:''}
-      </div>`:''}
-      <div class="rpt-card">
-        <div class="rpt-card-title">✅ 핵심 강점</div>
-        <div class="rpt-card-sub">이 강점들이 지원사업 선정에서 귀사를 유리하게 합니다</div>
-        <div class="str-grid">
-          ${st1t?`<div class="str-card pos"><div class="str-head"><div class="str-icon pos">💪</div><div class="str-title">${st1t}</div></div><div class="str-body">${st1b}</div></div>`:''}
-          ${st2t?`<div class="str-card pos"><div class="str-head"><div class="str-icon pos">🌟</div><div class="str-title">${st2t}</div></div><div class="str-body">${st2b}</div></div>`:''}
-        </div>
-      </div>
-      <div class="rpt-card">
-        <div class="rpt-card-title">🔧 보완이 필요한 영역</div>
-        <div class="rpt-card-sub">지금 개선하면 더 많은 지원사업에서 선정될 수 있습니다</div>
-        ${w1t?`<div class="str-card neg" style="margin-bottom:10px"><div class="str-head"><div class="str-icon neg">⚠️</div><div class="str-title">${w1t}</div></div><div class="str-body">${w1b}</div></div>`:''}
-        ${w2t?`<div class="str-card neg"><div class="str-head"><div class="str-icon neg">🔍</div><div class="str-title">${w2t}</div></div><div class="str-body">${w2b}</div></div>`:''}
-      </div>
+      ${commentHtml||`<div class="rpt-card"><div class="rpt-card-title">🧑‍💼 컨설턴트 코멘트</div><div class="prose">기업 정보 기반 현실 진단이 여기에 표시됩니다.</div></div>`}
     </div>
 
     <div class="rpt-tab-content" id="t2">
       <div class="rpt-card">
-        <div class="rpt-card-title">📈 지원사업 성장 로드맵</div>
-        <div class="rpt-card-sub">지금 이 지원사업을 발판 삼아 단계적으로 성장하는 전략입니다</div>
-        ${co2?`<div class="callout dark"><div class="callout-icon">🗺️</div><div class="callout-body"><div class="callout-title">로드맵 핵심 전략</div><div class="callout-text">${co2}</div></div></div>`:''}
-        <div class="roadmap" style="margin-top:24px">
-          <div class="roadmap-step">
-            <div class="roadmap-dot now">🎯</div>
-            <div class="roadmap-content">
-              <div class="roadmap-period">지금 바로</div>
-              <div class="roadmap-title">${now_t||'즉시 신청 가능한 사업'}</div>
-              <div class="roadmap-body">${now_b||''}</div>
-              ${now_sp.length?`<div class="spec-tags">${now_sp.map(s=>`<span class="spec-tag">${s}</span>`).join('')}</div>`:''}
-            </div>
-          </div>
-          <div class="roadmap-step">
-            <div class="roadmap-dot y1">📈</div>
-            <div class="roadmap-content">
-              <div class="roadmap-period">1년 후 목표</div>
-              <div class="roadmap-title">${y1_t||'성장 단계'}</div>
-              <div class="roadmap-body">${y1_b||''}</div>
-              ${y1_sp.length?`<div class="spec-tags">${y1_sp.map(s=>`<span class="spec-tag">${s}</span>`).join('')}</div>`:''}
-            </div>
-          </div>
-          <div class="roadmap-step">
-            <div class="roadmap-dot y3">🚀</div>
-            <div class="roadmap-content">
-              <div class="roadmap-period">3년 후 비전</div>
-              <div class="roadmap-title">${y3_t||'성숙 단계'}</div>
-              <div class="roadmap-body">${y3_b||''}</div>
-              ${y3_sp.length?`<div class="spec-tags">${y3_sp.map(s=>`<span class="spec-tag">${s}</span>`).join('')}</div>`:''}
-            </div>
-          </div>
-        </div>
+        <div class="rpt-card-title">📊 매칭 결과 요약</div>
+        <div class="rpt-card-sub">입력된 기업 정보 기반으로 선별된 추천 지원사업입니다.</div>
+        <div class="fin-table"><table><thead><tr><th>순위</th><th>지원사업명</th><th>적합도</th><th>지원금액</th><th>마감</th></tr></thead><tbody>${tRows}</tbody></table></div>
       </div>
+      ${summaryHtml||`<div class="rpt-card"><div class="rpt-card-title">진단 요약</div><div class="prose">기업 정보 기반 진단 요약이 여기에 표시됩니다.</div></div>`}
     </div>
 
     <div class="rpt-tab-content" id="t3">
-      <div class="rpt-card">
-        <div class="rpt-card-title">🎯 1순위 사업 신청 가이드 <span class="rpt-badge">${allMatches[0]?.program?.title||''}</span></div>
-        <div class="rpt-card-sub">이 사업에 합격하기 위해 반드시 알아야 할 정보입니다</div>
-        <div class="callout yellow"><div class="callout-icon">⚠️</div><div class="callout-body"><div class="callout-title">참고 안내</div><div class="callout-text">아래 가이드는 공고문 및 일반 심사 기준을 바탕으로 작성된 가이드입니다. 실제 신청 전 해당 기관의 공고문을 반드시 확인해주세요.</div></div></div>
-      </div>
-      <div class="rpt-card">
-        <div class="rpt-card-title">🔍 핵심 심사 포인트</div>
-        <div class="rpt-card-sub">심사관이 이 사업에서 실제로 집중해서 보는 항목입니다</div>
-        <div class="judge-grid">
-          ${j1t?`<div class="judge-item"><div class="judge-num">1</div><div><div class="judge-title">${j1t}</div><div class="judge-desc">${j1d}</div></div></div>`:''}
-          ${j2t?`<div class="judge-item"><div class="judge-num">2</div><div><div class="judge-title">${j2t}</div><div class="judge-desc">${j2d}</div></div></div>`:''}
-          ${j3t?`<div class="judge-item"><div class="judge-num">3</div><div><div class="judge-title">${j3t}</div><div class="judge-desc">${j3d}</div></div></div>`:''}
-        </div>
-      </div>
-      ${plan?`<div class="rpt-card">
-        <div class="rpt-card-title">📝 사업계획서 작성 전략</div>
-        <div class="rpt-card-sub">심사관의 눈에 띄는 사업계획서를 쓰는 방법입니다</div>
-        <div class="strategy-card"><div class="strategy-title">💡 귀사를 위한 맞춤 전략</div><div class="strategy-body">${plan}</div></div>
-      </div>`:''}
-      ${cl.length?`<div class="rpt-card">
-        <div class="rpt-card-title">📋 준비 서류 체크리스트</div>
-        <div class="rpt-card-sub">신청 전 아래 서류를 미리 준비해두세요</div>
-        <div class="checklist">${cl.map(item=>`<div class="chk-item"><div class="chk-icon">✓</div><span>${item}</span></div>`).join('')}</div>
-      </div>`:''}
-      ${(t1||t2||t3)?`<div class="rpt-card">
-        <div class="rpt-card-title">✨ 합격률을 높이는 실전 꿀팁</div>
-        <div class="rpt-card-sub">직접 컨설팅하면서 쌓은 실전 노하우입니다</div>
-        <div class="tip-box">
-          <div class="tip-box-head">🏆 합격 꿀팁</div>
-          ${t1?`<div class="tip-item">${t1}</div>`:''}
-          ${t2?`<div class="tip-item">${t2}</div>`:''}
-          ${t3?`<div class="tip-item">${t3}</div>`:''}
-        </div>
-      </div>`:''}
+      ${strategyHtml||`<div class="rpt-card"><div class="rpt-card-title">🎯 지원사업 전략</div><div class="prose">선택된 1순위 사업에 대한 전략과 준비 지침이 여기에 표시됩니다.</div></div>`}
     </div>
 
     <div class="rpt-tab-content" id="t4">
-      <div class="expert-quote-card">
-        <div class="expert-quote-mark">"</div>
-        <div class="expert-badge">💬 전문 경영컨설턴트의 한마디</div>
-        <div class="expert-text">${(msg||'').replace(/\n/g,'<br>')}</div>
-      </div>
-      <div class="rpt-card">
-        <div class="rpt-card-title">📌 내일 당장 해야 할 한 가지</div>
-        <div class="rpt-card-sub">말보다 행동이 먼저입니다. 지금 바로 시작해보세요.</div>
-        <div class="expert-action-card">
-          <div class="expert-action-label">✅ ACTION</div>
-          <div class="expert-action-text">${action||'1순위 지원사업 공고문을 확인하고 신청 준비를 시작해보세요'}</div>
-        </div>
-      </div>
+      ${roadmapHtml||`<div class="rpt-card"><div class="rpt-card-title">🚀 성장 로드맵</div><div class="prose">단계별 성장 목표와 다음 사업 파이프라인이 여기에 표시됩니다.</div></div>`}
     </div>`;
 }
 
