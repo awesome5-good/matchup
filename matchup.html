@@ -12,11 +12,15 @@
     *{margin:0;padding:0;box-sizing:border-box;}
     body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--gray-50);color:var(--gray-900);display:flex;min-height:100vh;overflow-x:hidden;}
     .sidebar{width:var(--sidebar-width);background:#fff;border-right:1px solid var(--gray-200);display:flex;flex-direction:column;position:fixed;height:100vh;z-index:100;}
-    .sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;gap:10px;cursor:pointer;transition:opacity 0.15s;}
+    .sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid var(--gray-100);display:flex;flex-direction:column;align-items:flex-start;gap:10px;cursor:pointer;transition:opacity 0.15s;}
     .sidebar-logo:hover{opacity:0.75;}
+    .sidebar-logo-top{display:flex;align-items:center;gap:10px;width:100%;}
     .logo-icon{width:32px;height:32px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:16px;}
-    .logo-text{font-weight:700;font-size:16px;}.logo-badge{font-size:10px;background:var(--primary-light);color:var(--primary);padding:2px 6px;border-radius:4px;font-weight:600;}
-    .beta-free-badge{font-size:11px;background:var(--success);color:white;padding:4px 8px;border-radius:12px;font-weight:600;margin-left:8px;}
+    .logo-title-group{display:flex;flex-direction:column;gap:4px;}
+    .logo-text{font-weight:700;font-size:16px;}
+    .logo-badge{font-size:10px;background:var(--primary-light);color:var(--primary);padding:2px 6px;border-radius:4px;font-weight:600;display:inline-block;}
+    .beta-free-badge{font-size:11px;background:var(--success);color:white;padding:4px 8px;border-radius:12px;font-weight:600;}
+
     .sidebar-section{padding:16px 12px 8px;}
     .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;color:var(--gray-600);margin-bottom:2px;transition:all 0.15s;}
     .nav-item:hover{background:var(--gray-50);color:var(--gray-900);}
@@ -400,7 +404,13 @@
 
 <aside class="sidebar">
   <div class="sidebar-logo" onclick="goHome()">
-    <div class="logo-icon">M</div><div class="logo-text">매치업</div><div class="logo-badge">beta</div>
+    <div class="sidebar-logo-top">
+      <div class="logo-icon">M</div>
+      <div class="logo-title-group">
+        <div class="logo-text">매치업</div>
+        <div class="logo-badge">beta</div>
+      </div>
+    </div>
     <div class="beta-free-badge">🎉 베타 무료 이용 중</div>
   </div>
   <div class="sidebar-section">
