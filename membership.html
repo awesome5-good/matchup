@@ -11,11 +11,14 @@
     *{margin:0;padding:0;box-sizing:border-box;}
     body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--gray-50);color:var(--gray-900);display:flex;min-height:100vh;overflow-x:hidden;}
     .sidebar{width:var(--sidebar-width);background:#fff;border-right:1px solid var(--gray-200);display:flex;flex-direction:column;position:fixed;height:100vh;z-index:100;}
-    .sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;gap:10px;cursor:pointer;transition:opacity 0.15s;}
+    .sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid var(--gray-100);display:flex;flex-direction:column;align-items:flex-start;gap:10px;cursor:pointer;transition:opacity 0.15s;}
     .sidebar-logo:hover{opacity:0.75;}
+    .sidebar-logo-top{display:flex;align-items:center;gap:10px;width:100%;}
     .logo-icon{width:32px;height:32px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:16px;}
-    .logo-text{font-weight:700;font-size:16px;}.logo-badge{font-size:10px;background:var(--primary-light);color:var(--primary);padding:2px 6px;border-radius:4px;font-weight:600;}
-    .beta-free-badge{font-size:11px;background:var(--success);color:white;padding:4px 8px;border-radius:12px;font-weight:600;margin-left:8px;}
+    .logo-title-group{display:flex;flex-direction:column;gap:4px;}
+    .logo-text{font-weight:700;font-size:16px;}
+    .logo-badge{font-size:10px;background:var(--primary-light);color:var(--primary);padding:2px 6px;border-radius:4px;font-weight:600;display:inline-block;}
+    .beta-free-badge{font-size:11px;background:var(--success);color:white;padding:4px 8px;border-radius:12px;font-weight:600;}
     .sidebar-section{padding:16px 12px 8px;}
     .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;color:var(--gray-600);margin-bottom:2px;transition:all 0.15s;}
     .nav-item:hover{background:var(--gray-50);color:var(--gray-900);}
@@ -82,7 +85,13 @@
 <body>
   <aside class="sidebar">
     <div class="sidebar-logo" onclick="window.location.href='index.html'">
-      <div class="logo-icon">M</div><div class="logo-text">매치업</div><div class="logo-badge">beta</div>
+      <div class="sidebar-logo-top">
+        <div class="logo-icon">M</div>
+        <div class="logo-title-group">
+          <div class="logo-text">매치업</div>
+          <div class="logo-badge">beta</div>
+        </div>
+      </div>
       <div class="beta-free-badge">🎉 베타 무료 이용 중</div>
     </div>
     <div class="sidebar-section">
@@ -101,6 +110,13 @@
       <div class="nav-item active" onclick="window.location.href='membership.html'">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>멤버십
       </div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <div style="flex:1;min-width:0"><div class="user-name" id="user-name">로그인이 필요합니다</div><div class="user-company" id="user-company">로그인하면 결과가 저장됩니다</div></div>
+      </div>
+      <button id="btn-logout" onclick="logout()" style="display:none;margin-top:10px;width:100%;padding:7px;border:1px solid #E5E7EB;border-radius:8px;font-size:12px;color:#6B7280;background:#fff;cursor:pointer;font-family:inherit;">로그아웃</button>
     </div>
   </aside>
 
