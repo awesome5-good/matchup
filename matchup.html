@@ -791,9 +791,10 @@ function rematch(){
   document.getElementById('summary-card').style.display='';
   document.getElementById('sum-body').style.display='none';
   document.getElementById('sum-loading').style.display='flex';
-  document.getElementById('report-badge').style.display='none';
+  // report-badge 유지 (히스토리 항상 있음)
   const noBox=document.getElementById('no-result-box');
   if(noBox)noBox.style.display='none';
+  document.getElementById('results-list').innerHTML='<div class="empty-state"><h3>아직 매칭 결과가 없어요</h3><p>기업 정보를 입력하고 매칭을 시작해주세요</p></div>';
   document.getElementById('form-step-1').style.display='block';
   document.getElementById('form-step-2').style.display='none';
   document.getElementById('form-step-3').style.display='none';
