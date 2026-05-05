@@ -412,7 +412,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>기업 진단 리포트<span class="nav-badge" id="report-badge" style="background:#7C3AED;display:none">NEW</span>
     </div>
     <div class="nav-item" onclick="navigate('saved')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>관심 저장 목록<span class="nav-badge" id="saved-count" style="background:#F59E0B">0</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>관심 저장 목록<span class="nav-badge" id="saved-count" style="display:none">0</span>
     </div>
   </div>
   <div class="sidebar-footer">
@@ -778,7 +778,7 @@ function navigate(page){
   });
   if(page==='results')loadResults();
   if(page==='saved')renderSaved();
-  if(page==='report')loadReportHistory();
+  if(page==='report'&&!matchingDone)loadReportHistory();
   window.scrollTo(0,0);
 }
 
@@ -986,7 +986,11 @@ async function startSummaryGen(){
   document.getElementById('sum-body').style.display='block';
 }
 
-function goToReport(){navigate('report');generateFullReport();}
+function goToReport(){
+  matchingDone=true;
+  navigate('report');
+  generateFullReport();
+}
 
 async function loadReportHistory(){
   const {data:{session}}=await db.auth.getSession();
@@ -1364,7 +1368,7 @@ function renderResults(m){
   document.getElementById('results-list').innerHTML=html;
 }
 
-function toggleSave(mid,btn){const m=allMatches.find(x=>x.id===mid);if(!m)return;m.is_saved=!m.is_saved;btn.textContent=m.is_saved?'★ 관심 저장됨':'☆ 관심 저장';btn.className='btn-save'+(m.is_saved?' saved':'');savedMatches=allMatches.filter(x=>x.is_saved);document.getElementById('saved-count').textContent=savedMatches.length;
+function toggleSave(mid,btn){const m=allMatches.find(x=>x.id===mid);if(!m)return;m.is_saved=!m.is_saved;btn.textContent=m.is_saved?'★ 관심 저장됨':'☆ 관심 저장';btn.className='btn-save'+(m.is_saved?' saved':'');savedMatches=allMatches.filter(x=>x.is_saved);document.getElementById('saved-count').textContent=savedMatches.length;localStorage.setItem('matchup_saved',JSON.stringify(savedMatches));
   const tsc=document.getElementById('tab-saved-count');
   if(tsc){tsc.textContent=savedMatches.length;tsc.style.display=savedMatches.length>0?'block':'none';}
   showToast(m.is_saved?'관심 저장했습니다':'저장을 취소했습니다');}
