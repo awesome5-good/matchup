@@ -1205,7 +1205,13 @@ VISION: 3년 후 비전 (해당 업종·규모 기준)`;
     if(fillEl) fillEl.style.width='100%';
     if(progressEl) progressEl.textContent='100%';
     if(statusEl) statusEl.textContent='AI 분석 완료';
-    renderFullReport(result,cd,iData,rev);
+    try {
+      renderFullReport(result,cd,iData,rev);
+    } catch(renderError) {
+      console.error('리포트 렌더링 오류:', renderError);
+      document.getElementById('report-area').innerHTML='<div class="rpt-generating"><p style="color:var(--danger)">리포트 렌더링 중 오류가 발생했습니다. 데이터 형식을 확인해주세요.</p></div>';
+      return;
+    }
     // 리포트 Supabase 저장
     const {data:{session}}=await db.auth.getSession();
     if(session){
@@ -1219,6 +1225,7 @@ VISION: 3년 후 비전 (해당 업종·규모 기준)`;
       });
     }
   }catch(e){
+    console.error('리포트 생성 오류:', e);
     if(window._reportProgressTimer){clearInterval(window._reportProgressTimer);window._reportProgressTimer=null;}
     document.getElementById('report-area').innerHTML='<div class="rpt-generating"><p style="color:var(--danger)">리포트 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</p></div>';
   }
