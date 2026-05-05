@@ -399,6 +399,85 @@
       margin: 20px auto;
     }
 
+    .profile-card{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:20px;margin-bottom:24px;box-shadow:0 12px 30px rgba(15,23,42,0.06);}
+    .profile-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#534AB7,#7C3AED);color:white;font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .profile-info{display:flex;flex-direction:column;gap:4px;}
+    .profile-name{font-size:16px;font-weight:800;color:var(--gray-900);}
+    .profile-meta{font-size:13px;color:var(--gray-500);}
+    .section-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:20px;}
+    .section-block{background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px;min-height:176px;}
+    .section-block.purple{border-left:4px solid #7C3AED;}
+    .section-block.green{border-left:4px solid #10B981;}
+    .section-block-title{font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:0.08em;}
+    .section-block-body{font-size:14px;color:var(--gray-700);line-height:1.8;flex:1;}
+    .guide-box{background:linear-gradient(135deg,#EEF2FF,#EDE9FE);border:1px solid #C7D2FE;border-radius:16px;padding:18px 20px;font-size:14px;color:var(--gray-700);line-height:1.8;box-shadow:0 10px 24px rgba(79,70,229,0.08);}
+    .metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:24px;}
+    .metric-card{background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:10px;}
+    .metric-label{font-size:12px;color:var(--gray-500);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+    .metric-value{font-size:26px;font-weight:800;color:var(--gray-900);}
+    .metric-sub{font-size:12px;color:var(--gray-400);line-height:1.6;}
+    .match-list{display:flex;flex-direction:column;gap:14px;margin-bottom:24px;}
+    .match-item{display:flex;gap:16px;background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:18px;align-items:flex-start;}
+    .match-rank{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#EEF2FF,#EDE9FE);color:#4F46E5;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .match-item-body{flex:1;display:flex;flex-direction:column;gap:10px;}
+    .match-title{font-size:15px;font-weight:700;color:var(--gray-900);}
+    .match-badge{align-self:flex-start;background:var(--primary-light);color:var(--primary);font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;}
+    .match-reason{font-size:13px;color:var(--gray-600);line-height:1.75;}
+    .match-tags{display:flex;flex-wrap:wrap;gap:8px;}
+    .match-tags span{background:var(--gray-100);color:var(--gray-600);font-size:11px;padding:5px 10px;border-radius:999px;}
+    .progress-track{height:8px;background:var(--gray-100);border-radius:999px;overflow:hidden;margin-top:10px;}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#7C3AED,#534AB7);border-radius:999px;}
+    .strength-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;}
+    .strength-card{background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:20px;min-height:150px;display:flex;flex-direction:column;gap:12px;}
+    .strength-card.pos{border-left:4px solid #10B981;}
+    .strength-card.neg{border-left:4px solid #F59E0B;}
+    .strength-card h3{font-size:14px;font-weight:700;color:var(--gray-900);}
+    .strength-card p{font-size:14px;color:var(--gray-600);line-height:1.8;flex:1;}
+    .feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:24px 0;}
+    .feature-card{background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:20px;min-height:140px;display:flex;flex-direction:column;gap:12px;}
+    .feature-card h3{font-size:14px;font-weight:700;color:var(--primary);}
+    .feature-card p{font-size:14px;color:var(--gray-600);line-height:1.8;flex:1;}
+    .judge-grid{display:grid;gap:14px;margin:20px 0;}
+    .judge-item{background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:18px;display:grid;grid-template-columns:44px 1fr;gap:16px;align-items:start;}
+    .judge-number{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#534AB7);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;}
+    .judge-text{display:flex;flex-direction:column;gap:8px;}
+    .judge-text strong{font-size:14px;font-weight:700;color:var(--gray-900);}
+    .judge-tip-box{background:linear-gradient(135deg,#F3E8FF,#E9D5FF);border:1px solid #D8B4FE;border-radius:14px;padding:12px;font-size:13px;color:#5B21B6;line-height:1.7;}
+    .checklist-panel{background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:20px;margin:24px 0;}
+    .checklist-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;}
+    .checklist-header h3{font-size:15px;font-weight:800;color:var(--gray-900);}
+    .checklist-progress{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+    .checklist-progress-track{height:10px;background:var(--gray-100);border-radius:999px;overflow:hidden;}
+    .checklist-progress-fill{height:100%;background:linear-gradient(90deg,#7C3AED,#534AB7);border-radius:999px;width:0;}
+    .checklist-progress-label{font-size:12px;color:var(--gray-500);}
+    .checklist-list{display:grid;gap:10px;}
+    .checklist-item{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--gray-200);border-radius:14px;background:var(--gray-50);cursor:pointer;transition:all 0.15s;}
+    .checklist-item:hover{border-color:#C7D2FE;}
+    .checklist-item.checked{background:linear-gradient(135deg,#EEF2FF,#F5F3FF);border-color:#C7D2FE;}
+    .check-item-icon{width:20px;height:20px;border-radius:50%;background:#fff;border:1px solid var(--gray-300);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:12px;flex-shrink:0;}
+    .checklist-item.checked .check-item-icon{background:var(--primary);border-color:transparent;color:white;}
+    .tip-list{display:flex;flex-wrap:wrap;gap:12px;margin:18px 0;}
+    .tip-chip{background:linear-gradient(135deg,#F5F3FF,#EEF2FF);border:1px solid #E0E7FF;color:#4338CA;font-size:13px;font-weight:700;padding:12px 16px;border-radius:999px;}
+    .timeline-banner{background:linear-gradient(135deg,#EEF2FF,#EDE9FE);border:1px solid #C7D2FE;border-radius:16px;padding:22px 24px;margin-bottom:24px;}
+    .timeline-banner p{font-size:14px;color:var(--gray-700);line-height:1.8;}
+    .timeline-wrap{position:relative;padding-left:30px;border-left:2px solid #E5E7EB;margin-bottom:24px;}
+    .timeline-item{position:relative;padding-bottom:28px;}
+    .timeline-item:last-child{padding-bottom:0;}
+    .timeline-item::before{content:'';position:absolute;left:-14px;top:0;width:28px;height:28px;border-radius:50%;background:#fff;border:2px solid #C7D2FE;box-shadow:0 0 0 4px rgba(99,102,241,0.08);}
+    .timeline-dot{position:absolute;left:-30px;top:0;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700;}
+    .timeline-dot.now{background:var(--primary);}
+    .timeline-dot.purple{background:#7C3AED;}
+    .timeline-dot.green{background:var(--success);}
+    .timeline-step{font-size:13px;font-weight:700;color:var(--gray-900);margin-bottom:4px;}
+    .timeline-body{font-size:13px;color:var(--gray-600);line-height:1.7;}
+    .timeline-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:12px;}
+    .timeline-stat{background:#fff;border:1px solid var(--gray-200);border-radius:14px;padding:16px;font-size:13px;color:var(--gray-700);line-height:1.7;}
+    .pipeline-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px;}
+    .pipeline-step{background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:18px;}
+    .pipeline-step h4{font-size:13px;font-weight:700;color:var(--gray-900);margin-bottom:10px;}
+    .pipeline-step p{font-size:13px;color:var(--gray-600);line-height:1.75;}
+    @media(max-width: 992px){.section-list{grid-template-columns:1fr;}.metric-grid{grid-template-columns:1fr 1fr;}.feature-grid{grid-template-columns:1fr;}.timeline-stats{grid-template-columns:1fr;}.pipeline-grid{grid-template-columns:1fr;}}
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -1236,53 +1315,59 @@ function formatText(txt){return escapeHtml(String(txt||'')).replace(/\r\n?/g,'\n
 function parsePipeList(raw){return String(raw||'').split('|').map(s=>s.trim()).filter(Boolean);}
 function parseProgramLine(line){const body=line.replace(/^\s*PROGRAM_\d+:\s*/i,'').trim();const parts=body.split('|').map(s=>s.trim());return{title:parts[0]||'',score:parts[1]||'',reason:parts[2]||'',tags:parts[3]?parts[3].split(/[,;]/).map(t=>t.trim()).filter(Boolean):[]};}
 function parseJudgeLine(text){const parts=String(text||'').split('|').map(s=>s.trim());return{point:parts[0]||'',tip:parts[1]||''};}
+function parseField(section,tag){return pf(section,tag);} 
+function parseFieldList(section,tags){return tags.map(tag=>parseField(section,tag)).filter(Boolean);} 
+function parseProgramLines(section){const lines=String(section||'').match(/^\s*PROGRAM_\d+\s*:\s*.*$/gim)||[];return lines.map(parseProgramLine).filter(p=>p.title||p.score||p.reason||p.tags.length);} 
+function parseJudgePoints(section){return ['JUDGE_POINT_1','JUDGE_POINT_2','JUDGE_POINT_3'].map(tag=>parseField(section,tag)).filter(Boolean).map(text=>{const parts=String(text).split('|').map(s=>s.trim());return{point:parts[0]||'',tip:parts[1]||''};});} 
+function parseChecklistItems(section){const raw=parseField(section,'CHECKLIST');return String(raw||'').split(/\||\n|•|-+/).map(s=>s.trim()).filter(Boolean);} 
+function parseFullReport(raw){const normalized=normalizeReportRaw(raw);const sections={};['TAB1','TAB2','TAB3','TAB4'].forEach(tag=>{const regex=new RegExp(`\[${tag}\]([\s\S]*?)(?=(\[TAB[1-4]\]|$))`,`i`);const match=normalized.match(regex);sections[tag]=match?match[1].trim():'';});return{
+  raw:normalized,
+  tab1:sections.TAB1,
+  tab2:sections.TAB2,
+  tab3:sections.TAB3,
+  tab4:sections.TAB4,
+  situation:parseField(sections.TAB1,'SITUATION'),
+  complication:parseField(sections.TAB1,'COMPLICATION'),
+  resolution:parseField(sections.TAB1,'RESOLUTION'),
+  usageGuidance:parseField(sections.TAB1,'USAGE_GUIDANCE')||parseField(sections.TAB1,'USAGE')||'',
+  matchScoreReason:parseField(sections.TAB2,'MATCH_SCORE_REASON')||parseField(sections.TAB2,'SUMMARY')||sections.TAB2,
+  programs:parseProgramLines(sections.TAB2),
+  strengths:parseFieldList(sections.TAB2,['STRENGTH_1','STRENGTH_2']),
+  weaknesses:parseFieldList(sections.TAB2,['WEAKNESS_1','WEAKNESS_2']),
+  features:parseFieldList(sections.TAB3,['FEATURE_1','FEATURE_2','FEATURE_3']),
+  judgePoints:parseJudgePoints(sections.TAB3),
+  checklistItems:parseChecklistItems(sections.TAB3),
+  practicalTips:parseFieldList(sections.TAB3,['PRACTICAL_TIP_1','PRACTICAL_TIP_2','PRACTICAL_TIP_3']),
+  timelineNow:parseField(sections.TAB4,'TIMELINE_NOW'),
+  timeline3m:parseField(sections.TAB4,'TIMELINE_3M'),
+  timeline1y:parseField(sections.TAB4,'TIMELINE_1Y'),
+  timeline3y:parseField(sections.TAB4,'TIMELINE_3Y'),
+  vision:parseField(sections.TAB4,'VISION'),
+  pipeline:parsePipeList(parseField(sections.TAB4,'PIPELINE'))
+};}
 
 function renderFullReport(raw,cd,iD,rev){
-  const t1=ps(raw,'TAB1');
-  const t2=ps(raw,'TAB2');
-  const t3=ps(raw,'TAB3');
-  const t4=ps(raw,'TAB4');
-  const situation=pf(t1,'SITUATION');
-  const complication=pf(t1,'COMPLICATION');
-  const resolution=pf(t1,'RESOLUTION');
-  const summary=pf(t2,'SUMMARY')||t2;
-  const strengths=[pf(t2,'STRENGTH_1'),pf(t2,'STRENGTH_2')].filter(Boolean);
-  const weaknesses=[pf(t2,'WEAKNESS_1'),pf(t2,'WEAKNESS_2')].filter(Boolean);
-  const features=[pf(t3,'FEATURE_1'),pf(t3,'FEATURE_2'),pf(t3,'FEATURE_3')].filter(Boolean);
-  const judgePoints=[pf(t3,'JUDGE_POINT_1'),pf(t3,'JUDGE_POINT_2'),pf(t3,'JUDGE_POINT_3')].map(item=>{const parts=item.split('|').map(x=>x.trim());return{point:parts[0]||'',tip:parts[1]||''};}).filter(item=>item.point);
-  const checklistItems=pf(t3,'CHECKLIST').split('|').map(x=>x.trim()).filter(Boolean);
-  const practicalTips=[pf(t3,'PRACTICAL_TIP_1'),pf(t3,'PRACTICAL_TIP_2'),pf(t3,'PRACTICAL_TIP_3')].filter(Boolean);
-  const timelineNow=pf(t4,'TIMELINE_NOW');
-  const timeline3m=pf(t4,'TIMELINE_3M');
-  const timeline1y=pf(t4,'TIMELINE_1Y');
-  const timeline3y=pf(t4,'TIMELINE_3Y');
-  const vision=pf(t4,'VISION');
-  const pipelineItems=pf(t4,'PIPELINE').split('|').map(x=>x.trim()).filter(Boolean);
+  const parsed=parseFullReport(raw);
   const today=new Date();
   const topMatches=allMatches.slice(0,5);
+  const programs=parsed.programs.length?parsed.programs:topMatches.map((m)=>({title:m.program?.title||'',score:String(m.match_score||0),reason:m.match_reason||'',tags:Array.isArray(m.program?.tags)?m.program.tags:[] }));
   const metricScore=topMatches.length?Math.round(topMatches.reduce((sum,m)=>sum+m.match_score,0)/topMatches.length):0;
   const metricPrograms=allMatches.length;
   const metricDeadline=Math.min(...allMatches.map(m=>{const d=m.program?.deadline?Math.ceil((new Date(m.program.deadline)-today)/86400000):999;return d>0?d:999;}));
   const metricAmount=topMatches.reduce((sum,m)=>sum+(m.program?.max_support_amount||0),0);
   const amountLabel=metricAmount>=100000000?`${Math.round(metricAmount/10000000)/10}억원`:(metricAmount?`${Math.round(metricAmount/10000)}만원`:'-');
   const checklistKey=`matchup_checklist_${encodeURIComponent(cd.company_name||'default')}`;
-  const checklistState=getChecklistState(checklistKey,checklistItems.length);
+  const checklistState=getChecklistState(checklistKey,parsed.checklistItems.length);
   const checklistDone=checklistState.filter(Boolean).length;
-  const addTags=tags=>Array.isArray(tags)?tags.map(t=>`<span>${escapeHtml(t)}</span>`).join(''):'<span>태그 없음</span>';
-  const matchItems=topMatches.map((m,i)=>{
-    const p=m.program||{};
-    const reason=escapeHtml(m.match_reason||'이 지원사업은 기업 역량과 방향성이 잘 맞습니다.');
-    const tags=addTags(p.tags);
-    const scoreWidth=Math.min(Math.max(m.match_score||0,0),100);
-    return `<div class="match-item"><div class="match-rank">${i+1}</div><div><div class="match-title">${escapeHtml(p.title||'지원사업명 없음')}</div><div class="match-badge">${m.match_score||0}점</div><div class="match-reason">${reason}</div><div class="match-tags">${tags}</div><div class="progress-track"><div class="progress-fill" style="width:${scoreWidth}%"></div></div></div></div>`;
-  }).join('');
-  const strengthHtml=strengths.length?strengths.map(item=>`<div class="strength-card"><h3>핵심 강점</h3><p>${escapeHtml(item)}</p></div>`).join(''):`<div class="strength-card"><h3>핵심 강점</h3><p>진단 결과를 바탕으로 강점을 정리해드립니다.</p></div>`;
-  const weaknessHtml=weaknesses.length?weaknesses.map(item=>`<div class="strength-card orange"><h3>보완 영역</h3><p>${escapeHtml(item)}</p></div>`).join(''):`<div class="strength-card orange"><h3>보완 영역</h3><p>지원 준비에 필요한 개선 포인트를 확인해보세요.</p></div>`;
-  const featureHtml=features.length?features.map(item=>`<div class="feature-card"><h3>핵심 특징</h3><p>${escapeHtml(item)}</p></div>`).join(''):`<div class="feature-card"><h3>사업 특징</h3><p>1순위 지원사업의 특징을 분석해드립니다.</p></div>`;
-  const judgeHtml=judgePoints.length?judgePoints.map((item,idx)=>`<div class="judge-item"><div class="judge-number">${idx+1}</div><div class="judge-text"><strong>${escapeHtml(item.point)}</strong>${item.tip?`<div class="judge-tip-box">${escapeHtml(item.tip)}</div>`:''}</div></div>`).join(''):`<div class="judge-item"><div class="judge-number">1</div><div class="judge-text">심사 포인트 분석 결과가 준비되는 대로 확인할 수 있습니다.</div></div>`;
-  const checklistHtml=checklistItems.length?checklistItems.map((item,i)=>`<button type="button" class="checklist-item${checklistState[i]?' checked':''}" data-checklist-key="${checklistKey}" data-item-index="${i}" onclick="toggleChecklistItem(this)"><span class="check-item-icon">${checklistState[i]?'✓':'○'}</span><span>${escapeHtml(item)}</span></button>`).join(''):`<p class="prose">체크리스트 항목이 준비되지 않았습니다.</p>`;
-  const tipsHtml=practicalTips.length?practicalTips.map(item=>`<div class="tip-chip">${escapeHtml(item)}</div>`).join(''):`<div class="tip-chip">현실적이고 실전적인 준비 팁을 제공합니다.</div>`;
-  const pipelineHtml=pipelineItems.length?pipelineItems.map((item,idx)=>`<div class="pipeline-step"><h4>STEP ${idx+1}</h4><p>${escapeHtml(item)}</p></div>`).join(''):`<div class="pipeline-step"><h4>다음 단계</h4><p>지원사업 파이프라인을 재정의해드립니다.</p></div>`;
+  const matchItems=programs.map((p,i)=>{const score=Number(p.score)||0;const scoreWidth=Math.min(Math.max(score,0),100);const tags=Array.isArray(p.tags)?p.tags.map(t=>`<span>${escapeHtml(t)}</span>`).join(''):'';return `<div class="match-item"><div class="match-rank">${i+1}</div><div class="match-item-body"><div class="match-title">${escapeHtml(p.title||'지원사업 정보 없음')}</div><div class="match-badge">${escapeHtml(String(score))}점</div><div class="match-reason">${formatText(p.reason||'매칭 이유가 준비되지 않았습니다.')}</div><div class="match-tags">${tags}</div><div class="progress-track"><div class="progress-fill" style="width:${scoreWidth}%"></div></div></div></div>`;}).join('');
+  const strengthHtml=(parsed.strengths.length?parsed.strengths:['핵심 강점 데이터를 제공하지 않았습니다.']).map(item=>`<div class="strength-card pos"><h3>핵심 강점</h3><p>${escapeHtml(item)}</p></div>`).join('');
+  const weaknessHtml=(parsed.weaknesses.length?parsed.weaknesses:['보완 필요 데이터를 제공하지 않았습니다.']).map(item=>`<div class="strength-card neg"><h3>보완 영역</h3><p>${escapeHtml(item)}</p></div>`).join('');
+  const featureHtml=(parsed.features.length?parsed.features:['지원사업 주요 특징을 확인해주세요.']).map(item=>`<div class="feature-card"><h3>사업 특징</h3><p>${escapeHtml(item)}</p></div>`).join('');
+  const judgeHtml=(parsed.judgePoints.length?parsed.judgePoints:[{point:'심사 포인트 정보가 없습니다.',tip:''}]).map((item,idx)=>`<div class="judge-item"><div class="judge-number">${idx+1}</div><div class="judge-text"><strong>${escapeHtml(item.point)}</strong>${item.tip?`<div class="judge-tip-box">${escapeHtml(item.tip)}</div>`:''}</div></div>`).join('');
+  const checklistHtml=(parsed.checklistItems.length?parsed.checklistItems:['체크리스트 항목이 제공되지 않았습니다.']).map((item,i)=>`<button type="button" class="checklist-item${checklistState[i]?' checked':''}" data-checklist-key="${checklistKey}" data-item-index="${i}" onclick="toggleChecklistItem(this)"><span class="check-item-icon">${checklistState[i]?'✓':'○'}</span><span>${escapeHtml(item)}</span></button>`).join('');
+  const tipsHtml=(parsed.practicalTips.length?parsed.practicalTips:['실전 팁이 준비되지 않았습니다.']).map(item=>`<div class="tip-chip">${escapeHtml(item)}</div>`).join('');
+  const pipelineHtml=(parsed.pipeline.length?parsed.pipeline:['지원사업 파이프라인 단계를 확인해주세요.']).map((item,idx)=>`<div class="pipeline-step"><h4>STEP ${idx+1}</h4><p>${escapeHtml(item)}</p></div>`).join('');
+  const topTitle=topMatches[0]?.program?.title||parsed.programs[0]?.title||'추천 지원사업 정보가 없습니다.';
   document.getElementById('report-area').innerHTML=`
     <div class="rpt-tabs">
       <div class="rpt-tab active" onclick="switchTab('t1',this)">컨설턴트 진단</div>
@@ -1290,7 +1375,6 @@ function renderFullReport(raw,cd,iD,rev){
       <div class="rpt-tab" onclick="switchTab('t3',this)">지원사업 전략</div>
       <div class="rpt-tab" onclick="switchTab('t4',this)">성장 로드맵</div>
     </div>
-
     <div class="rpt-tab-content active" id="t1">
       <div class="profile-card">
         <div class="profile-avatar">MC</div>
@@ -1300,58 +1384,50 @@ function renderFullReport(raw,cd,iD,rev){
         </div>
       </div>
       <div class="section-list">
-        <div class="section-block purple"><div class="section-block-title">SITUATION</div><div class="section-block-body">${escapeHtml(situation||'현재 기업 상황을 진단합니다.')}</div></div>
-        <div class="section-block"><div class="section-block-title">COMPLICATION</div><div class="section-block-body">${escapeHtml(complication||'진단 과정에서 발견된 주요 걸림돌을 정리합니다.')}</div></div>
-        <div class="section-block green"><div class="section-block-title">RESOLUTION</div><div class="section-block-body">${escapeHtml(resolution||'지원사업 전략과 성장 로드맵을 함께 제시합니다.')}</div></div>
+        <div class="section-block purple"><div class="section-block-title">SITUATION</div><div class="section-block-body">${escapeHtml(parsed.situation||'현재 기업 상황을 진단합니다.')}</div></div>
+        <div class="section-block"><div class="section-block-title">COMPLICATION</div><div class="section-block-body">${escapeHtml(parsed.complication||'진단 과정에서 발견된 주요 걸림돌을 정리합니다.')}</div></div>
+        <div class="section-block green"><div class="section-block-title">RESOLUTION</div><div class="section-block-body">${escapeHtml(parsed.resolution||'지원사업 전략과 성장 로드맵을 함께 제시합니다.')}</div></div>
       </div>
-      <div class="guide-box">① 진단 요약 → ② 지원사업 전략 → ③ 성장 로드맵 순서로 결과를 확인해보세요.</div>
+      <div class="guide-box">${formatText(parsed.usageGuidance||'1. 진단 결과 확인 → 2. 추천 사업 비교 → 3. 실행 전략 마련')}</div>
     </div>
-
     <div class="rpt-tab-content" id="t2">
       <div class="metric-grid">
-        <div class="metric-card"><div class="metric-label">종합점수</div><div class="metric-value">${metricScore}점</div></div>
-        <div class="metric-card"><div class="metric-label">적합사업수</div><div class="metric-value">${metricPrograms}개</div></div>
-        <div class="metric-card"><div class="metric-label">마감 최단</div><div class="metric-value">${metricDeadline<999?`D-${metricDeadline}`:'-'}</div></div>
-        <div class="metric-card"><div class="metric-label">지원금액</div><div class="metric-value">${amountLabel}</div></div>
+        <div class="metric-card"><div class="metric-label">종합점수</div><div class="metric-value">${metricScore}점</div><div class="metric-sub">지원사업 적합도 평균</div></div>
+        <div class="metric-card"><div class="metric-label">적합사업수</div><div class="metric-value">${metricPrograms}개</div><div class="metric-sub">전체 추천 건수</div></div>
+        <div class="metric-card"><div class="metric-label">마감 최단</div><div class="metric-value">${metricDeadline<999?`D-${metricDeadline}`:'-'}</div><div class="metric-sub">가장 빠른 마감</div></div>
+        <div class="metric-card"><div class="metric-label">지원금액</div><div class="metric-value">${amountLabel}</div><div class="metric-sub">추천 사업 총액</div></div>
       </div>
-      ${summary?`<div class="rpt-card"><div class="rpt-card-title">진단 요약</div><div class="prose">${escapeHtml(summary)}</div></div>`:''}
-      ${matchItems}
+      <div class="rpt-card"><div class="rpt-card-title">진단 요약</div><div class="prose">${formatText(parsed.matchScoreReason||'요약 결과가 없습니다.')}</div></div>
+      <div class="match-list">${matchItems}</div>
       <div class="strength-grid">
         ${strengthHtml}
         ${weaknessHtml}
       </div>
     </div>
-
     <div class="rpt-tab-content" id="t3">
       <div class="rpt-card" style="border-left:3px solid #534AB7;">
-        <div class="rpt-card-title">1순위 사업 전략</div>
-        <div class="rpt-card-sub">상위 1순위 추천 사업을 중심으로 전략을 정리합니다.</div>
-        <div class="prose">${escapeHtml(allMatches[0]?.program?.title||'추천 지원사업 정보가 없습니다.')}</div>
+        <div class="rpt-card-title">상위 추천 사업</div>
+        <div class="rpt-card-sub">1순위 추천 사업을 중심으로 전략적으로 정리합니다.</div>
+        <div class="prose">${escapeHtml(topTitle)}</div>
       </div>
       <div class="feature-grid">${featureHtml}</div>
       <div class="judge-grid">${judgeHtml}</div>
       <div class="checklist-panel" data-checklist-key="${checklistKey}">
-        <div class="checklist-header"><h3>체크리스트</h3><span class="checklist-progress-label">${checklistDone}/${checklistItems.length} 완료</span></div>
-        <div class="checklist-progress"><div class="checklist-progress-track"><div class="checklist-progress-fill" style="width:${checklistItems.length?Math.round(checklistDone/checklistItems.length*100):0}%"></div></div><div class="checklist-progress-label">${checklistDone}/${checklistItems.length} 완료</div></div>
+        <div class="checklist-header"><h3>체크리스트</h3><span class="checklist-progress-label">${checklistDone}/${parsed.checklistItems.length} 완료</span></div>
+        <div class="checklist-progress"><div class="checklist-progress-track"><div class="checklist-progress-fill" style="width:${parsed.checklistItems.length?Math.round(checklistDone/parsed.checklistItems.length*100):0}%"></div></div><div class="checklist-progress-label">${checklistDone}/${parsed.checklistItems.length} 완료</div></div>
         <div class="checklist-list">${checklistHtml}</div>
       </div>
       <div class="tip-list">${tipsHtml}</div>
     </div>
-
     <div class="rpt-tab-content" id="t4">
-      <div class="timeline-banner"><p>${escapeHtml(vision||'성장 로드맵은 기업의 중장기 비전과 실행 방향을 함께 제시합니다.')}</p></div>
+      <div class="timeline-banner"><p>${formatText(parsed.vision||'성장 로드맵은 기업의 중장기 비전과 실행 방향을 함께 제시합니다.')}</p></div>
       <div class="timeline-wrap">
-        <div class="timeline-line"></div>
-        <div class="timeline-item"><div class="timeline-dot red">지금</div><div class="timeline-step">지금</div><div class="timeline-body">${escapeHtml(timelineNow||'현재 상태와 즉시 실행 포인트를 정리합니다.')}</div></div>
-        <div class="timeline-item"><div class="timeline-dot purple">3M</div><div class="timeline-step">3개월</div><div class="timeline-body">${escapeHtml(timeline3m||'3개월 목표와 실행 계획을 제시합니다.')}</div></div>
-        <div class="timeline-item"><div class="timeline-dot purple">1Y</div><div class="timeline-step">1년</div><div class="timeline-body">${escapeHtml(timeline1y||'1년 후 목표와 현실적 수치를 확인합니다.')}</div></div>
-        <div class="timeline-item"><div class="timeline-dot green">3Y</div><div class="timeline-step">3년</div><div class="timeline-body">${escapeHtml(timeline3y||'3년 후 비전과 성장 단계를 정리합니다.')}</div></div>
+        <div class="timeline-item"><div class="timeline-dot now">지금</div><div class="timeline-step">지금</div><div class="timeline-body">${escapeHtml(parsed.timelineNow||'현재 상태와 즉시 실행 포인트를 정리합니다.')}</div></div>
+        <div class="timeline-item"><div class="timeline-dot purple">3M</div><div class="timeline-step">3개월</div><div class="timeline-body">${escapeHtml(parsed.timeline3m||'3개월 목표와 실행 계획을 제시합니다.')}</div></div>
+        <div class="timeline-item"><div class="timeline-dot purple">1Y</div><div class="timeline-step">1년</div><div class="timeline-body">${escapeHtml(parsed.timeline1y||'1년 후 목표와 현실적 수치를 확인합니다.')}</div></div>
+        <div class="timeline-item"><div class="timeline-dot green">3Y</div><div class="timeline-step">3년</div><div class="timeline-body">${escapeHtml(parsed.timeline3y||'3년 후 비전과 성장 단계를 정리합니다.')}</div></div>
       </div>
-      <div class="timeline-stats">
-        <div class="timeline-stat">${escapeHtml(pipelineItems[0]||'파이프라인 1단계')}</div>
-        <div class="timeline-stat">${escapeHtml(pipelineItems[1]||'파이프라인 2단계')}</div>
-        <div class="timeline-stat">${escapeHtml(pipelineItems[2]||'파이프라인 3단계')}</div>
-      </div>
+      <div class="pipeline-grid">${pipelineHtml}</div>
     </div>`;
 }
 
