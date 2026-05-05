@@ -468,7 +468,7 @@
     .timeline-dot.now{background:var(--primary);}
     .timeline-dot.purple{background:#7C3AED;}
     .timeline-dot.green{background:var(--success);}
-    .timeline-step{font-size:13px;font-weight:700;color:var(--gray-900);margin-bottom:4px;}
+    .timeline-step{font-size:13px;font-weight:700;color:var(--gray-900);margin-bottom:4px;margin-left:20px;}
     .timeline-body{font-size:13px;color:var(--gray-600);line-height:1.7;}
     .timeline-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:12px;}
     .timeline-stat{background:#fff;border:1px solid var(--gray-200);border-radius:14px;padding:16px;font-size:13px;color:var(--gray-700);line-height:1.7;}
@@ -1310,7 +1310,7 @@ VISION: 3년 후 비전 (해당 업종·규모 기준)`;
 function escapeHtml(str){return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function normalizeReportRaw(raw){return String(raw||'').replace(/\r\n?/g,'\n').replace(/(^|\n)\s*TAB([1-4])\s*[:\-\)]?\s*/gmi,'$1[TAB$2]\n').replace(/(^|\n)\s*\[S([1-4])\]/gmi,'$1[TAB$2]');}
 function ps(raw,tag){const normalized=normalizeReportRaw(raw);const r=normalized.match(new RegExp(`\\[${tag}\\]([\\s\\S]*?)(?=(\\[TAB[1-4]\\]|$))`,`i`));return r?r[1].trim():'';}
-function pf(sec,tag){const r=sec.match(new RegExp(`${tag}:\s*([\\s\\S]*?)(?=\n\s*[A-Z0-9_ ]+:|$)`,`i`));return r?r[1].trim():'';}
+function pf(sec,tag){if(!sec) return '';const r=sec.match(new RegExp(`(?:^|\n)\\s*${tag}\\s*:\\s*([\\s\\S]*?)(?=\\n\\s*(?:[A-Z][A-Z0-9_]*\\s*:|\\[TAB[1-4]\\]|$))`,'i'));return r?r[1].trim():'';}
 function formatText(txt){return escapeHtml(String(txt||'')).replace(/\r\n?/g,'\n').replace(/\n{2,}/g,'<br><br>').replace(/\n/g,'<br>');}
 function parsePipeList(raw){return String(raw||'').split('|').map(s=>s.trim()).filter(Boolean);}
 function parseProgramLine(line){const body=line.replace(/^\s*PROGRAM_\d+:\s*/i,'').trim();const parts=body.split('|').map(s=>s.trim());return{title:parts[0]||'',score:parts[1]||'',reason:parts[2]||'',tags:parts[3]?parts[3].split(/[,;]/).map(t=>t.trim()).filter(Boolean):[]};}
@@ -1348,6 +1348,7 @@ function parseFullReport(raw){const normalized=normalizeReportRaw(raw);const sec
 
 function renderFullReport(raw,cd,iD,rev){
   const parsed=parseFullReport(raw);
+  console.log('Parsed report data:', parsed);
   const today=new Date();
   const topMatches=allMatches.slice(0,5);
   const programs=parsed.programs.length?parsed.programs:topMatches.map((m)=>({title:m.program?.title||'',score:String(m.match_score||0),reason:m.match_reason||'',tags:Array.isArray(m.program?.tags)?m.program.tags:[] }));
