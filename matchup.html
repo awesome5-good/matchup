@@ -1310,7 +1310,7 @@ VISION: 3년 후 비전 (해당 업종·규모 기준)`;
 function escapeHtml(str){return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function normalizeReportRaw(raw){return String(raw||'').replace(/\r\n?/g,'\n').replace(/(^|\n)\s*TAB([1-4])\s*[:\-\)]?\s*/gmi,'$1[TAB$2]\n').replace(/(^|\n)\s*\[S([1-4])\]/gmi,'$1[TAB$2]');}
 function ps(raw,tag){const normalized=normalizeReportRaw(raw);const r=normalized.match(new RegExp(`\\[${tag}\\]([\\s\\S]*?)(?=(\\[TAB[1-4]\\]|$))`,`i`));return r?r[1].trim():'';}
-function pf(sec,tag){if(!sec) return '';const r=sec.match(new RegExp(`(?:^|\n)\\s*${tag}\\s*:\\s*([\\s\\S]*?)(?=\\n\\s*(?:[A-Z][A-Z0-9_]*\\s*:|\\[TAB[1-4]\\]|$))`,'i'));return r?r[1].trim():'';}
+function pf(sec,tag){if(!sec) return '';const r=sec.match(new RegExp(`(?:^|\n)\\s*${tag}\\s*:\\s*([\\s\\S]*?)(?=\\n\\s*(?:[A-Z][A-Z0-9_]*\\s*:|\\[TAB[1-4]\\]|$))`,'i'));console.log(`Parsing ${tag} from section:`, sec, 'Result:', r?r[1].trim():'');return r?r[1].trim():'';}
 function formatText(txt){return escapeHtml(String(txt||'')).replace(/\r\n?/g,'\n').replace(/\n{2,}/g,'<br><br>').replace(/\n/g,'<br>');}
 function parsePipeList(raw){return String(raw||'').split('|').map(s=>s.trim()).filter(Boolean);}
 function parseProgramLine(line){const body=line.replace(/^\s*PROGRAM_\d+:\s*/i,'').trim();const parts=body.split('|').map(s=>s.trim());return{title:parts[0]||'',score:parts[1]||'',reason:parts[2]||'',tags:parts[3]?parts[3].split(/[,;]/).map(t=>t.trim()).filter(Boolean):[]};}
@@ -1320,7 +1320,18 @@ function parseFieldList(section,tags){return tags.map(tag=>parseField(section,ta
 function parseProgramLines(section){const lines=String(section||'').match(/^\s*PROGRAM_\d+\s*:\s*.*$/gim)||[];return lines.map(parseProgramLine).filter(p=>p.title||p.score||p.reason||p.tags.length);} 
 function parseJudgePoints(section){return ['JUDGE_POINT_1','JUDGE_POINT_2','JUDGE_POINT_3'].map(tag=>parseField(section,tag)).filter(Boolean).map(text=>{const parts=String(text).split('|').map(s=>s.trim());return{point:parts[0]||'',tip:parts[1]||''};});} 
 function parseChecklistItems(section){const raw=parseField(section,'CHECKLIST');return String(raw||'').split(/\||\n|•|-+/).map(s=>s.trim()).filter(Boolean);} 
-function parseFullReport(raw){const normalized=normalizeReportRaw(raw);const sections={};['TAB1','TAB2','TAB3','TAB4'].forEach(tag=>{const regex=new RegExp(`\[${tag}\]([\s\S]*?)(?=(\[TAB[1-4]\]|$))`,`i`);const match=normalized.match(regex);sections[tag]=match?match[1].trim():'';});return{
+function parseFullReport(raw){
+  console.log('parseFullReport called with raw:', raw);
+  const normalized=normalizeReportRaw(raw);
+  console.log('Normalized raw:', normalized);
+  const sections={};
+  ['TAB1','TAB2','TAB3','TAB4'].forEach(tag=>{
+    const regex=new RegExp(`\\[${tag}\\]([\\s\\S]*?)(?=(\\[TAB[1-4]\\]|$))`,`i`);
+    const match=normalized.match(regex);
+    sections[tag]=match?match[1].trim():'';
+  });
+  console.log('Sections:', sections);
+  return{
   raw:normalized,
   tab1:sections.TAB1,
   tab2:sections.TAB2,
@@ -1349,6 +1360,7 @@ console.log('파싱 결과:', JSON.stringify(parsed, null, 2));
 }
 
 function renderFullReport(raw,cd,iD,rev){
+  console.log('renderFullReport called with raw:', raw);
   const parsed=parseFullReport(raw);
   console.log('Parsed report data:', parsed);
   const today=new Date();
