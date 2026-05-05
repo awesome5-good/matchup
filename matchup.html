@@ -891,6 +891,12 @@ ${JSON.stringify(pl)}
 5. 전국 공고는 지역 무관하게 포함 가능, 특정 지역 공고는 기업 소재지와 일치해야 함
 6. 기업이 선택한 "현재 필요한 것" 분야와 관련된 사업에 가중치 부여
 
+!! 중요: 마크다운 형식 절대 금지 !!
+- ** (굵게) 금지
+- ## (제목) 금지
+- * (기울임/리스트) 금지
+- JSON 형식과 순수 텍스트만 사용
+
 JSON 배열만 답변 (다른 텍스트 절대 금지):
 [{"program_id":"UUID","score":85,"reason":"이유 한 문장 (왜 이 기업에 맞는지)"}]
 
@@ -1080,6 +1086,12 @@ async function generateFullReport(){
 
   const prompt=`당신은 소상공인·중소기업 전문 경영컨설턴트입니다. 500여 개 기업을 직접 컨설팅한 경험을 바탕으로 아래 기업의 진단 리포트를 작성하세요. 각 항목을 구체적이고 풍부하게, 대표님께 직접 말하는 따뜻하고 전문적인 톤으로 작성하세요.
 
+!! 중요: 마크다운 형식 절대 금지 !!
+- ** (굵게) 금지
+- ## (제목) 금지
+- * (기울임/리스트) 금지
+- 순수 텍스트와 [S1], [S2] 등 지정 구분자만 사용
+
 기업: ${cd.company_name} / ${cd.biz_type||'?'} / ${cd.industry}${cd.industry_detail?' ('+cd.industry_detail+')':''} / ${cd.region}${cd.district?' '+cd.district:''} / 업력 ${ageStr||'미입력'} / 상시직원(대표제외) ${cd.employee_count!=null?cd.employee_count+'명':'미입력'} / 매출 ${rev>0?(rev/10000).toFixed(0)+'만원':'미입력'} / 업종평균마진율 ${iData.m}%
 필요분야: ${(cd.needs||[]).join(', ')||'미입력'}
 소개: ${cd.description}
@@ -1151,7 +1163,7 @@ ACTION: 내일 당장 할 한 가지 행동 (구체적인 행동 명시, 1문장
   }
 }
 
-function pf(sec,tag){const r=sec.match(new RegExp(`${tag}:\\s*(.+?)(?=\\n[A-Z0-9_]+:|$)`,'s'));return r?r[1].trim():'';}
+function pf(sec,tag){const r=sec.match(new RegExp(`${tag}:\\s*(.+?)(?=\\n[A-Z0-9_]+:|$)`,'s'));if(!r)return '';let txt=r[1].trim();txt=txt.replace(/\*\*(.+?)\*\*/g,'$1');txt=txt.replace(/#{1,6}\s+/g,'');txt=txt.replace(/^\*\s+/gm,'');txt=txt.replace(/^-\s+/gm,'');return txt;}
 function ps(raw,tag){const r=raw.match(new RegExp(`\\[${tag}\\]([\\s\\S]*?)(?=\\[S[1-4]\\]|$)`));return r?r[1].trim():'';}
 
 function renderFullReport(raw,cd,iD,rev){
