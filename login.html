@@ -216,17 +216,26 @@
 
   // 구글 로그인
   async function loginWithGoogle() {
-    const btn = document.getElementById('btn-google');
-    btn.classList.add('loading');
-    btn.textContent = '로그인 중...';
-
-    const { error } = await db.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: window.location.origin + '/matchup.html',
-        skipBrowserRedirect: false
-      }
-    });
+  const ua = navigator.userAgent.toLowerCase();
+  const isInApp = /kakaotalk|line|naver|instagram|facebook|fbav/i.test(ua);
+  if (isInApp) {
+    if (/iphone|ipad|ipod/i.test(ua)) {
+      window.location.href = 'x-safari-' + window.location.href;
+    } else {
+      window.location.href = 'intent://' + window.location.host + window.location.pathname +
+        '#Intent;scheme=https;package=com.android.chrome;end';
+    }
+    return;
+  }
+  const btn = document.getElementById('btn-google');
+  btn.classList.add('loading');
+  btn.textContent = '로그인 중...';
+  const { error } = await db.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.origin + '/matchup.html'
+    }
+  });
 
     if (error) {
       showError('로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
