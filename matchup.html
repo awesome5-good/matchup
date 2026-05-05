@@ -189,6 +189,7 @@
     .rpt-gen-bar{width:280px;height:12px;background:#E9E7FF;border-radius:999px;margin:24px auto 8px;overflow:hidden;}
     .rpt-gen-fill{width:0%;height:100%;background:linear-gradient(90deg,#534AB7,#7C3AED);border-radius:999px;transition:width 0.2s ease;}
     .rpt-gen-progress{font-size:13px;color:var(--gray-500);font-weight:700;letter-spacing:0.04em;}
+    .rpt-gen-status{font-size:13px;color:var(--gray-500);margin-top:4px;}
     .rpt-tabs{display:flex;border-bottom:2px solid var(--gray-200);margin-bottom:28px;overflow-x:auto;}
     .rpt-tab{padding:12px 20px;font-size:14px;font-weight:600;color:var(--gray-500);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all 0.15s;}
     .rpt-tab:hover{color:var(--gray-900);}
@@ -726,7 +727,41 @@ const IMARG={'음식점업':{m:12,n:8,l:'음식점업'},'도매 및 소매업':{
 function getApiKey(){return localStorage.getItem('matchup_claude_key')||'';}
 function closeApiModal(){document.getElementById('apikey-modal').classList.remove('show');}
 function saveApiKey(){const k=document.getElementById('apikey-input').value.trim();if(!k.startsWith('sk-ant-')){alert('올바른 API 키 형식이 아닙니다');return;}localStorage.setItem('matchup_claude_key',k);document.getElementById('apikey-modal').classList.remove('show');}
-async function callAPI(prompt,maxT){const r=await fetch('/api/match',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({api_key:getApiKey(),payload:{model:'claude-haiku-4-5-20251001',max_tokens:maxT||2000,messages:[{role:'user',content:prompt}]}})});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${r.status}`);}const d=await r.json();return d.content[0].text;}
+async function callAPI(prompt,maxT,progressCallback=null){
+  const response=await fetch('/api/match',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({api_key:getApiKey(),payload:{model:'claude-haiku-4-5-20251001',max_tokens:maxT||2000,messages:[{role:'user',content:prompt}]}})});
+  if(!response.ok){
+    const errorData=await response.json().catch(()=>({}));
+    throw new Error(errorData.error?.message||`HTTP ${response.status}`);
+  }
+  const reader=response.body?.getReader();
+  if(!reader){
+    const json=await response.json().catch(()=>({}));
+    return json?.content?.[0]?.text||'';
+  }
+  const contentLength=response.headers.get('Content-Length');
+  const decoder=new TextDecoder();
+  let result='';
+  let loaded=0;
+  let lastPercent=0;
+  while(true){
+    const {done,value}=await reader.read();
+    if(done) break;
+    result += decoder.decode(value,{stream:true});
+    loaded += value.length;
+    if(progressCallback){
+      if(contentLength){
+        const percent=Math.min(98,Math.round((loaded/Number(contentLength))*100));
+        if(percent!==lastPercent){ lastPercent=percent; progressCallback(percent); }
+      } else {
+        progressCallback(null,loaded);
+      }
+    }
+  }
+  result += decoder.decode();
+  let data;
+  try{ data=JSON.parse(result); }catch(e){ throw new Error('API 응답 파싱 실패'); }
+  return data?.content?.[0]?.text||'';
+}
 
 /* ── 로그인 연동 ── */
 function goToLogin(){window.location.href='login.html';}
@@ -1093,22 +1128,29 @@ async function generateFullReport(){
       <div class="rpt-gen-sub">지금까지 <strong>500여 개 기업</strong>을 직접 만나며 쌓아온<br>컨설팅·멘토링 노하우와 누적 데이터,<br>그리고 입력해주신 귀사 정보를 종합하여 분석 중입니다.<br><br>잠시만 기다려 주세요 ☕</div>
       <div class="rpt-gen-bar"><div class="rpt-gen-fill" id="rpt-gen-fill"></div></div>
       <div class="rpt-gen-progress" id="rpt-gen-progress">0%</div>
+      <div class="rpt-gen-status" id="rpt-gen-status">AI가 분석을 시작했습니다...</div>
     </div>`;
 
   const fillEl=document.getElementById('rpt-gen-fill');
   const progressEl=document.getElementById('rpt-gen-progress');
+  const statusEl=document.getElementById('rpt-gen-status');
   let progress=0;
+  let hasRemoteProgress=false;
+  let longWaitTimer=setTimeout(()=>{
+    if(statusEl) statusEl.textContent='AI가 분석 중입니다... (최대 30초 소요)';
+  },12000);
   if(window._reportProgressTimer){clearInterval(window._reportProgressTimer);}
   window._reportProgressTimer=setInterval(()=>{
-    if(progress < 92){
-      progress += Math.floor(Math.random()*6)+3;
-      if(progress > 92) progress = 92;
+    if(!hasRemoteProgress && progress < 88){
+      progress += Math.floor(Math.random()*4)+2;
+      if(progress > 88) progress = 88;
       if(fillEl) fillEl.style.width = `${progress}%`;
       if(progressEl) progressEl.textContent = `${progress}%`;
     }
   }, 180);
 
   const top3=allMatches.slice(0,3).map((m,i)=>`${i+1}순위: ${m.program?.title||''} (${m.match_score}점) — ${m.match_reason||''}`).join('\n');
+
   const iData=IMARG[cd.industry]||IMARG['기타'];
   const rev=cd.annual_revenue||0;
   const ageStr=cd.age_years!=null?`${cd.age_years}년차`:'';
@@ -1174,12 +1216,20 @@ PIPELINE: 다음 지원사업 파이프라인 3단계
 VISION: 3년 후 비전 (해당 업종·규모 기준)`;
 
   try{
-    const result=await callAPI(prompt,5000);
+    const result=await callAPI(prompt,5000,(percent)=>{
+      if(percent!=null){
+        hasRemoteProgress=true;
+        progress=Math.max(progress,percent);
+        if(progress > 98) progress=98;
+        if(fillEl) fillEl.style.width=`${progress}%`;
+        if(progressEl) progressEl.textContent=`${progress}%`;
+      }
+    });
     if(window._reportProgressTimer){clearInterval(window._reportProgressTimer);window._reportProgressTimer=null;}
-    const fillEl=document.getElementById('rpt-gen-fill');
-    const progressEl=document.getElementById('rpt-gen-progress');
+    clearTimeout(longWaitTimer);
     if(fillEl) fillEl.style.width='100%';
     if(progressEl) progressEl.textContent='100%';
+    if(statusEl) statusEl.textContent='AI 분석 완료';
     renderFullReport(result,cd,iData,rev);
     // 리포트 Supabase 저장
     const {data:{session}}=await db.auth.getSession();
@@ -1195,13 +1245,19 @@ VISION: 3년 후 비전 (해당 업종·규모 기준)`;
     }
   }catch(e){
     if(window._reportProgressTimer){clearInterval(window._reportProgressTimer);window._reportProgressTimer=null;}
+    clearTimeout(longWaitTimer);
     document.getElementById('report-area').innerHTML='<div class="rpt-generating"><p style="color:var(--danger)">리포트 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</p></div>';
   }
 }
 
 function escapeHtml(str){return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function pf(sec,tag){const r=sec.match(new RegExp(`${tag}:\\s*(.+?)(?=\\n[A-Z0-9_]+:|$)`,'s'));if(!r)return '';let txt=r[1].trim();txt=txt.replace(/\*\*(.+?)\*\*/g,'$1');txt=txt.replace(/#{1,6}\s+/g,'');txt=txt.replace(/^\*\s+/gm,'');txt=txt.replace(/^-\s+/gm,'');return txt;}
-function ps(raw,tag){const r=raw.match(new RegExp(`\\[${tag}\\]([\\s\\S]*?)(?=(\\[TAB[1-4]\\]|\\[S[1-4]\\]|$))`));return r?r[1].trim():'';}
+function normalizeReportRaw(raw){return String(raw||'').replace(/\r\n?/g,'\n').replace(/(^|\n)\s*TAB([1-4])\s*[:\-\)]?\s*/gmi,'$1[TAB$2]\n').replace(/(^|\n)\s*\[S([1-4])\]/gmi,'$1[TAB$2]');}
+function ps(raw,tag){const normalized=normalizeReportRaw(raw);const r=normalized.match(new RegExp(`\\[${tag}\\]([\\s\\S]*?)(?=(\\[TAB[1-4]\\]|$))`,`i`));return r?r[1].trim():'';}
+function pf(sec,tag){const r=sec.match(new RegExp(`${tag}:\s*([\\s\\S]*?)(?=\n\s*[A-Z0-9_ ]+:|$)`,`i`));return r?r[1].trim():'';}
+function formatText(txt){return escapeHtml(String(txt||'')).replace(/\r\n?/g,'\n').replace(/\n{2,}/g,'<br><br>').replace(/\n/g,'<br>');}
+function parsePipeList(raw){return String(raw||'').split('|').map(s=>s.trim()).filter(Boolean);}
+function parseProgramLine(line){const body=line.replace(/^\s*PROGRAM_\d+:\s*/i,'').trim();const parts=body.split('|').map(s=>s.trim());return{title:parts[0]||'',score:parts[1]||'',reason:parts[2]||'',tags:parts[3]?parts[3].split(/[,;]/).map(t=>t.trim()).filter(Boolean):[]};}
+function parseJudgeLine(text){const parts=String(text||'').split('|').map(s=>s.trim());return{point:parts[0]||'',tip:parts[1]||''};}
 
 function renderFullReport(raw,cd,iD,rev){
   const t1=ps(raw,'TAB1');
