@@ -1018,26 +1018,9 @@ async function startSummaryGen(){
   const top1AmtStr=top1Amt>=100000000?`${(top1Amt/100000000).toFixed(0)}억원`:top1Amt?`${Math.round(top1Amt/10000)}만원`:null;
   const top1Dl=top1?.program?.deadline?Math.ceil((new Date(top1.program.deadline)-today)/86400000):null;
 
-  const prompt=`아래 기업 정보를 바탕으로 세 가지를 작성하세요.
-기업: ${cd.company_name} (${cd.biz_type||''}, ${cd.industry}, ${cd.region}, ${cd.age_years!=null?cd.age_years+'년차':''}, 상시직원 ${cd.employee_count!=null?cd.employee_count+'명':'미입력'}, 매출 ${cd.annual_revenue?(cd.annual_revenue/10000).toFixed(0)+'만원':'미입력'})
-기업소개: ${cd.description||''}
-필요분야: ${(cd.needs||[]).join(', ')}
-1순위사업: ${top1?.program?.title||''} (${top1?.match_score||0}점, ${top1?.match_reason||''})
-
-[DIAGNOSIS] 이 기업의 현재 상황을 진단하는 핵심 한 문장 (업종·규모·업력·필요분야 기반, 40자 이내, 구체적으로)
-[HOOK] 1순위 사업의 당락을 결정하는 심사 포인트 한 줄 (30자 이내)
-[ACTION] 대표님이 지금 당장 해야 할 한 가지 (30자 이내)
-
-세 항목만 답변.`;
-
   let diag='귀사의 현재 사업 방향과 필요를 분석했습니다.';
   let hook='이 사업, 준비된 기업만 선정됩니다.';
   let action='지금 바로 신청 자격을 확인해보세요.';
-  try{
-    const raw=await callAPI(prompt,400);
-    const dm=raw.match(/\[DIAGNOSIS\](.*?)(?=\[|$)/s);const hm=raw.match(/\[HOOK\](.*?)(?=\[|$)/s);const am=raw.match(/\[ACTION\](.*?)(?=\[|$)/s);
-    if(dm)diag=dm[1].trim();if(hm)hook=hm[1].trim();if(am)action=am[1].trim();
-  }catch(e){}
 
   document.getElementById('sum-company').textContent=cd.company_name||'';
   document.getElementById('sum-biztag').textContent=cd.biz_type||'';
