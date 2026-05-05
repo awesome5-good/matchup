@@ -388,6 +388,21 @@
     @media (max-width: 768px) {
       .mobile-tabbar { display: block; }
     }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #534AB7;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
     </style>
 </head>
 <body>
@@ -760,7 +775,9 @@ async function callAPI(prompt,maxT,progressCallback=null){
   result += decoder.decode();
   let data;
   try{ data=JSON.parse(result); }catch(e){ throw new Error('API 응답 파싱 실패'); }
-  return data?.content?.[0]?.text||'';
+  const rawResponse = data?.content?.[0]?.text || '';
+  console.log('AI Raw Response:', rawResponse);
+  return rawResponse;
 }
 
 /* ── 로그인 연동 ── */
@@ -1126,28 +1143,11 @@ async function generateFullReport(){
       <div class="rpt-gen-icons">🧑‍💼📋</div>
       <div class="rpt-gen-title">귀사만을 위한 맞춤 진단 리포트를<br>작성하고 있습니다</div>
       <div class="rpt-gen-sub">지금까지 <strong>500여 개 기업</strong>을 직접 만나며 쌓아온<br>컨설팅·멘토링 노하우와 누적 데이터,<br>그리고 입력해주신 귀사 정보를 종합하여 분석 중입니다.<br><br>잠시만 기다려 주세요 ☕</div>
-      <div class="rpt-gen-bar"><div class="rpt-gen-fill" id="rpt-gen-fill"></div></div>
-      <div class="rpt-gen-progress" id="rpt-gen-progress">0%</div>
-      <div class="rpt-gen-status" id="rpt-gen-status">AI가 분석을 시작했습니다...</div>
+      <div class="spinner"></div>
+      <div class="rpt-gen-status" id="rpt-gen-status">리포트 생성 중...</div>
     </div>`;
 
-  const fillEl=document.getElementById('rpt-gen-fill');
-  const progressEl=document.getElementById('rpt-gen-progress');
   const statusEl=document.getElementById('rpt-gen-status');
-  let progress=0;
-  let hasRemoteProgress=false;
-  let longWaitTimer=setTimeout(()=>{
-    if(statusEl) statusEl.textContent='AI가 분석 중입니다... (최대 30초 소요)';
-  },12000);
-  if(window._reportProgressTimer){clearInterval(window._reportProgressTimer);}
-  window._reportProgressTimer=setInterval(()=>{
-    if(!hasRemoteProgress && progress < 88){
-      progress += Math.floor(Math.random()*4)+2;
-      if(progress > 88) progress = 88;
-      if(fillEl) fillEl.style.width = `${progress}%`;
-      if(progressEl) progressEl.textContent = `${progress}%`;
-    }
-  }, 180);
 
   const top3=allMatches.slice(0,3).map((m,i)=>`${i+1}순위: ${m.program?.title||''} (${m.match_score}점) — ${m.match_reason||''}`).join('\n');
 
@@ -1216,15 +1216,7 @@ PIPELINE: 다음 지원사업 파이프라인 3단계
 VISION: 3년 후 비전 (해당 업종·규모 기준)`;
 
   try{
-    const result=await callAPI(prompt,5000,(percent)=>{
-      if(percent!=null){
-        hasRemoteProgress=true;
-        progress=Math.max(progress,percent);
-        if(progress > 98) progress=98;
-        if(fillEl) fillEl.style.width=`${progress}%`;
-        if(progressEl) progressEl.textContent=`${progress}%`;
-      }
-    });
+    const result=await callAPI(prompt,5000);
     if(window._reportProgressTimer){clearInterval(window._reportProgressTimer);window._reportProgressTimer=null;}
     clearTimeout(longWaitTimer);
     if(fillEl) fillEl.style.width='100%';
@@ -1245,7 +1237,6 @@ VISION: 3년 후 비전 (해당 업종·규모 기준)`;
     }
   }catch(e){
     if(window._reportProgressTimer){clearInterval(window._reportProgressTimer);window._reportProgressTimer=null;}
-    clearTimeout(longWaitTimer);
     document.getElementById('report-area').innerHTML='<div class="rpt-generating"><p style="color:var(--danger)">리포트 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</p></div>';
   }
 }
