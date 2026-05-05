@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>멤버십 - 매치업</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%234F46E5'/><text x='50%25' y='50%25' font-size='20' font-weight='900' font-family='Arial' fill='white' text-anchor='middle' dominant-baseline='central'>M</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--primary:#4F46E5;--primary-light:#EEF2FF;--primary-dark:#3730A3;--success:#10B981;--warning:#F59E0B;--danger:#EF4444;--gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;--gray-300:#D1D5DB;--gray-400:#9CA3AF;--gray-500:#6B7280;--gray-600:#4B5563;--gray-700:#374151;--gray-900:#111827;--sidebar-width:240px;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--gray-50);color:var(--gray-900);display:flex;min-height:100vh;overflow-x:hidden;}
+    .sidebar{width:var(--sidebar-width);background:#fff;border-right:1px solid var(--gray-200);display:flex;flex-direction:column;position:fixed;height:100vh;z-index:100;}
+    .sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;gap:10px;cursor:pointer;transition:opacity 0.15s;}
+    .sidebar-logo:hover{opacity:0.75;}
+    .logo-icon{width:32px;height:32px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:16px;}
+    .logo-text{font-weight:700;font-size:16px;}.logo-badge{font-size:10px;background:var(--primary-light);color:var(--primary);padding:2px 6px;border-radius:4px;font-weight:600;}
+    .beta-free-badge{font-size:11px;background:var(--success);color:white;padding:4px 8px;border-radius:12px;font-weight:600;margin-left:8px;}
+    .sidebar-section{padding:16px 12px 8px;}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;color:var(--gray-600);margin-bottom:2px;transition:all 0.15s;}
+    .nav-item:hover{background:var(--gray-50);color:var(--gray-900);}
+    .nav-item.active{background:var(--primary-light);color:var(--primary);}
+    .nav-item svg{width:18px;height:18px;flex-shrink:0;}
+    .nav-badge{margin-left:auto;background:var(--primary);color:white;font-size:11px;font-weight:600;padding:1px 6px;border-radius:10px;}
+    .sidebar-footer{margin-top:auto;padding:16px;border-top:1px solid var(--gray-100);}
+    .user-card{display:flex;align-items:center;gap:10px;}
+    .user-avatar{width:32px;height:32px;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:13px;font-weight:700;}
+    .user-name{font-size:13px;font-weight:600;}
+    .user-company{font-size:11px;color:var(--gray-400);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .main{margin-left:var(--sidebar-width);flex:1;display:flex;flex-direction:column;}
+    .topbar{background:#fff;border-bottom:1px solid var(--gray-200);padding:0 28px;height:60px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:50;}
+    .breadcrumb{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--gray-500);}
+    .breadcrumb span{color:var(--gray-900);font-weight:500;}
+    .content{padding:28px;flex:1;}
+    .btn-primary{background:var(--primary);color:white;border:none;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background 0.15s;}
+    .btn-primary:hover{background:var(--primary-dark);}
+    .btn-secondary{background:#fff;color:var(--gray-700);border:1px solid var(--gray-200);padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;}
+    .btn-secondary:hover{background:var(--gray-50);}
+
+    .beta-banner{background:linear-gradient(135deg,var(--success),#059669);color:white;padding:16px 28px;text-align:center;margin-bottom:32px;border-radius:12px;}
+    .beta-banner h3{font-size:18px;font-weight:700;margin-bottom:4px;}
+    .beta-banner p{font-size:14px;opacity:0.9;}
+
+    .membership-header{text-align:center;margin-bottom:40px;}
+    .membership-header h1{font-size:32px;font-weight:800;color:var(--gray-900);margin-bottom:8px;}
+    .membership-header p{color:var(--gray-500);font-size:16px;}
+
+    .plans-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-bottom:40px;}
+    .plan-card{background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:32px;display:flex;flex-direction:column;position:relative;transition:all 0.2s;}
+    .plan-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.1);border-color:var(--primary);}
+    .plan-card.popular{transform:scale(1.05);border:2px solid var(--primary);box-shadow:0 12px 32px rgba(79,70,229,0.2);}
+    .plan-card.popular::before{content:'인기';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--primary);color:white;font-size:12px;font-weight:700;padding:4px 16px;border-radius:20px;}
+    .plan-header{text-align:center;margin-bottom:24px;}
+    .plan-name{font-size:20px;font-weight:700;color:var(--gray-900);margin-bottom:4px;}
+    .plan-price{font-size:28px;font-weight:800;color:var(--primary);margin-bottom:8px;}
+    .plan-price.free{color:var(--success);}
+    .plan-price span{font-size:14px;color:var(--gray-500);font-weight:500;}
+    .plan-desc{color:var(--gray-600);font-size:14px;margin-bottom:20px;}
+    .plan-features{flex:1;margin-bottom:24px;}
+    .plan-feature{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--gray-700);margin-bottom:12px;}
+    .plan-feature svg{width:16px;height:16px;color:var(--success);flex-shrink:0;}
+    .plan-footer{text-align:center;}
+    .current-plan-badge{background:var(--success);color:white;font-size:12px;font-weight:600;padding:4px 12px;border-radius:16px;margin-bottom:16px;display:inline-block;}
+
+    .faq-section{background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:32px;margin-top:40px;}
+    .faq-header{text-align:center;margin-bottom:24px;}
+    .faq-header h2{font-size:24px;font-weight:700;color:var(--gray-900);}
+    .faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+    .faq-item{border-bottom:1px solid var(--gray-100);padding-bottom:16px;margin-bottom:16px;}
+    .faq-item:last-child{border-bottom:none;margin-bottom:0;}
+    .faq-question{font-size:16px;font-weight:600;color:var(--gray-900);margin-bottom:8px;}
+    .faq-answer{color:var(--gray-600);font-size:14px;line-height:1.6;}
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      .plans-grid{grid-template-columns:1fr;}
+      .faq-grid{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-logo" onclick="window.location.href='index.html'">
+      <div class="logo-icon">M</div><div class="logo-text">매치업</div><div class="logo-badge">beta</div>
+      <div class="beta-free-badge">🎉 베타 무료 이용 중</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="nav-item" onclick="window.location.href='matchup.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>지원사업 매칭
+      </div>
+      <div class="nav-item" onclick="window.location.href='matchup.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>매칭 결과
+      </div>
+      <div class="nav-item" onclick="window.location.href='matchup.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>기업 진단 리포트
+      </div>
+      <div class="nav-item" onclick="window.location.href='matchup.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>관심 저장 목록
+      </div>
+      <div class="nav-item active" onclick="window.location.href='membership.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>멤버십
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="breadcrumb">
+        <span>멤버십</span>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="beta-banner">
+        <h3>🎉 베타 기간 특별 혜택</h3>
+        <p>현재 모든 플랜을 <strong>완전 무료</strong>로 이용하실 수 있습니다. 베타 기간 종료 후에도 계속 이용하세요!</p>
+      </div>
+
+      <div class="membership-header">
+        <h1>맞춤 멤버십 플랜</h1>
+        <p>귀사의 성장 단계에 맞는 최적의 멤버십을 선택하세요</p>
+      </div>
+
+      <div class="plans-grid">
+        <div class="plan-card">
+          <div class="plan-header">
+            <div class="plan-name">Free</div>
+            <div class="plan-price free">무료</div>
+            <div class="plan-desc">기본 기능으로 시작하기</div>
+          </div>
+          <div class="plan-features">
+            <div class="plan-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              지원사업 매칭 무제한
+            </div>
+            <div class="plan-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              기업 진단 리포트 (최초 3회)
+            </div>
+            <div class="plan-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              관심 사업 저장 (최대 10개)
+            </div>
+          </div>
+          <div class="plan-footer">
+            <div class="current-plan-badge">현재 이용중</div>
+            <button class="btn-secondary" disabled>현재 플랜</button>
+          </div>
+        </div>
+
+        <div class="plan-card popular">
+          <div class="plan-header">
+            <div class="plan-name">Basic</div>
+            <div class="plan-price">₩9,900<span>/월</span></div>
+            <div class="plan-desc">활발한 사업 확장을 위한</div>
+          </div>
+          <div class="plan-features">
+            <div class="plan-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              지원사업 매칭 무제한
+            </div>
+            <div class="plan-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              기업 진단 리포트 (월 10회)
+            </div>
+            <div class="plan-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              관심 사업 저장 무제한
+            </div>
+            <div class="plan-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              이메일 알림 서비스
+            </div>
+          </div>
+          <div class="plan-footer">
+            <button class="btn-primary">업그레이드</button>
+          </div>
+        </div>
+
+        <div class="plan-card">
+          <div class="plan-header">
+            <div class="plan-name">Standard</div>
+            <div class="plan-price">₩29,000<span>/월</span></div>
+            <div class="plan-desc">전문적인 사업 전략 수립을 위한</div>
+          </div>
+          <div class="plan-features">
+            <div class="plan-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              지원사업 매칭 무제한
+            </div>
+            <div class="plan-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              기업 진단 리포트 무제한
+            </div>
+            <div class="plan-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              히스토리 및 분석 데이터
+            </div>
+            <div class="plan-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              우선 지원사업 알림
+            </div>
+            <div class="plan-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              엑셀 다운로드
+            </div>
+          </div>
+          <div class="plan-footer">
+            <button class="btn-primary">업그레이드</button>
+          </div>
+        </div>
+
+        <div class="plan-card">
+          <div class="plan-header">
+            <div class="plan-name">Premium</div>
+            <div class="plan-price">₩59,000<span>/월</span></div>
+            <div class="plan-desc">전문 컨설턴트와 함께하는 성장</div>
+          </div>
+          <div class="plan-features">
+            <div class="plan-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Standard 플랜의 모든 기능
+            </div>
+            <div class="plan-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              전문 컨설턴트 1:1 연결
+            </div>
+            <div class="plan-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              맞춤 사업계획서 리뷰
+            </div>
+            <div class="plan-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              월 1회 전략 미팅 (30분)
+            </div>
+            <div class="plan-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              긴급 컨설팅 (월 1회)
+            </div>
+          </div>
+          <div class="plan-footer">
+            <button class="btn-primary">업그레이드</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-section">
+        <div class="faq-header">
+          <h2>자주 묻는 질문</h2>
+        </div>
+        <div class="faq-grid">
+          <div class="faq-item">
+            <div class="faq-question">베타 기간이 언제까지인가요?</div>
+            <div class="faq-answer">베타 기간은 2026년 말까지 예정되어 있습니다. 기간 동안 모든 플랜을 무료로 이용하실 수 있습니다.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">무료 플랜으로도 충분한가요?</div>
+            <div class="faq-answer">기본적인 매칭과 초기 리포트 생성에는 충분합니다. 더 많은 리포트가 필요하시면 Basic 플랜부터 고려해보세요.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">플랜 변경은 어떻게 하나요?</div>
+            <div class="faq-answer">멤버십 페이지에서 언제든지 업그레이드가 가능합니다. 다운그레이드는 다음 결제 주기부터 적용됩니다.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">결제는 어떤 방식으로 이루어지나요?</div>
+            <div class="faq-answer">신용카드와 계좌이체를 지원합니다. 매월 자동 결제되며, 언제든지 취소하실 수 있습니다.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">전문 컨설턴트는 어떤 도움이 되나요?</div>
+            <div class="faq-answer">사업계획서 작성, 심사 전략 수립, 추가 지원사업 발굴 등 실질적인 컨설팅을 제공합니다.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">환불 정책은 어떻게 되나요?</div>
+            <div class="faq-answer">서비스 이용에 문제가 있을 경우 7일 이내 전액 환불해드립니다. 자세한 내용은 이용약관을 확인해주세요.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
