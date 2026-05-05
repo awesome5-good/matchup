@@ -1188,50 +1188,124 @@ function renderFullReport(raw,cd,iD,rev){
   const t2=ps(raw,'TAB2');
   const t3=ps(raw,'TAB3');
   const t4=ps(raw,'TAB4');
-  const renderSection=txt=>txt?`<div class="rpt-card"><div class="rpt-card-title">${escapeHtml(txt.split('\n')[0]||'')}</div><div class="prose">${escapeHtml(txt).replace(/\n/g,'<br>')}</div></div>`:'';
-  const commentHtml=renderSection(t1);
-  const summaryHtml=renderSection(t2);
-  const strategyHtml=renderSection(t3);
-  const roadmapHtml=renderSection(t4);
+  const situation=pf(t1,'SITUATION');
+  const complication=pf(t1,'COMPLICATION');
+  const resolution=pf(t1,'RESOLUTION');
+  const summary=pf(t2,'SUMMARY')||t2;
+  const strengths=[pf(t2,'STRENGTH_1'),pf(t2,'STRENGTH_2')].filter(Boolean);
+  const weaknesses=[pf(t2,'WEAKNESS_1'),pf(t2,'WEAKNESS_2')].filter(Boolean);
+  const features=[pf(t3,'FEATURE_1'),pf(t3,'FEATURE_2'),pf(t3,'FEATURE_3')].filter(Boolean);
+  const judgePoints=[pf(t3,'JUDGE_POINT_1'),pf(t3,'JUDGE_POINT_2'),pf(t3,'JUDGE_POINT_3')].map(item=>{const parts=item.split('|').map(x=>x.trim());return{point:parts[0]||'',tip:parts[1]||''};}).filter(item=>item.point);
+  const checklistItems=pf(t3,'CHECKLIST').split('|').map(x=>x.trim()).filter(Boolean);
+  const practicalTips=[pf(t3,'PRACTICAL_TIP_1'),pf(t3,'PRACTICAL_TIP_2'),pf(t3,'PRACTICAL_TIP_3')].filter(Boolean);
+  const timelineNow=pf(t4,'TIMELINE_NOW');
+  const timeline3m=pf(t4,'TIMELINE_3M');
+  const timeline1y=pf(t4,'TIMELINE_1Y');
+  const timeline3y=pf(t4,'TIMELINE_3Y');
+  const vision=pf(t4,'VISION');
+  const pipelineItems=pf(t4,'PIPELINE').split('|').map(x=>x.trim()).filter(Boolean);
   const today=new Date();
-  const tRows=allMatches.slice(0,5).map((m,i)=>{
+  const topMatches=allMatches.slice(0,5);
+  const metricScore=topMatches.length?Math.round(topMatches.reduce((sum,m)=>sum+m.match_score,0)/topMatches.length):0;
+  const metricPrograms=allMatches.length;
+  const metricDeadline=Math.min(...allMatches.map(m=>{const d=m.program?.deadline?Math.ceil((new Date(m.program.deadline)-today)/86400000):999;return d>0?d:999;}));
+  const metricAmount=topMatches.reduce((sum,m)=>sum+(m.program?.max_support_amount||0),0);
+  const amountLabel=metricAmount>=100000000?`${Math.round(metricAmount/10000000)/10}억원`:(metricAmount?`${Math.round(metricAmount/10000)}만원`:'-');
+  const checklistKey=`matchup_checklist_${encodeURIComponent(cd.company_name||'default')}`;
+  const checklistState=getChecklistState(checklistKey,checklistItems.length);
+  const checklistDone=checklistState.filter(Boolean).length;
+  const addTags=tags=>Array.isArray(tags)?tags.map(t=>`<span>${escapeHtml(t)}</span>`).join(''):'<span>태그 없음</span>';
+  const matchItems=topMatches.map((m,i)=>{
     const p=m.program||{};
-    const dl=p.deadline?Math.ceil((new Date(p.deadline)-today)/86400000):null;
-    const amt=p.max_support_amount>=100000000?`${(p.max_support_amount/100000000).toFixed(0)}억원`:p.max_support_amount?`${Math.round(p.max_support_amount/10000)}만원`:'-';
-    return `<tr${i===0?' class="hl"':''}><td><strong>${i+1}순위</strong></td><td>${escapeHtml(p.title||'')}</td><td style="color:var(--primary);font-weight:700">${m.match_score}점</td><td>${amt}</td><td>${dl&&dl>0?`<span style="color:${dl<=14?'var(--danger)':'var(--gray-600)'}">D-${dl}</span>`:'-'}</td></tr>`;
+    const reason=escapeHtml(m.match_reason||'이 지원사업은 기업 역량과 방향성이 잘 맞습니다.');
+    const tags=addTags(p.tags);
+    const scoreWidth=Math.min(Math.max(m.match_score||0,0),100);
+    return `<div class="match-item"><div class="match-rank">${i+1}</div><div><div class="match-title">${escapeHtml(p.title||'지원사업명 없음')}</div><div class="match-badge">${m.match_score||0}점</div><div class="match-reason">${reason}</div><div class="match-tags">${tags}</div><div class="progress-track"><div class="progress-fill" style="width:${scoreWidth}%"></div></div></div></div>`;
   }).join('');
-
+  const strengthHtml=strengths.length?strengths.map(item=>`<div class="strength-card"><h3>핵심 강점</h3><p>${escapeHtml(item)}</p></div>`).join(''):`<div class="strength-card"><h3>핵심 강점</h3><p>진단 결과를 바탕으로 강점을 정리해드립니다.</p></div>`;
+  const weaknessHtml=weaknesses.length?weaknesses.map(item=>`<div class="strength-card orange"><h3>보완 영역</h3><p>${escapeHtml(item)}</p></div>`).join(''):`<div class="strength-card orange"><h3>보완 영역</h3><p>지원 준비에 필요한 개선 포인트를 확인해보세요.</p></div>`;
+  const featureHtml=features.length?features.map(item=>`<div class="feature-card"><h3>핵심 특징</h3><p>${escapeHtml(item)}</p></div>`).join(''):`<div class="feature-card"><h3>사업 특징</h3><p>1순위 지원사업의 특징을 분석해드립니다.</p></div>`;
+  const judgeHtml=judgePoints.length?judgePoints.map((item,idx)=>`<div class="judge-item"><div class="judge-number">${idx+1}</div><div class="judge-text"><strong>${escapeHtml(item.point)}</strong>${item.tip?`<div class="judge-tip-box">${escapeHtml(item.tip)}</div>`:''}</div></div>`).join(''):`<div class="judge-item"><div class="judge-number">1</div><div class="judge-text">심사 포인트 분석 결과가 준비되는 대로 확인할 수 있습니다.</div></div>`;
+  const checklistHtml=checklistItems.length?checklistItems.map((item,i)=>`<button type="button" class="checklist-item${checklistState[i]?' checked':''}" data-checklist-key="${checklistKey}" data-item-index="${i}" onclick="toggleChecklistItem(this)"><span class="check-item-icon">${checklistState[i]?'✓':'○'}</span><span>${escapeHtml(item)}</span></button>`).join(''):`<p class="prose">체크리스트 항목이 준비되지 않았습니다.</p>`;
+  const tipsHtml=practicalTips.length?practicalTips.map(item=>`<div class="tip-chip">${escapeHtml(item)}</div>`).join(''):`<div class="tip-chip">현실적이고 실전적인 준비 팁을 제공합니다.</div>`;
+  const pipelineHtml=pipelineItems.length?pipelineItems.map((item,idx)=>`<div class="pipeline-step"><h4>STEP ${idx+1}</h4><p>${escapeHtml(item)}</p></div>`).join(''):`<div class="pipeline-step"><h4>다음 단계</h4><p>지원사업 파이프라인을 재정의해드립니다.</p></div>`;
   document.getElementById('report-area').innerHTML=`
     <div class="rpt-tabs">
-      <div class="rpt-tab active" onclick="switchTab('t1',this)">🧑‍💼 컨설턴트 코멘트</div>
-      <div class="rpt-tab" onclick="switchTab('t2',this)">📊 진단 요약</div>
-      <div class="rpt-tab" onclick="switchTab('t3',this)">🎯 지원사업 전략</div>
-      <div class="rpt-tab" onclick="switchTab('t4',this)">🚀 성장 로드맵</div>
+      <div class="rpt-tab active" onclick="switchTab('t1',this)">컨설턴트 진단</div>
+      <div class="rpt-tab" onclick="switchTab('t2',this)">진단 요약</div>
+      <div class="rpt-tab" onclick="switchTab('t3',this)">지원사업 전략</div>
+      <div class="rpt-tab" onclick="switchTab('t4',this)">성장 로드맵</div>
     </div>
 
     <div class="rpt-tab-content active" id="t1">
-      ${commentHtml||`<div class="rpt-card"><div class="rpt-card-title">🧑‍💼 컨설턴트 코멘트</div><div class="prose">기업 정보 기반 현실 진단이 여기에 표시됩니다.</div></div>`}
+      <div class="profile-card">
+        <div class="profile-avatar">MC</div>
+        <div class="profile-info">
+          <div class="profile-name">컨설턴트 매치업</div>
+          <div class="profile-meta">공인 경영컨설턴트</div>
+        </div>
+      </div>
+      <div class="section-list">
+        <div class="section-block purple"><div class="section-block-title">SITUATION</div><div class="section-block-body">${escapeHtml(situation||'현재 기업 상황을 진단합니다.')}</div></div>
+        <div class="section-block"><div class="section-block-title">COMPLICATION</div><div class="section-block-body">${escapeHtml(complication||'진단 과정에서 발견된 주요 걸림돌을 정리합니다.')}</div></div>
+        <div class="section-block green"><div class="section-block-title">RESOLUTION</div><div class="section-block-body">${escapeHtml(resolution||'지원사업 전략과 성장 로드맵을 함께 제시합니다.')}</div></div>
+      </div>
+      <div class="guide-box">① 진단 요약 → ② 지원사업 전략 → ③ 성장 로드맵 순서로 결과를 확인해보세요.</div>
     </div>
 
     <div class="rpt-tab-content" id="t2">
-      <div class="rpt-card">
-        <div class="rpt-card-title">📊 매칭 결과 요약</div>
-        <div class="rpt-card-sub">입력된 기업 정보 기반으로 선별된 추천 지원사업입니다.</div>
-        <div class="fin-table"><table><thead><tr><th>순위</th><th>지원사업명</th><th>적합도</th><th>지원금액</th><th>마감</th></tr></thead><tbody>${tRows}</tbody></table></div>
+      <div class="metric-grid">
+        <div class="metric-card"><div class="metric-label">종합점수</div><div class="metric-value">${metricScore}점</div></div>
+        <div class="metric-card"><div class="metric-label">적합사업수</div><div class="metric-value">${metricPrograms}개</div></div>
+        <div class="metric-card"><div class="metric-label">마감 최단</div><div class="metric-value">${metricDeadline<999?`D-${metricDeadline}`:'-'}</div></div>
+        <div class="metric-card"><div class="metric-label">지원금액</div><div class="metric-value">${amountLabel}</div></div>
       </div>
-      ${summaryHtml||`<div class="rpt-card"><div class="rpt-card-title">진단 요약</div><div class="prose">기업 정보 기반 진단 요약이 여기에 표시됩니다.</div></div>`}
+      ${summary?`<div class="rpt-card"><div class="rpt-card-title">진단 요약</div><div class="prose">${escapeHtml(summary)}</div></div>`:''}
+      ${matchItems}
+      <div class="strength-grid">
+        ${strengthHtml}
+        ${weaknessHtml}
+      </div>
     </div>
 
     <div class="rpt-tab-content" id="t3">
-      ${strategyHtml||`<div class="rpt-card"><div class="rpt-card-title">🎯 지원사업 전략</div><div class="prose">선택된 1순위 사업에 대한 전략과 준비 지침이 여기에 표시됩니다.</div></div>`}
+      <div class="rpt-card" style="border-left:3px solid #534AB7;">
+        <div class="rpt-card-title">1순위 사업 전략</div>
+        <div class="rpt-card-sub">상위 1순위 추천 사업을 중심으로 전략을 정리합니다.</div>
+        <div class="prose">${escapeHtml(allMatches[0]?.program?.title||'추천 지원사업 정보가 없습니다.')}</div>
+      </div>
+      <div class="feature-grid">${featureHtml}</div>
+      <div class="judge-grid">${judgeHtml}</div>
+      <div class="checklist-panel" data-checklist-key="${checklistKey}">
+        <div class="checklist-header"><h3>체크리스트</h3><span class="checklist-progress-label">${checklistDone}/${checklistItems.length} 완료</span></div>
+        <div class="checklist-progress"><div class="checklist-progress-track"><div class="checklist-progress-fill" style="width:${checklistItems.length?Math.round(checklistDone/checklistItems.length*100):0}%"></div></div><div class="checklist-progress-label">${checklistDone}/${checklistItems.length} 완료</div></div>
+        <div class="checklist-list">${checklistHtml}</div>
+      </div>
+      <div class="tip-list">${tipsHtml}</div>
     </div>
 
     <div class="rpt-tab-content" id="t4">
-      ${roadmapHtml||`<div class="rpt-card"><div class="rpt-card-title">🚀 성장 로드맵</div><div class="prose">단계별 성장 목표와 다음 사업 파이프라인이 여기에 표시됩니다.</div></div>`}
+      <div class="timeline-banner"><p>${escapeHtml(vision||'성장 로드맵은 기업의 중장기 비전과 실행 방향을 함께 제시합니다.')}</p></div>
+      <div class="timeline-wrap">
+        <div class="timeline-line"></div>
+        <div class="timeline-item"><div class="timeline-dot red">지금</div><div class="timeline-step">지금</div><div class="timeline-body">${escapeHtml(timelineNow||'현재 상태와 즉시 실행 포인트를 정리합니다.')}</div></div>
+        <div class="timeline-item"><div class="timeline-dot purple">3M</div><div class="timeline-step">3개월</div><div class="timeline-body">${escapeHtml(timeline3m||'3개월 목표와 실행 계획을 제시합니다.')}</div></div>
+        <div class="timeline-item"><div class="timeline-dot purple">1Y</div><div class="timeline-step">1년</div><div class="timeline-body">${escapeHtml(timeline1y||'1년 후 목표와 현실적 수치를 확인합니다.')}</div></div>
+        <div class="timeline-item"><div class="timeline-dot green">3Y</div><div class="timeline-step">3년</div><div class="timeline-body">${escapeHtml(timeline3y||'3년 후 비전과 성장 단계를 정리합니다.')}</div></div>
+      </div>
+      <div class="timeline-stats">
+        <div class="timeline-stat">${escapeHtml(pipelineItems[0]||'파이프라인 1단계')}</div>
+        <div class="timeline-stat">${escapeHtml(pipelineItems[1]||'파이프라인 2단계')}</div>
+        <div class="timeline-stat">${escapeHtml(pipelineItems[2]||'파이프라인 3단계')}</div>
+      </div>
     </div>`;
 }
 
 function switchTab(id,el){document.querySelectorAll('.rpt-tab-content').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.rpt-tab').forEach(t=>t.classList.remove('active'));document.getElementById(id).classList.add('active');el.classList.add('active');}
+
+function getChecklistState(key,count){try{const raw=localStorage.getItem(key);const stored=raw?JSON.parse(raw):null;if(Array.isArray(stored)){if(count>0&&stored.length===count)return stored; if(count>0)return Array.from({length:count},(_,i)=>stored[i]||false); return stored;} }catch(e){}return Array(count).fill(false);} 
+function saveChecklistState(key,state){localStorage.setItem(key,JSON.stringify(state));}
+function toggleChecklistItem(el){const key=el.dataset.checklistKey;const idx=Number(el.dataset.itemIndex);const state=getChecklistState(key,0);state[idx]=!state[idx];saveChecklistState(key,state);if(state[idx]){el.classList.add('checked');el.querySelector('.check-item-icon').textContent='✓';}else{el.classList.remove('checked');el.querySelector('.check-item-icon').textContent='○';}const panel=document.querySelector(`[data-checklist-key="${key}"]`);if(panel){const done=state.filter(Boolean).length;const total=state.length;const fill=panel.querySelector('.checklist-progress-fill');const label=panel.querySelectorAll('.checklist-progress-label');if(fill)fill.style.width=`${total?Math.round(done/total*100):0}%`;label.forEach(elm=>elm.textContent=`${done}/${total} 완료`);}}
 
 function getSampleMatches(c){const r=c?.region||'';return[{id:'s1',match_score:94,is_saved:false,program:{title:`2026 ${r} 소상공인 경영안정자금`,organization:'소상공인시장진흥공단',category:'융자',tags:['소상공인','경영안정'],max_support_amount:200000000,deadline:'2026-06-30',eligibility:'소상공인',source_url:'https://www.semas.or.kr'}},{id:'s2',match_score:88,is_saved:false,program:{title:'스마트공방 기술보급사업',organization:'중소벤처기업부',category:'사업화',tags:['제조','스마트'],max_support_amount:150000000,deadline:'2026-05-15',eligibility:'제조업',source_url:'#'}},{id:'s3',match_score:82,is_saved:false,program:{title:'지역 신사업 창업사관학교',organization:'창업진흥원',category:'창업',tags:['창업'],max_support_amount:100000000,deadline:'2026-07-01',eligibility:'예비창업자',source_url:'#'}},{id:'s4',match_score:76,is_saved:false,program:{title:'AI 바우처 지원사업',organization:'NIPA',category:'바우처',tags:['AI','IT'],max_support_amount:30000000,deadline:'2026-05-31',eligibility:'중소기업',source_url:'#'}},{id:'s5',match_score:71,is_saved:false,program:{title:'온라인 판로 개척 지원',organization:'소상공인시장진흥공단',category:'마케팅',tags:['마케팅'],max_support_amount:5000000,deadline:'2026-08-31',eligibility:'소상공인',source_url:'#'}}];}
 
