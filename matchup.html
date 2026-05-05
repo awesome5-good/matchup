@@ -778,7 +778,7 @@ function navigate(page){
   });
   if(page==='results')loadResults();
   if(page==='saved')renderSaved();
-  if(page==='report'&&!matchingDone)loadReportHistory();
+  if(page==='report')loadReportHistory();
   window.scrollTo(0,0);
 }
 
