@@ -468,8 +468,8 @@
     .timeline-dot.now{background:var(--primary);}
     .timeline-dot.purple{background:#7C3AED;}
     .timeline-dot.green{background:var(--success);}
-    .timeline-step{font-size:13px;font-weight:700;color:var(--gray-900);margin-bottom:4px;margin-left:20px;}
-    .timeline-body{font-size:13px;color:var(--gray-600);line-height:1.7;}
+    .timeline-step{font-size:13px;font-weight:700;color:var(--gray-900);margin-bottom:4px;margin-left:40px;}
+    .timeline-body{font-size:13px;color:var(--gray-600);line-height:1.7;margin-left:40px;}
     .timeline-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:12px;}
     .timeline-stat{background:#fff;border:1px solid var(--gray-200);border-radius:14px;padding:16px;font-size:13px;color:var(--gray-700);line-height:1.7;}
     .pipeline-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px;}
@@ -1313,7 +1313,7 @@ function ps(raw,tag){const normalized=normalizeReportRaw(raw);const r=normalized
 function pf(sec,tag){if(!sec) return '';const r=sec.match(new RegExp(`(?:^|\n)\\s*${tag}\\s*:\\s*([\\s\\S]*?)(?=\\n\\s*(?:[A-Z][A-Z0-9_]*\\s*:|\\[TAB[1-4]\\]|$))`,'i'));console.log(`Parsing ${tag} from section:`, sec, 'Result:', r?r[1].trim():'');return r?r[1].trim():'';}
 function formatText(txt){return escapeHtml(String(txt||'')).replace(/\r\n?/g,'\n').replace(/\n{2,}/g,'<br><br>').replace(/\n/g,'<br>');}
 function parsePipeList(raw){return String(raw||'').split('|').map(s=>s.trim()).filter(Boolean);}
-function parseProgramLine(line){const body=line.replace(/^\s*PROGRAM_\d+:\s*/i,'').trim();const parts=body.split('|').map(s=>s.trim());return{title:parts[0]||'',score:parts[1]||'',reason:parts[2]||'',tags:parts[3]?parts[3].split(/[,;]/).map(t=>t.trim()).filter(Boolean):[]};}
+function parseProgramLine(line){const body=line.replace(/^\s*PROGRAM_\d+:\s*/i,'').trim();const parts=body.split('|').map(s=>s.trim());const scoreMatch=String(parts[1]||'').match(/(\d+)/);return{title:parts[0]||'',score:scoreMatch?parseInt(scoreMatch[1]):0,reason:parts[2]||'',tags:parts[3]?parts[3].split(/[,;]/).map(t=>t.trim()).filter(Boolean):[]};}
 function parseJudgeLine(text){const parts=String(text||'').split('|').map(s=>s.trim());return{point:parts[0]||'',tip:parts[1]||''};}
 function parseField(section,tag){return pf(section,tag);} 
 function parseFieldList(section,tags){return tags.map(tag=>parseField(section,tag)).filter(Boolean);} 
@@ -1343,7 +1343,7 @@ function parseFullReport(raw){
     programs:parseProgramLines(sections.TAB2),
     strengths:parseFieldList(sections.TAB2,['STRENGTH_1','STRENGTH_2']),
     weaknesses:parseFieldList(sections.TAB2,['WEAKNESS_1','WEAKNESS_2']),
-    features:parseFieldList(sections.TAB3,['FEATURE_1','FEATURE_2','FEATURE_3']),
+    features:[pf(sections.TAB3,'FEATURE_1'),pf(sections.TAB3,'FEATURE_2'),pf(sections.TAB3,'FEATURE_3')].filter(Boolean),
     judgePoints:parseJudgePoints(sections.TAB3),
     checklistItems:parseChecklistItems(sections.TAB3),
     practicalTips:parseFieldList(sections.TAB3,['PRACTICAL_TIP_1','PRACTICAL_TIP_2','PRACTICAL_TIP_3']),
