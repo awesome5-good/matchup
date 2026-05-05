@@ -1201,8 +1201,6 @@ VISION: 3년 후 비전 (해당 업종·규모 기준)`;
   try{
     const result=await callAPI(prompt,5000);
     if(window._reportProgressTimer){clearInterval(window._reportProgressTimer);window._reportProgressTimer=null;}
-    if(fillEl) fillEl.style.width='100%';
-    if(progressEl) progressEl.textContent='100%';
     if(statusEl) statusEl.textContent='AI 분석 완료';
     try {
       renderFullReport(result,cd,iData,rev);
