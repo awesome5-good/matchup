@@ -1344,7 +1344,9 @@ function parseFullReport(raw){const normalized=normalizeReportRaw(raw);const sec
   timeline3y:parseField(sections.TAB4,'TIMELINE_3Y'),
   vision:parseField(sections.TAB4,'VISION'),
   pipeline:parsePipeList(parseField(sections.TAB4,'PIPELINE'))
-};}
+};
+console.log('파싱 결과:', JSON.stringify(parsed, null, 2));
+}
 
 function renderFullReport(raw,cd,iD,rev){
   const parsed=parseFullReport(raw);
