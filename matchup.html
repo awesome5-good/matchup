@@ -1270,12 +1270,12 @@ PRACTICAL_TIP_2: 업종 특화 실전 팁 2
 PRACTICAL_TIP_3: 업종 특화 실전 팁 3
 
 [TAB4]
-TIMELINE_NOW: 지금 상태와 첫 번째 단계
-TIMELINE_3M: 3개월 후 목표와 실행 포인트
-TIMELINE_1Y: 1년 후 목표와 현실적 수치
-TIMELINE_3Y: 3년 후 비전과 규모
-PIPELINE: 다음 지원사업 파이프라인 3단계
-VISION: 3년 후 비전 (해당 업종·규모 기준)`;
+TIMELINE_NOW: 지금 당장 해야 할 행동 3가지를 구체적 수치와 함께 작성. 예) "① 지난 12개월 거래명세서·통장 사본 수집 → ② 월별 평균 매출액 계산표 작성 → ③ K-Startup 신청서 초안 작성 (사업계획서 현황 섹션부터)"
+TIMELINE_3M: 선정 후 3개월 목표를 수치 포함해서 구체적으로 작성. 지원금 집행 계획, 장비/마케팅 투자 비율, 기대 성과 수치 포함
+TIMELINE_1Y: 1년 후 매출·직원·거래처 목표를 현실적 수치로 작성. 2차 지원사업 신청 계획 포함
+TIMELINE_3Y: 3년 후 비전을 법인전환·고용·매출 수치로 구체적으로 작성
+PIPELINE: 지금→3개월 신청할 1순위 사업명 | 1년 후 신청할 2순위 사업명 | 2~3년 후 신청할 3순위 사업명
+VISION: 이 로드맵의 전제 조건과 핵심 가정을 2~3문장으로 작성 (해당 기업 업종·규모·지역 반영)`;
 
   try{
     const result=await callAPI(prompt,5000);
@@ -1509,6 +1509,10 @@ function renderFullReport(raw,cd,iD,rev){
 
   const tipsHtml=(parsed.practicalTips.length?parsed.practicalTips:['실전 팁 준비 중']).map((t,i)=>`<div class="tip-box"><div class="tip-box-head">💡 TIP ${i+1}</div><div class="tip-item">${formatText(t)}</div></div>`).join('');
 
+  if(!parsed.pipeline.length && allMatches.length>=1){
+    parsed.pipeline = allMatches.slice(0,3).map(m=>m.program?.title||'').filter(Boolean);
+  }
+
   const tab3Html=`
     <div style="background:linear-gradient(135deg,#F3E8FF,#EDE9FE);border-radius:12px;padding:24px;margin-bottom:24px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;">
@@ -1537,7 +1541,10 @@ function renderFullReport(raw,cd,iD,rev){
   `;
   
   // TAB4 HTML - 성장 로드맵
-  const pipelineHtml=(parsed.pipeline.length?parsed.pipeline:['파이프라인 단계 준비 중']).slice(0,3).map((p,i)=>`<div class="pipeline-step"><h4>STEP ${i+1}</h4><p>${formatText(p)}</p></div>`).join('');
+  const pipelineHtml=(parsed.pipeline.length?parsed.pipeline:['파이프라인 단계 준비 중']).slice(0,3).map((p,i)=>{
+    const header = i===0 ? '지금 → 3개월' : i===1 ? '1년 후' : '2~3년 후';
+    return `<div class="pipeline-step"><h4>${header}</h4><p>${formatText(p)}</p></div>`;
+  }).join('');
 
   const tab4Html=`
     <div style="background:#F8F7FF;border-left:4px solid #7C3AED;border-radius:8px;padding:20px;margin-bottom:24px;">
