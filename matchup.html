@@ -1436,6 +1436,7 @@ function renderFullReport(raw,cd,iD,rev){
   ].map(s => Math.min(s, 100));
 
   const topDeadline=topMatches[0]?.program?.deadline?Math.ceil((new Date(topMatches[0].program.deadline)-today)/86400000):null;
+  const topScore=topMatches[0]?.match_score||parsed.programs[0]?.score||0;
   
   // TAB1 HTML - 컨설턴트 진단
   const tab1Html=`
