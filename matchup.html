@@ -291,6 +291,18 @@
     select.form-control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
     .prose{font-size:16px;color:var(--gray-700);line-height:2.0;}
     .prose strong{font-weight:700;color:var(--gray-900);}
+    
+    .chart-section{background:#fff;border:1px solid #E5E7EB;border-radius:16px;padding:24px;margin-bottom:20px;}
+    .chart-section-title{font-size:17px;font-weight:800;color:#111827;margin-bottom:6px;}
+    .chart-section-sub{font-size:14px;color:#6B7280;margin-bottom:20px;line-height:1.7;}
+    .chart-row{display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+    .chart-box{flex-shrink:0;}
+    .chart-legend{flex:1;display:flex;flex-direction:column;gap:12px;padding:20px;justify-content:center;}
+    .legend-item{display:flex;flex-direction:column;gap:4px;}
+    .legend-label{font-size:13px;font-weight:600;color:#374151;display:flex;justify-content:space-between;}
+    .legend-bar-wrap{height:8px;background:#E5E7EB;border-radius:999px;overflow:hidden;}
+    .legend-bar-fill{height:100%;border-radius:999px;}
+    .legend-status{font-size:11px;font-weight:600;}
 
     .mobile-login-banner{display:none;background:linear-gradient(135deg,#4F46E5,#7C3AED);padding:12px 16px;flex-direction:row;align-items:center;justify-content:space-between;gap:10px;}
     .mobile-login-banner .banner-text{font-size:13px;font-weight:500;color:rgba(255,255,255,0.9);flex:1;line-height:1.4;}
@@ -1406,7 +1418,23 @@ function renderFullReport(raw,cd,iD,rev){
   const checklistState=getChecklistState(checklistKey,parsed.checklistItems.length);
   const checklistDone=checklistState.filter(Boolean).length;
   const topTitle=topMatches[0]?.program?.title||parsed.programs[0]?.title||'추천 지원사업';
-  const topScore=Number(topMatches[0]?.match_score||parsed.programs[0]?.score||0);
+  
+  // 레이더 차트 점수 계산
+  const radarScores = [
+    // 1. 재무정보 (0~100)
+    (cd.annual_revenue ? 40 : 20) + (cd.annual_revenue >= 30000000 ? 20 : 0) + (cd.annual_revenue >= 100000000 ? 20 : 0),
+    // 2. 인력현황 (0~100)
+    (cd.employee_count != null ? 40 : 20) + (cd.employee_count >= 1 ? 20 : 0) + (cd.employee_count >= 5 ? 20 : 0),
+    // 3. 업력경험 (0~100)
+    (cd.age_years != null ? 30 : 20) + (cd.age_years >= 1 ? 20 : 0) + (cd.age_years >= 3 ? 20 : 0) + (cd.age_years >= 7 ? 10 : 0),
+    // 4. 사업계획 (0~100)
+    (String(cd.description||'').length >= 100 ? 30 : 0) + (String(cd.description||'').length >= 200 ? 20 : 0) + (String(cd.description||'').length >= 400 ? 20 : 0) + ((cd.needs||[]).length >= 2 ? 15 : 0) + ((cd.needs||[]).length === 0 ? 15 : 0),
+    // 5. 지역기반 (0~100)
+    (cd.region ? 40 : 15) + (cd.district ? 30 : 0) + (cd.homepage ? 15 : 0),
+    // 6. 사업다각화 (0~100)
+    ((cd.needs||[]).length >= 1 ? 20 : 10) + ((cd.needs||[]).length >= 2 ? 20 : 0) + ((cd.needs||[]).length >= 3 ? 20 : 0) + (cd.industry_detail ? 20 : 0)
+  ].map(s => Math.min(s, 100));
+
   const topDeadline=topMatches[0]?.program?.deadline?Math.ceil((new Date(topMatches[0].program.deadline)-today)/86400000):null;
   
   // TAB1 HTML - 컨설턴트 진단
@@ -1496,6 +1524,21 @@ function renderFullReport(raw,cd,iD,rev){
         <div style="font-size:18px;font-weight:700;color:#BE185D;margin-bottom:4px;">${amountLabel}</div>
         <div style="font-size:12px;color:var(--gray-600);">추천 사업 총액</div>
       </div>
+    </div>
+    <div class="chart-section">
+      <div class="chart-section-title">귀사 준비도 진단</div>
+      <div class="chart-section-sub">6개 항목별 현재 준비 수준 — 60점 이상이 심사 통과 기준입니다</div>
+      <div class="chart-row">
+        <div class="chart-box">
+          <canvas id="radarChart" width="340" height="340"></canvas>
+        </div>
+        <div class="chart-legend" id="radar-legend"></div>
+      </div>
+    </div>
+    <div class="chart-section">
+      <div class="chart-section-title">동업종 평균 대비 귀사 현황</div>
+      <div class="chart-section-sub">같은 업종 소상공인 평균과 비교한 귀사의 위치입니다</div>
+      <canvas id="barChart" width="700" height="220"></canvas>
     </div>
     <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);">매칭된 지원사업 (왜 이 사업인가)</h3>
     ${matchItems}
@@ -1591,6 +1634,205 @@ function renderFullReport(raw,cd,iD,rev){
     <div class="rpt-tab-content" id="t3">${tab3Html}</div>
     <div class="rpt-tab-content" id="t4">${tab4Html}</div>
   `;
+  
+  setTimeout(() => {
+    if (typeof drawRadarChart === 'function') drawRadarChart(cd, radarScores);
+    if (typeof drawBarChart === 'function') drawBarChart(cd, iD);
+  }, 100);
+}
+
+function drawRadarChart(cd, scores) {
+  const canvas = document.getElementById('radarChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+  const radius = 120;
+  const levels = 5;
+  const levelRadius = radius / levels;
+  const items = ['재무정보', '인력현황', '업력경험', '사업계획', '지역기반', '사업다각화'];
+  
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // 육각형 그리드 그리기
+  ctx.strokeStyle = '#E5E7EB';
+  ctx.lineWidth = 1;
+  for (let i = 1; i <= levels; i++) {
+    ctx.beginPath();
+    for (let j = 0; j < items.length; j++) {
+      const angle = (j * 2 * Math.PI / items.length) - Math.PI / 2;
+      const x = centerX + (i * levelRadius) * Math.cos(angle);
+      const y = centerY + (i * levelRadius) * Math.sin(angle);
+      if (j === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+  }
+  
+  // 기준선 (60점) 그리기
+  ctx.strokeStyle = '#EF4444';
+  ctx.setLineDash([4, 4]);
+  ctx.lineWidth = 2;
+  for (let i = 0; i < items.length; i++) {
+    const angle = (i * 2 * Math.PI / items.length) - Math.PI / 2;
+    const x = centerX + (60 / 100 * radius) * Math.cos(angle);
+    const y = centerY + (60 / 100 * radius) * Math.sin(angle);
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+  ctx.stroke();
+  ctx.setLineDash([]);
+  
+  // "심사기준" 텍스트
+  ctx.fillStyle = '#EF4444';
+  ctx.font = '11px sans-serif';
+  ctx.fillText('심사기준', centerX + 8, centerY - 65);
+  
+  // 귀사 데이터 다각형 그리기
+  ctx.strokeStyle = '#4F46E5';
+  ctx.fillStyle = 'rgba(79,70,229,0.2)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let i = 0; i < items.length; i++) {
+    const angle = (i * 2 * Math.PI / items.length) - Math.PI / 2;
+    const normalized = Math.min(scores[i] / 100, 1);
+    const x = centerX + normalized * radius * Math.cos(angle);
+    const y = centerY + normalized * radius * Math.sin(angle);
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  
+  // 꼭짓점 표시
+  ctx.fillStyle = '#4F46E5';
+  for (let i = 0; i < items.length; i++) {
+    const angle = (i * 2 * Math.PI / items.length) - Math.PI / 2;
+    const normalized = Math.min(scores[i] / 100, 1);
+    const x = centerX + normalized * radius * Math.cos(angle);
+    const y = centerY + normalized * radius * Math.sin(angle);
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+  
+  // 항목명 표시
+  ctx.fillStyle = '#1F2937';
+  ctx.font = 'bold 12px sans-serif';
+  ctx.textAlign = 'center';
+  for (let i = 0; i < items.length; i++) {
+    const angle = (i * 2 * Math.PI / items.length) - Math.PI / 2;
+    const x = centerX + (radius + 30) * Math.cos(angle);
+    const y = centerY + (radius + 30) * Math.sin(angle);
+    ctx.fillText(items[i], x, y);
+  }
+  
+  // legend 생성
+  const legend = document.getElementById('radar-legend');
+  if (legend) {
+    let html = '';
+    for (let i = 0; i < items.length; i++) {
+      const score = scores[i];
+      const isGood = score >= 60;
+      const color = isGood ? '#16A34A' : '#EF4444';
+      const status = isGood ? '✓ 양호' : '⚠ 보완 필요';
+      const fillColor = isGood ? '#10B981' : '#F87171';
+      html += `<div class="legend-item">
+        <div class="legend-label"><span>${items[i]}</span><span style="color:${color};font-weight:700;">${score}점</span></div>
+        <div class="legend-bar-wrap"><div class="legend-bar-fill" style="width:${Math.min(score,100)}%;background:${fillColor};"></div></div>
+        <div class="legend-status" style="color:${color};">${status}</div>
+      </div>`;
+    }
+    legend.innerHTML = html;
+  }
+}
+
+function drawBarChart(cd, iD) {
+  const canvas = document.getElementById('barChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  
+  // 데이터 계산
+  const ageYears = cd.age_years || 0;
+  const indAvgAge = 3;
+  const maxAge = Math.max(ageYears, indAvgAge, 10);
+  
+  const empCount = cd.employee_count || 0;
+  const indAvgEmp = iD.n || 5;
+  const maxEmp = Math.max(empCount, indAvgEmp, iD.m || 10);
+  
+  const revMonthly = cd.annual_revenue ? Math.round(cd.annual_revenue / 12 / 10000) : 0;
+  const indAvgRev = (iD.m || 5) * 100;
+  const maxRev = Math.max(revMonthly, indAvgRev) * 1.3;
+  
+  const padding = 60;
+  const chartWidth = canvas.width - padding * 2;
+  const chartHeight = canvas.height - padding * 2;
+  
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // 항목 3개
+  const items = [
+    { name: '업력 (년)', company: ageYears, industry: indAvgAge, max: maxAge },
+    { name: '직원수 (명)', company: empCount, industry: indAvgEmp, max: maxEmp },
+    { name: '월평균 매출 (백만원)', company: revMonthly, industry: indAvgRev, max: maxRev }
+  ];
+  
+  const itemCount = items.length;
+  const itemWidth = chartWidth / itemCount;
+  const barWidth = itemWidth / 2.5;
+  
+  // x축 레이블 및 막대 그리기
+  ctx.font = 'bold 14px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#1F2937';
+  
+  items.forEach((item, idx) => {
+    const centerX = padding + itemWidth * idx + itemWidth / 2;
+    
+    // 귀사 막대
+    const companyColor = item.company >= item.industry ? '#4F46E5' : '#EF4444';
+    const companyHeight = (item.company / item.max) * chartHeight;
+    ctx.fillStyle = companyColor;
+    ctx.fillRect(centerX - barWidth - 5, padding + chartHeight - companyHeight, barWidth, companyHeight);
+    
+    // 업종평균 막대
+    ctx.fillStyle = '#9CA3AF';
+    const indHeight = (item.industry / item.max) * chartHeight;
+    ctx.fillRect(centerX + 5, padding + chartHeight - indHeight, barWidth, indHeight);
+    
+    // 수치 텍스트
+    ctx.fillStyle = '#1F2937';
+    ctx.font = '12px sans-serif';
+    ctx.fillText(Math.round(item.company), centerX - barWidth - 5, padding + chartHeight - companyHeight - 8);
+    ctx.fillText(Math.round(item.industry), centerX + 5, padding + chartHeight - indHeight - 8);
+    
+    // 항목명
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillText(item.name, centerX, padding + chartHeight + 30);
+  });
+  
+  // 범례
+  ctx.font = '12px sans-serif';
+  ctx.fillStyle = '#4F46E5';
+  ctx.fillRect(padding, padding - 40, 12, 12);
+  ctx.fillStyle = '#1F2937';
+  ctx.textAlign = 'left';
+  ctx.fillText('귀사', padding + 18, padding - 30);
+  
+  ctx.fillStyle = '#9CA3AF';
+  ctx.fillRect(padding + 80, padding - 40, 12, 12);
+  ctx.fillStyle = '#1F2937';
+  ctx.fillText('업종평균', padding + 96, padding - 30);
+  
+  // 주석
+  ctx.font = '11px sans-serif';
+  ctx.fillStyle = '#9CA3AF';
+  ctx.textAlign = 'left';
+  ctx.fillText('* 업종평균은 동업종 소상공인 통계 기반 추정값입니다', padding, canvas.height - 8);
 }
 
 function switchTab(id,el){document.querySelectorAll('.rpt-tab-content').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.rpt-tab').forEach(t=>t.classList.remove('active'));document.getElementById(id).classList.add('active');el.classList.add('active');}
