@@ -289,7 +289,7 @@
     .modal-input:focus{outline:none;border-color:var(--primary);}
     .modal-actions{display:flex;gap:10px;justify-content:flex-end;}
     select.form-control{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
-    .prose{font-size:14px;color:var(--gray-700);line-height:1.9;}
+    .prose{font-size:13px;color:var(--gray-700);line-height:1.75;}
     .prose strong{font-weight:700;color:var(--gray-900);}
 
     .mobile-login-banner{display:none;background:linear-gradient(135deg,#4F46E5,#7C3AED);padding:12px 16px;flex-direction:row;align-items:center;justify-content:space-between;gap:10px;}
@@ -463,13 +463,13 @@
     .timeline-wrap{position:relative;padding-left:30px;border-left:2px solid #E5E7EB;margin-bottom:24px;}
     .timeline-item{position:relative;padding-bottom:28px;}
     .timeline-item:last-child{padding-bottom:0;}
-    .timeline-item::before{content:'';position:absolute;left:-14px;top:0;width:28px;height:28px;border-radius:50%;background:#fff;border:2px solid #C7D2FE;box-shadow:0 0 0 4px rgba(99,102,241,0.08);}
-    .timeline-dot{position:absolute;left:-30px;top:0;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700;}
+    .timeline-item::before{content:'';position:absolute;left:-12px;top:4px;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid #C7D2FE;box-shadow:0 0 0 4px rgba(99,102,241,0.08);}
+    .timeline-dot{position:absolute;left:-28px;top:2px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700;}
     .timeline-dot.now{background:var(--primary);}
     .timeline-dot.purple{background:#7C3AED;}
     .timeline-dot.green{background:var(--success);}
-    .timeline-step{font-size:13px;font-weight:700;color:var(--gray-900);margin-bottom:4px;margin-left:48px;}
-    .timeline-body{font-size:13px;color:var(--gray-600);line-height:1.7;margin-left:48px;}
+    .timeline-step{font-size:13px;font-weight:700;color:var(--gray-900);margin-bottom:4px;margin-left:44px;}
+    .timeline-body{font-size:13px;color:var(--gray-600);line-height:1.75;margin-left:44px;white-space:pre-wrap;}
     .timeline-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:12px;}
     .timeline-stat{background:#fff;border:1px solid var(--gray-200);border-radius:14px;padding:16px;font-size:13px;color:var(--gray-700);line-height:1.7;}
     .pipeline-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px;}
@@ -1326,14 +1326,14 @@ function pf(sec,tag){
   return result.trim();
 }
 function formatText(txt){return escapeHtml(String(txt||'')).replace(/\r\n?/g,'\n').replace(/\n{2,}/g,'<br><br>').replace(/\n/g,'<br>');}
-function parsePipeList(raw){return String(raw||'').split('|').map(s=>s.trim()).filter(Boolean);}
+function parsePipeList(raw){return String(raw||'').replace(/\r\n?/g,'\n').split(/\||\n/).map(s=>s.trim().replace(/^[\-•·►\*\s]*([0-9]+[\.|\)]\s*)?/, '').replace(/[\[\]]/g,'')).filter(Boolean);} 
 function parseProgramLine(line){const body=line.replace(/^\s*PROGRAM_\d+:\s*/i,'').trim();const parts=body.split('|').map(s=>s.trim());const scoreMatch=String(parts[1]||'').match(/(\d+)/);return{title:parts[0]||'',score:scoreMatch?parseInt(scoreMatch[1]):0,reason:parts[2]||'',tags:parts[3]?parts[3].split(/[,;]/).map(t=>t.trim()).filter(Boolean):[]};}
 function parseJudgeLine(text){const parts=String(text||'').split('|').map(s=>s.trim());return{point:parts[0]||'',tip:parts[1]||''};}
 function parseField(section,tag){return pf(section,tag);} 
 function parseFieldList(section,tags){return tags.map(tag=>parseField(section,tag)).filter(Boolean);} 
 function parseProgramLines(section){const lines=String(section||'').match(/^\s*PROGRAM_\d+\s*:\s*.*$/gim)||[];return lines.map(parseProgramLine).filter(p=>p.title||p.score||p.reason||p.tags.length);} 
 function parseJudgePoints(section){return ['JUDGE_POINT_1','JUDGE_POINT_2','JUDGE_POINT_3'].map(tag=>parseField(section,tag)).filter(Boolean).map(text=>{const parts=String(text).split('|').map(s=>s.trim());return{point:parts[0]||'',tip:parts[1]||''};});} 
-function parseChecklistItems(section){const raw=parseField(section,'CHECKLIST');return String(raw||'').split(/\||\n|•|-+/).map(s=>s.trim()).filter(Boolean);} 
+function parseChecklistItems(section){const raw=parseField(section,'CHECKLIST');return String(raw||'').replace(/\r\n?/g,'\n').split(/\||\n/).map(s=>s.trim().replace(/^[\-•·►\*\s]*([0-9]+[\.|\)]\s*)?/, '')).map(s=>s.replace(/^[\s]*[\-•·►\*]+\s*/,'').trim()).filter(Boolean);} 
 function parseFullReport(raw){
   const normalized=normalizeReportRaw(raw);
   const sections={};
@@ -1381,11 +1381,15 @@ function renderFullReport(raw,cd,iD,rev){
   const today=new Date();
   const topMatches=allMatches.slice(0,5);
   const programs=parsed.programs.length?parsed.programs:topMatches.map((m)=>({title:m.program?.title||'',score:String(m.match_score||0),reason:m.match_reason||'',tags:Array.isArray(m.program?.tags)?m.program.tags:[] }));
-  const metricScore=topMatches.length?Math.round(topMatches.reduce((sum,m)=>sum+m.match_score,0)/topMatches.length):0;
-  const metricPrograms=allMatches.length;
-  const metricDeadline=Math.min(...allMatches.map(m=>{const d=m.program?.deadline?Math.ceil((new Date(m.program.deadline)-today)/86400000):999;return d>0?d:999;}));
-  const metricAmount=topMatches.reduce((sum,m)=>sum+(m.program?.max_support_amount||0),0);
-  const amountLabel=metricAmount>=100000000?`${Math.round(metricAmount/10000000)/10}억원`:(metricAmount?`${Math.round(metricAmount/10000)}만원`:'-');
+  const metricScore = allMatches.length > 0
+    ? Math.round(allMatches.slice(0,5).reduce((s,m)=>s+m.match_score,0)/Math.min(allMatches.length,5))
+    : (parsed.programs.length ? Math.round(parsed.programs.reduce((s,p)=>s+Number(p.score||0),0)/parsed.programs.length) : 0);
+  const metricPrograms = allMatches.length > 0 ? allMatches.length : parsed.programs.length;
+  const metricDeadline = allMatches.length > 0 ? Math.min(...allMatches.map(m=>{const d=m.program?.deadline?Math.ceil((new Date(m.program.deadline)-today)/86400000):999;return d>0?d:999;})) : 999;
+  const metricAmount = allMatches.length > 0 ? topMatches.reduce((sum,m)=>sum+(m.program?.max_support_amount||0),0) : 0;
+  const amountLabel = allMatches.length > 0
+    ? (metricAmount>=100000000?`${Math.round(metricAmount/10000000)/10}억원`:(metricAmount?`${Math.round(metricAmount/10000)}만원`:'-'))
+    : '-';
   const genDate=today.toLocaleDateString('ko-KR').replace(/\. /g,'.').replace(/\.$/, '');
   const checklistKey=`matchup_checklist_${encodeURIComponent(cd.company_name||'default')}`;
   const checklistState=getChecklistState(checklistKey,parsed.checklistItems.length);
@@ -1399,45 +1403,49 @@ function renderFullReport(raw,cd,iD,rev){
     <div class="profile-header">
       <div class="profile-avatar" style="font-size:24px;background:linear-gradient(135deg,#6366F1,#8B5CF6);">OH</div>
       <div class="profile-content">
-        <h2 style="font-size:18px;font-weight:700;margin-bottom:4px;">전문 경영컨설턴트의 진단</h2>
-        <p style="font-size:13px;color:var(--gray-600);margin-bottom:12px;">브라보경영컨설팅·마케팅 박사·소상공인 14년 현장 경험</p>
+        <h2 style="font-size:18px;font-weight:700;margin-bottom:4px;">컨설턴트 한마디</h2>
+        <p style="font-size:13px;color:var(--gray-600);margin-bottom:12px;">브라보경영컨설팅 · 마케팅 박사 · 소상공인 14년 현장 경험</p>
       </div>
-      <div style="text-align:right;"><div style="display:inline-block;background:#EEE5FF;color:#6B21A8;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;">Lv. Standard 분석</div></div>
     </div>
     <div class="scr-card">
-      <div style="border-bottom:1px solid var(--gray-200);padding:20px;">
-        <div style="color:#7C3AED;font-size:12px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">SITUATION</div>
-        <div style="font-size:14px;font-weight:600;margin-bottom:12px;color:var(--gray-900);">현재 귀사의 상황</div>
-        <div style="font-size:13px;color:var(--gray-700);line-height:1.6;">${escapeHtml(parsed.situation||'현재 상황을 분석하고 있습니다.')}</div>
+      <div style="background:#EFF6FF;border-left:4px solid #3B82F6;border-radius:12px;padding:20px;margin-bottom:16px;">
+        <div style="color:#3B82F6;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">SITUATION</div>
+        <div style="font-size:17px;font-weight:700;margin-bottom:12px;color:var(--gray-900);">현재 귀사의 상황</div>
+        <div style="font-size:15px;color:var(--gray-700);line-height:1.9;">${escapeHtml(parsed.situation||'현재 상황을 분석하고 있습니다.')}</div>
       </div>
-      <div style="border-bottom:1px solid var(--gray-200);padding:20px;">
-        <div style="color:#EA580C;font-size:12px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">COMPLICATION</div>
-        <div style="font-size:14px;font-weight:600;margin-bottom:12px;color:var(--gray-900);">그러나 지금 이 문제가 있습니다</div>
-        <div style="font-size:13px;color:var(--gray-700);line-height:1.6;">${escapeHtml(parsed.complication||'잠재적 문제를 진단하고 있습니다.')}</div>
+      <div style="background:#FFF7ED;border-left:4px solid #F97316;border-radius:12px;padding:20px;margin-bottom:16px;">
+        <div style="color:#F97316;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">COMPLICATION</div>
+        <div style="font-size:17px;font-weight:700;margin-bottom:12px;color:var(--gray-900);">그러나 지금 이 문제가 있습니다</div>
+        <div style="font-size:15px;color:var(--gray-700);line-height:1.9;">${escapeHtml(parsed.complication||'잠재적 문제를 진단하고 있습니다.')}</div>
       </div>
-      <div style="padding:20px;">
-        <div style="color:#16A34A;font-size:12px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">RESOLUTION</div>
-        <div style="font-size:14px;font-weight:600;margin-bottom:12px;color:var(--gray-900);">지금 당장 이렇게 하십시오</div>
-        <div style="font-size:13px;color:var(--gray-700);line-height:1.6;">${escapeHtml(parsed.resolution||'구체적 행동 방안을 제시합니다.')}</div>
+      <div style="background:#F0FDF4;border-left:4px solid #22C55E;border-radius:12px;padding:20px;margin-bottom:16px;">
+        <div style="color:#16A34A;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">RESOLUTION</div>
+        <div style="font-size:17px;font-weight:700;margin-bottom:12px;color:var(--gray-900);">지금 당장 이렇게 하십시오</div>
+        <div style="font-size:15px;color:var(--gray-700);line-height:1.9;">${escapeHtml(parsed.resolution||'구체적 행동 방안을 제시합니다.')}</div>
       </div>
     </div>
     <div style="margin-top:32px;">
       <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);">이 리포트, 이렇게 활용하세요</h3>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
         <div style="background:#F8F7FF;border:1px solid #E9D5FF;border-radius:12px;padding:20px;text-align:center;">
-          <div style="font-size:24px;margin-bottom:8px;">📋</div>
-          <div style="font-weight:600;font-size:13px;margin-bottom:8px;color:var(--gray-900);">① 진단 요약 확인</div>
-          <div style="font-size:12px;color:var(--gray-600);">TAB2에서 추천 지원사업과 적합도를 확인하세요</div>
+          <div style="font-size:24px;margin-bottom:8px;">①</div>
+          <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:var(--gray-900);">컨설턴트 진단</div>
+          <div style="font-size:13px;color:var(--gray-600);">귀사 현황과 핵심 리스크를 확인하세요</div>
         </div>
         <div style="background:#F0FDF4;border:1px solid #DCFCE7;border-radius:12px;padding:20px;text-align:center;">
-          <div style="font-size:24px;margin-bottom:8px;">🎯</div>
-          <div style="font-weight:600;font-size:13px;margin-bottom:8px;color:var(--gray-900);">② 지원사업 전략 실행</div>
-          <div style="font-size:12px;color:var(--gray-600);">TAB3에서 심사포인트와 체크리스트를 참고해 신청 준비</div>
+          <div style="font-size:24px;margin-bottom:8px;">②</div>
+          <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:var(--gray-900);">진단 요약</div>
+          <div style="font-size:13px;color:var(--gray-600);">매칭 점수와 강점·약점을 파악하세요</div>
         </div>
         <div style="background:#FDF2F8;border:1px solid #FBCFE8;border-radius:12px;padding:20px;text-align:center;">
-          <div style="font-size:24px;margin-bottom:8px;">📈</div>
-          <div style="font-weight:600;font-size:13px;margin-bottom:8px;color:var(--gray-900);">③ 성장 로드맵 저장</div>
-          <div style="font-size:12px;color:var(--gray-600);">TAB4의 3년 로드맵을 팀과 공유하고 단계별 실행</div>
+          <div style="font-size:24px;margin-bottom:8px;">③</div>
+          <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:var(--gray-900);">지원사업 전략</div>
+          <div style="font-size:13px;color:var(--gray-600);">1순위 사업 체크리스트를 따라 신청 준비하세요</div>
+        </div>
+        <div style="background:#FEF3F4;border:1px solid #FBCFE8;border-radius:12px;padding:20px;text-align:center;">
+          <div style="font-size:24px;margin-bottom:8px;">④</div>
+          <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:var(--gray-900);">성장 로드맵</div>
+          <div style="font-size:13px;color:var(--gray-600);">1년·3년 시나리오를 저장하고 다음 사업을 준비하세요</div>
         </div>
       </div>
     </div>
@@ -1448,13 +1456,13 @@ function renderFullReport(raw,cd,iD,rev){
       <div style="display:flex;align-items:flex-start;gap:16px;">
         <div style="min-width:32px;height:32px;background:${isTop?'#6366F1':'#E5E7EB'};color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">${i+1}</div>
         <div style="flex:1;min-width:0;">
-          <div style="font-weight:700;font-size:14px;color:var(--gray-900);margin-bottom:4px;">${escapeHtml(p.title||'지원사업 정보 없음')}</div>
-          <div style="font-size:12px;color:var(--gray-600);margin-bottom:12px;line-height:1.5;">${formatText(p.reason||'매칭 이유가 준비되지 않았습니다.')}</div>
+          <div style="font-weight:700;font-size:16px;color:var(--gray-900);margin-bottom:4px;">${escapeHtml(p.title||'지원사업 정보 없음')}</div>
+          <div style="font-size:14px;color:var(--gray-700);margin-bottom:12px;line-height:1.8;">${formatText(p.reason||'매칭 이유가 준비되지 않았습니다.')}</div>
           ${tags?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">'+tags+'</div>':''}
           <div style="height:4px;background:#F3F4F6;border-radius:2px;overflow:hidden;margin-bottom:8px;"><div style="height:100%;background:linear-gradient(90deg,#6366F1,#8B5CF6);width:${scoreWidth}%;"></div></div>
-          <div style="font-size:11px;color:var(--gray-500);">적합도 ${score}점</div>
+          <div style="font-size:12px;color:var(--gray-500);">적합도 ${score}점</div>
         </div>
-        <div style="text-align:right;white-space:nowrap;"><div style="display:inline-block;background:#F3E8FF;color:#7C3AED;padding:4px 10px;border-radius:4px;font-size:12px;font-weight:700;">${score}점</div></div>
+        <div style="text-align:right;white-space:nowrap;"><div style="display:inline-block;background:#F3E8FF;color:#7C3AED;padding:6px 10px;border-radius:4px;font-size:14px;font-weight:700;">${score}점</div></div>
       </div>
     </div>`;}).join('');
 
@@ -1482,24 +1490,24 @@ function renderFullReport(raw,cd,iD,rev){
     ${matchItems}
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;">
       <div style="background:#F0FDF4;border-left:4px solid #16A34A;border-radius:8px;padding:20px;">
-        <h4 style="font-weight:700;color:#166534;margin-bottom:12px;font-size:14px;">핵심 강점 — 이게 귀사의 무기입니다</h4>
-        ${(parsed.strengths.length?parsed.strengths:['강점 데이터가 준비되고 있습니다.']).map(s=>'<div style="font-size:13px;color:var(--gray-700);line-height:1.6;margin-bottom:8px;">✓ '+escapeHtml(s)+'</div>').join('')}
+        <h4 style="font-weight:700;color:#166534;margin-bottom:12px;font-size:14px;">핵심 강점 (이게 귀사의 무기입니다)</h4>
+        ${(parsed.strengths.length?parsed.strengths:['강점 데이터가 준비되고 있습니다.']).map(s=>'<div style="font-size:14px;color:var(--gray-700);line-height:1.8;margin-bottom:8px;">✓ '+formatText(s)+'</div>').join('')}
       </div>
       <div style="background:#FEF3C7;border-left:4px solid #D97706;border-radius:8px;padding:20px;">
-        <h4 style="font-weight:700;color:#A16207;margin-bottom:12px;font-size:14px;">보완 영역 — 지금 바로 채우세요</h4>
-        ${(parsed.weaknesses.length?parsed.weaknesses:['개선 영역이 준비되고 있습니다.']).map(w=>'<div style="font-size:13px;color:var(--gray-700);line-height:1.6;margin-bottom:8px;">→ '+escapeHtml(w)+'</div>').join('')}
+        <h4 style="font-weight:700;color:#A16207;margin-bottom:12px;font-size:14px;">보완 영역 (지금 바로 채우세요)</h4>
+        ${(parsed.weaknesses.length?parsed.weaknesses:['개선 영역이 준비되고 있습니다.']).map(w=>'<div style="font-size:14px;color:var(--gray-700);line-height:1.8;margin-bottom:8px;">→ '+formatText(w)+'</div>').join('')}
       </div>
     </div>
   `;
   
   // TAB3 HTML - 지원사업 전략
-  const featureHtml=(parsed.features.length?parsed.features:['특징 1','특징 2','특징 3']).map((f,i)=>`<div style="background:white;border:1px solid var(--gray-200);border-radius:12px;padding:20px;"><div style="font-size:12px;font-weight:700;color:#7C3AED;text-transform:uppercase;margin-bottom:8px;">특징 ${i+1}</div><div style="font-size:13px;color:var(--gray-700);line-height:1.6;">${escapeHtml(f)}</div></div>`).join('');
+  const featureHtml=(parsed.features.length?parsed.features:['특징 1','특징 2','특징 3']).map((f,i)=>`<div class="feature-card"><h3>특징 ${i+1}</h3><p>${formatText(f)}</p></div>`).join('');
   
-  const judgeHtml=(parsed.judgePoints.length?parsed.judgePoints:[{point:'심사 포인트 정보 준비 중',tip:''}]).map((j,idx)=>`<div style="margin-bottom:20px;"><div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;"><div style="min-width:32px;height:32px;background:linear-gradient(135deg,#6366F1,#8B5CF6);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;">${idx+1}</div><div style="flex:1;"><div style="font-weight:700;color:var(--gray-900);font-size:14px;margin-bottom:4px;">${escapeHtml(j.point)}</div>${idx===0?'<div style="display:inline-block;background:#FEE2E2;color:#991B1B;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:600;margin-bottom:8px;">가장 중요</div>':''}</div></div>${j.tip?'<div style="background:#F3E8FF;border-left:3px solid #7C3AED;border-radius:4px;padding:12px;margin-left:44px;font-size:12px;color:#6B21A8;line-height:1.5;"><strong>작성 팁:</strong> '+escapeHtml(j.tip)+'</div>':''}</div>`).join('');
+  const judgeHtml=(parsed.judgePoints.length?parsed.judgePoints:[{point:'심사 포인트 정보 준비 중',tip:''}]).map((j,idx)=>`<div class="judge-item"><div class="judge-number">${idx+1}</div><div class="judge-text"><strong>${escapeHtml(j.point)}</strong>${idx===0?'<div style="display:inline-block;background:#FEE2E2;color:#991B1B;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:600;margin-top:4px;">가장 중요</div>':''}${j.tip?`<div class="judge-tip-box"><strong>작성 팁:</strong> ${formatText(j.tip)}</div>`:''}</div></div>`).join('');
 
-  const checklistHtml=(parsed.checklistItems.length?parsed.checklistItems:['체크리스트 항목 준비 중']).map((item,i)=>`<button type="button" style="width:100%;text-align:left;background:${checklistState[i]?'#EDE9FE':'white'};border:1px solid ${checklistState[i]?'#DDD6FE':'var(--gray-200)'};border-radius:8px;padding:12px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px;font-size:13px;transition:all 0.2s;" class="checklist-item${checklistState[i]?' checked':''}" data-checklist-key="${checklistKey}" data-item-index="${i}" onclick="toggleChecklistItem(this)"><span style="font-weight:700;color:${checklistState[i]?'#7C3AED':'#9CA3AF'};font-size:14px;">${checklistState[i]?'✓':'○'}</span><span style="color:${checklistState[i]?'#7C3AED':'var(--gray-900)'};font-weight:${checklistState[i]?'600':'500'};flex:1;">${escapeHtml(item)}</span></button>`).join('');
+  const checklistHtml=(parsed.checklistItems.length?parsed.checklistItems:['체크리스트 항목 준비 중']).map((item,i)=>`<button type="button" class="checklist-item${checklistState[i]?' checked':''}" data-checklist-key="${checklistKey}" data-item-index="${i}" onclick="toggleChecklistItem(this)"><span class="check-item-icon">${checklistState[i]?'✓':'○'}</span><span style="flex:1;">${escapeHtml(item)}</span></button>`).join('');
 
-  const tipsHtml=(parsed.practicalTips.length?parsed.practicalTips:['실전 팁 준비 중']).map((t,i)=>`<div style="background:white;border:1px solid var(--gray-200);border-radius:8px;padding:16px;margin-bottom:12px;"><div style="font-size:12px;font-weight:700;color:#7C3AED;margin-bottom:8px;">💡 TIP ${i+1}</div><div style="font-size:13px;color:var(--gray-700);line-height:1.6;">${escapeHtml(t)}</div></div>`).join('');
+  const tipsHtml=(parsed.practicalTips.length?parsed.practicalTips:['실전 팁 준비 중']).map((t,i)=>`<div class="tip-box"><div class="tip-box-head">💡 TIP ${i+1}</div><div class="tip-item">${formatText(t)}</div></div>`).join('');
 
   const tab3Html=`
     <div style="background:linear-gradient(135deg,#F3E8FF,#EDE9FE);border-radius:12px;padding:24px;margin-bottom:24px;">
@@ -1529,23 +1537,23 @@ function renderFullReport(raw,cd,iD,rev){
   `;
   
   // TAB4 HTML - 성장 로드맵
-  const pipelineHtml=(parsed.pipeline.length?parsed.pipeline:['파이프라인 단계 준비 중']).slice(0,3).map((p,i)=>`<div style="background:white;border:1px solid var(--gray-200);border-radius:8px;padding:16px;text-align:center;"><h4 style="font-size:13px;font-weight:700;color:var(--gray-900);margin-bottom:8px;">STEP ${i+1}</h4><div style="font-size:12px;color:var(--gray-600);line-height:1.5;">${escapeHtml(p)}</div></div>`).join('');
+  const pipelineHtml=(parsed.pipeline.length?parsed.pipeline:['파이프라인 단계 준비 중']).slice(0,3).map((p,i)=>`<div class="pipeline-step"><h4>STEP ${i+1}</h4><p>${formatText(p)}</p></div>`).join('');
 
   const tab4Html=`
     <div style="background:#F8F7FF;border-left:4px solid #7C3AED;border-radius:8px;padding:20px;margin-bottom:24px;">
       <h3 style="font-size:14px;font-weight:700;color:var(--gray-900);margin-bottom:8px;">성장 로드맵</h3>
       <p style="font-size:12px;color:var(--gray-700);line-height:1.6;margin-bottom:12px;">사업명 선정 이후 귀사에 일어날 변화 — 현실적 시나리오</p>
-      <div style="background:white;border:1px solid #E9D5FF;border-radius:6px;padding:12px;font-size:13px;color:var(--gray-700);line-height:1.6;">${escapeHtml(parsed.vision||'이 로드맵의 전제 조건과 가정을 설명합니다.')}</div>
+      <div style="background:white;border:1px solid #E9D5FF;border-radius:6px;padding:16px;font-size:13px;color:var(--gray-700);line-height:1.7;">${formatText(parsed.vision||'이 로드맵의 전제 조건과 가정을 설명합니다.')}</div>
     </div>
     <div class="timeline-wrap">
-      <div class="timeline-item"><div class="timeline-dot now">지금</div><div class="timeline-step">지금</div><div class="timeline-body">${escapeHtml(parsed.timelineNow||'현재 상태와 즉시 실행 포인트를 정리합니다.')}</div></div>
-      <div class="timeline-item"><div class="timeline-dot purple">3M</div><div class="timeline-step">3개월</div><div class="timeline-body">${escapeHtml(parsed.timeline3m||'3개월 목표와 실행 계획을 제시합니다.')}</div></div>
-      <div class="timeline-item"><div class="timeline-dot purple">1Y</div><div class="timeline-step">1년</div><div class="timeline-body">${escapeHtml(parsed.timeline1y||'1년 후 목표와 현실적 수치를 확인합니다.')}</div></div>
-      <div class="timeline-item"><div class="timeline-dot green">3Y</div><div class="timeline-step">3년</div><div class="timeline-body">${escapeHtml(parsed.timeline3y||'3년 후 비전과 성장 단계를 정리합니다.')}</div></div>
+      <div class="timeline-item"><div class="timeline-dot now">지금</div><div class="timeline-step">지금</div><div class="timeline-body">${formatText(parsed.timelineNow||'현재 상태와 즉시 실행 포인트를 정리합니다.')}</div></div>
+      <div class="timeline-item"><div class="timeline-dot purple">3M</div><div class="timeline-step">3개월</div><div class="timeline-body">${formatText(parsed.timeline3m||'3개월 목표와 실행 계획을 제시합니다.')}</div></div>
+      <div class="timeline-item"><div class="timeline-dot purple">1Y</div><div class="timeline-step">1년</div><div class="timeline-body">${formatText(parsed.timeline1y||'1년 후 목표와 현실적 수치를 확인합니다.')}</div></div>
+      <div class="timeline-item"><div class="timeline-dot green">3Y</div><div class="timeline-step">3년</div><div class="timeline-body">${formatText(parsed.timeline3y||'3년 후 비전과 성장 단계를 정리합니다.')}</div></div>
     </div>
     <h3 style="font-size:16px;font-weight:700;margin-top:32px;margin-bottom:4px;color:var(--gray-900);">지원사업 파이프라인 — 3년 로드맵</h3>
     <p style="font-size:12px;color:var(--gray-600);margin-bottom:16px;">이후 지원 가능한 사업 단계</p>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">${pipelineHtml}</div>
+    <div class="pipeline-grid">${pipelineHtml}</div>
   `;
 
   document.getElementById('report-area').innerHTML=`
