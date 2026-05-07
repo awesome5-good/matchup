@@ -188,6 +188,17 @@
       </svg>
       Google로 계속하기
     </button>
+    <button onclick="loginWithKakao()" style="
+      width:100%;padding:14px;border-radius:12px;
+      background:#FEE500;border:none;
+      font-size:15px;font-weight:700;
+      color:#000000;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;gap:10px;
+      margin-top:12px;
+    ">
+      <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png" width="24" height="24">
+      카카오로 로그인
+    </button>
 
     <div class="login-terms">
       로그인 시 매치업의 <a href="#">이용약관</a> 및 <a href="#">개인정보처리방침</a>에<br>동의하는 것으로 간주됩니다.
@@ -249,6 +260,16 @@
         </svg>
         Google로 계속하기`;
     }
+  }
+
+  async function loginWithKakao() {
+    const { data, error } = await db.auth.signInWithOAuth({
+      provider: 'kakao',
+      options: {
+        redirectTo: window.location.origin + '/matchup.html'
+      }
+    });
+    if (error) alert('카카오 로그인 오류: ' + error.message);
   }
 
   function showError(msg) {
