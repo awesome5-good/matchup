@@ -266,7 +266,8 @@
     const { data, error } = await db.auth.signInWithOAuth({
       provider: 'kakao',
       options: {
-        redirectTo: window.location.origin + '/matchup.html'
+        redirectTo: window.location.origin + '/matchup.html',
+        scopes: 'profile_nickname profile_image'
       }
     });
     if (error) alert('카카오 로그인 오류: ' + error.message);
