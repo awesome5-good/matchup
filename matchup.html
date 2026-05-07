@@ -472,16 +472,11 @@
     .tip-chip{background:linear-gradient(135deg,#F5F3FF,#EEF2FF);border:1px solid #E0E7FF;color:#4338CA;font-size:14px;font-weight:700;padding:12px 16px;border-radius:999px;line-height:1.8;}
     .timeline-banner{background:linear-gradient(135deg,#EEF2FF,#EDE9FE);border:1px solid #C7D2FE;border-radius:16px;padding:22px 24px;margin-bottom:24px;}
     .timeline-banner p{font-size:14px;color:var(--gray-700);line-height:1.8;}
-    .timeline-wrap{position:relative;padding-left:30px;border-left:2px solid #E5E7EB;margin-bottom:24px;}
-    .timeline-item{position:relative;padding-bottom:28px;}
-    .timeline-item:last-child{padding-bottom:0;}
-    .timeline-item::before{content:'';position:absolute;left:-12px;top:4px;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid #C7D2FE;box-shadow:0 0 0 4px rgba(99,102,241,0.08);}
-    .timeline-dot{position:absolute;left:-14px;top:4px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;}
-    .timeline-dot.now{background:var(--primary);}
-    .timeline-dot.purple{background:#7C3AED;}
-    .timeline-dot.green{background:var(--success);}
-    .timeline-step{font-size:15px;font-weight:700;color:var(--gray-900);margin-bottom:4px;margin-left:48px;}
-    .timeline-body{font-size:15px;color:var(--gray-600);line-height:1.9;margin-left:48px;white-space:pre-wrap;}
+    .timeline-dot{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;line-height:1;flex-shrink:0;box-shadow:0 4px 12px rgba(79,70,229,0.3);}
+    .timeline-dot.now{background:linear-gradient(135deg,#EF4444,#DC2626);}
+    .timeline-dot.purple{background:linear-gradient(135deg,#7C3AED,#6D28D9);}
+    .timeline-dot.green{background:linear-gradient(135deg,#10B981,#059669);}
+    .timeline-body{font-size:15px;color:var(--gray-600);line-height:1.9;white-space:pre-wrap;}
     .timeline-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:12px;}
     .timeline-stat{background:#fff;border:1px solid var(--gray-200);border-radius:14px;padding:16px;font-size:13px;color:var(--gray-700);line-height:1.7;}
     .pipeline-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px;}
@@ -1566,7 +1561,7 @@ function renderFullReport(raw,cd,iD,rev){
   const tipsHtml=(parsed.practicalTips.length?parsed.practicalTips:['실전 팁 준비 중']).map((t,i)=>`<div class="tip-box"><div class="tip-box-head">💡 TIP ${i+1}</div><div class="tip-item">${highlightText(t)}</div></div>`).join('');
 
   if(!parsed.pipeline.length && allMatches.length>=1){
-    parsed.pipeline = allMatches.slice(0,3).map(m=>(m.program?.title||'').replace(/[「」『』【】〔〕]/g, '').trim()).filter(Boolean);
+    parsed.pipeline = allMatches.slice(0,3).map(m=>(m.program?.title||'').replace(/^['`'「『【〔\s]+/, '').replace(/['`'」』】〕\s]+$/, '').trim()).filter(Boolean);
   }
 
   const tab3Html=`
@@ -1599,7 +1594,7 @@ function renderFullReport(raw,cd,iD,rev){
   // TAB4 HTML - 성장 로드맵
   let pipeline = parsed.pipeline || [];
   if (pipeline.length < 2 && allMatches.length >= 1) {
-    pipeline = allMatches.slice(0, 3).map(m => (m.program?.title || '').replace(/[「」『』【】〔〕]/g, '').trim()).filter(Boolean);
+    pipeline = allMatches.slice(0, 3).map(m => (m.program?.title || '').replace(/^['`'「『【〔\s]+/, '').replace(/['`'」』】〕\s]+$/, '').trim()).filter(Boolean);
   }
   while (pipeline.length < 3) pipeline.push('추후 지원사업 검토 예정');
   const pipelineHtml=pipeline.slice(0,3).map((p,i)=>{
@@ -1607,19 +1602,43 @@ function renderFullReport(raw,cd,iD,rev){
     return `<div class="pipeline-step"><h4>${header}</h4><p>${highlightText(p)}</p></div>`;
   }).join('');
 
+  const visionText = pf(parsed.tab4,'VISION')||parsed.vision||'';
+  const timeline1y = pf(parsed.tab4,'TIMELINE_1Y')||parsed.timeline1y||'';
   const timeline3y = pf(parsed.tab4,'TIMELINE_3Y')||parsed.timeline3y||'';
 
   const tab4Html=`
     <div style="background:#F8F7FF;border-left:4px solid #7C3AED;border-radius:8px;padding:20px;margin-bottom:24px;">
       <h3 style="font-size:14px;font-weight:700;color:var(--gray-900);margin-bottom:8px;">성장 로드맵</h3>
       <p style="font-size:12px;color:var(--gray-700);line-height:1.6;margin-bottom:12px;">사업명 선정 이후 귀사에 일어날 변화 (현실적 시나리오)</p>
-      <div style="background:white;border:1px solid #E9D5FF;border-radius:6px;padding:16px;font-size:13px;color:var(--gray-700);line-height:1.7;">${highlightText(parsed.vision||'이 로드맵의 전제 조건과 가정을 설명합니다.')}</div>
+      <div style="background:white;border:1px solid #E9D5FF;border-radius:6px;padding:16px;font-size:13px;color:var(--gray-700);line-height:1.7;">${highlightText(visionText||'이 로드맵의 전제 조건과 가정을 설명합니다.')}</div>
     </div>
-    <div class="timeline-wrap">
-      <div class="timeline-item"><div class="timeline-dot now">지금</div><div class="timeline-step">지금</div><div class="timeline-body">${highlightText(pf(parsed.tab4, 'TIMELINE_NOW') || parsed.timelineNow || '현재 상태와 즉시 실행 포인트')}</div></div>
-      <div class="timeline-item"><div class="timeline-dot purple">3M</div><div class="timeline-step">3개월</div><div class="timeline-body">${highlightText(pf(parsed.tab4, 'TIMELINE_3M') || parsed.timeline3m || '3개월 목표와 실행 계획')}</div></div>
-      <div class="timeline-item"><div class="timeline-dot purple">1Y</div><div class="timeline-step">1년</div><div class="timeline-body">${highlightText(pf(parsed.tab4, 'TIMELINE_1Y') || parsed.timeline1y || '1년 후 목표와 현실적 수치')}</div></div>
-      <div class="timeline-item"><div class="timeline-dot green">3Y</div><div class="timeline-step">3년</div><div class="timeline-body">${highlightText(timeline3y)}</div></div>
+    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:28px;">
+      <div class="timeline-dot now">지금</div>
+      <div style="flex:1;padding-top:12px;">
+        <div style="font-size:16px;font-weight:700;margin-bottom:8px;">지금</div>
+        <div style="font-size:15px;color:#4B5563;line-height:1.9;">${highlightText(pf(parsed.tab4, 'TIMELINE_NOW') || parsed.timelineNow || '현재 상태와 즉시 실행 포인트')}</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:28px;">
+      <div class="timeline-dot purple">3M</div>
+      <div style="flex:1;padding-top:12px;">
+        <div style="font-size:16px;font-weight:700;margin-bottom:8px;">3개월</div>
+        <div style="font-size:15px;color:#4B5563;line-height:1.9;">${highlightText(pf(parsed.tab4, 'TIMELINE_3M') || parsed.timeline3m || '3개월 목표와 실행 계획')}</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:28px;">
+      <div class="timeline-dot purple">1Y</div>
+      <div style="flex:1;padding-top:12px;">
+        <div style="font-size:16px;font-weight:700;margin-bottom:8px;">1년</div>
+        <div style="font-size:15px;color:#4B5563;line-height:1.9;">${highlightText(timeline1y || '1년 후 목표와 현실적 수치')}</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:28px;">
+      <div class="timeline-dot green">3Y</div>
+      <div style="flex:1;padding-top:12px;">
+        <div style="font-size:16px;font-weight:700;margin-bottom:8px;">3년</div>
+        <div style="font-size:15px;color:#4B5563;line-height:1.9;">${highlightText(timeline3y || '3년 후 비전과 성장 단계')}</div>
+      </div>
     </div>
     <h3 style="font-size:16px;font-weight:700;margin-top:32px;margin-bottom:4px;color:var(--gray-900);">지원사업 파이프라인 (3년 로드맵)</h3>
     <p style="font-size:12px;color:var(--gray-600);margin-bottom:16px;">이후 지원 가능한 사업 단계</p>
