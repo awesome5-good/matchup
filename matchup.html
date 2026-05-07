@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>매치업</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#4F46E5">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="매치업">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%234F46E5'/><text x='50%25' y='50%25' font-size='20' font-weight='900' font-family='Arial' fill='white' text-anchor='middle' dominant-baseline='central'>M</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -483,6 +488,7 @@
     .pipeline-step{background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:18px;}
     .pipeline-step h4{font-size:14px;font-weight:700;color:var(--gray-900);margin-bottom:10px;}
     .pipeline-step p{font-size:14px;color:var(--gray-600);line-height:1.8;}
+    @media(max-width: 768px){.feature-grid{grid-template-columns:1fr !important;}.strength-grid{grid-template-columns:1fr !important;}.metric-grid{grid-template-columns:1fr 1fr !important;}.pipeline-grid{grid-template-columns:1fr !important;}.rpt-tabs{overflow-x:auto;white-space:nowrap;}.rpt-tab{font-size:13px !important;padding:10px 14px !important;}.chart-row{flex-direction:column;}.chart-box canvas{width:100% !important;max-width:340px;}.chart-legend{padding:10px 0 !important;}.judge-item{grid-template-columns:36px 1fr !important;}.timeline-body{font-size:14px !important;}.section-list{grid-template-columns:1fr !important;}}
     @media(max-width: 992px){.section-list{grid-template-columns:1fr;}.metric-grid{grid-template-columns:1fr 1fr;}.feature-grid{grid-template-columns:1fr;}.timeline-stats{grid-template-columns:1fr;}.pipeline-grid{grid-template-columns:1fr;}}
 
     @keyframes spin {
@@ -1974,6 +1980,11 @@ document.addEventListener('click', function(e){
 });
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js');
+}
 </script>
 </body>
 </html>
