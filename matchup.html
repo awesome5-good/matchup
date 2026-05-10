@@ -1615,7 +1615,7 @@ function renderFullReport(raw,cd,iD,rev){
   const tab4Html=`
     <div style="background:#F8F7FF;border-left:4px solid #7C3AED;border-radius:8px;padding:20px;margin-bottom:24px;">
       <h3 style="font-size:14px;font-weight:700;color:var(--gray-900);margin-bottom:8px;">성장 로드맵</h3>
-      <p style="font-size:12px;color:var(--gray-700);line-height:1.6;margin-bottom:12px;">사업명 선정 이후 귀사에 일어날 변화 (현실적 시나리오)</p>
+      <p style="font-size:12px;color:var(--gray-700);line-height:1.6;margin-bottom:12px;">사업명 선정 이후 ${cd.company_name||'기업'}에 일어날 변화 (현실적 시나리오)</p>
       <div style="background:white;border:1px solid #E9D5FF;border-radius:6px;padding:16px;font-size:13px;color:var(--gray-700);line-height:1.7;">${highlightText(visionText||'이 로드맵의 전제 조건과 가정을 설명합니다.')}</div>
     </div>
     <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:28px;">
