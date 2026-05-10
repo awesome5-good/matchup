@@ -1442,117 +1442,110 @@ function renderFullReport(raw,cd,iD,rev){
   
   // TAB1 HTML - 컨설턴트 진단
   const tab1Html=`
-    <div class="profile-header">
-      <div class="profile-avatar" style="font-size:24px;background:linear-gradient(135deg,#6366F1,#8B5CF6);">OH</div>
-      <div class="profile-content">
-        <h2 style="font-size:18px;font-weight:700;margin-bottom:4px;">컨설턴트 한마디</h2>
-        <p style="font-size:13px;color:var(--gray-600);margin-bottom:12px;">브라보경영컨설팅 · 마케팅 박사 · 소상공인 14년 현장 경험</p>
-      </div>
-    </div>
-    <div class="scr-card">
-      <div style="background:#EFF6FF;border-left:4px solid #3B82F6;border-radius:12px;padding:20px;margin-bottom:16px;">
-        <div style="color:#3B82F6;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">SITUATION</div>
+    <div style="margin-bottom:32px;">
+      <div style="background:#EFF6FF;border-left:4px solid #3B82F6;border-radius:12px;padding:20px;margin-bottom:16px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+        <div style="color:#3B82F6;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">[1] SITUATION</div>
         <div style="font-size:17px;font-weight:700;margin-bottom:12px;color:var(--gray-900);">현재 ${cd.company_name||'귀사'}의 상황</div>
-        <div style="font-size:15px;color:var(--gray-700);line-height:1.9;">${highlightText(parsed.situation||'현재 상황을 분석하고 있습니다.')}</div>
+        <div style="font-size:15px;color:var(--gray-700);line-height:1.9;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(parsed.situation||'현재 상황을 분석하고 있습니다.')}</div>
       </div>
-      <div style="background:#FFF7ED;border-left:4px solid #F97316;border-radius:12px;padding:20px;margin-bottom:16px;">
-        <div style="color:#F97316;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">COMPLICATION</div>
+      <div style="background:#FFF7ED;border-left:4px solid #F97316;border-radius:12px;padding:20px;margin-bottom:16px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+        <div style="color:#F97316;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">[2] COMPLICATION</div>
         <div style="font-size:17px;font-weight:700;margin-bottom:12px;color:var(--gray-900);">그러나 지금 이 문제가 있습니다</div>
-        <div style="font-size:15px;color:var(--gray-700);line-height:1.9;">${highlightText(parsed.complication||'잠재적 문제를 진단하고 있습니다.')}</div>
+        <div style="font-size:15px;color:var(--gray-700);line-height:1.9;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(parsed.complication||'잠재적 문제를 진단하고 있습니다.')}</div>
       </div>
-      <div style="background:#F0FDF4;border-left:4px solid #22C55E;border-radius:12px;padding:20px;margin-bottom:16px;">
-        <div style="color:#16A34A;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">RESOLUTION</div>
+      <div style="background:#F0FDF4;border-left:4px solid #22C55E;border-radius:12px;padding:20px;margin-bottom:16px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+        <div style="color:#16A34A;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">[3] RESOLUTION</div>
         <div style="font-size:17px;font-weight:700;margin-bottom:12px;color:var(--gray-900);">지금 당장 이렇게 하십시오</div>
-        <div style="font-size:15px;color:var(--gray-700);line-height:1.9;">${highlightText(parsed.resolution||'구체적 행동 방안을 제시합니다.')}</div>
+        <div style="font-size:15px;color:var(--gray-700);line-height:1.9;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(parsed.resolution||'구체적 행동 방안을 제시합니다.')}</div>
       </div>
     </div>
-    <div style="margin-top:32px;">
-      <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);">이 리포트, 이렇게 활용하세요</h3>
-      <div class="usage-guide-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
-        <div style="background:#F8F7FF;border:1px solid #E9D5FF;border-radius:12px;padding:20px;text-align:center;">
-          <div style="font-size:24px;margin-bottom:8px;">①</div>
-          <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:var(--gray-900);">컨설턴트 진단</div>
-          <div style="font-size:13px;color:var(--gray-600);">${cd.company_name||'귀사'} 현황과 핵심 리스크를 확인하세요</div>
+    <div>
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);">지금 바로 확인하세요</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;">
+        <div style="background:#F8F7FF;border:1px solid #E9D5FF;border-radius:12px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+          <div style="font-size:28px;line-height:1;margin-bottom:8px;">①</div>
+          <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">컨설턴트 진단</div>
+          <div style="font-size:12px;color:var(--gray-600);line-height:1.6;width:100%;overflow-wrap:break-word;word-break:keep-all;">${cd.company_name||'귀사'} 현황과 핵심 리스크 확인</div>
         </div>
-        <div style="background:#F0FDF4;border:1px solid #DCFCE7;border-radius:12px;padding:20px;text-align:center;">
-          <div style="font-size:24px;margin-bottom:8px;">②</div>
-          <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:var(--gray-900);">진단 요약</div>
-          <div style="font-size:13px;color:var(--gray-600);">매칭 점수와 강점·약점을 파악하세요</div>
+        <div style="background:#F0FDF4;border:1px solid #DCFCE7;border-radius:12px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+          <div style="font-size:28px;line-height:1;margin-bottom:8px;">②</div>
+          <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">진단 요약</div>
+          <div style="font-size:12px;color:var(--gray-600);line-height:1.6;width:100%;overflow-wrap:break-word;word-break:keep-all;">매칭 점수와 강점·약점 파악</div>
         </div>
-        <div style="background:#FDF2F8;border:1px solid #FBCFE8;border-radius:12px;padding:20px;text-align:center;">
-          <div style="font-size:24px;margin-bottom:8px;">③</div>
-          <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:var(--gray-900);">지원사업 전략</div>
-          <div style="font-size:13px;color:var(--gray-600);">1순위 사업 체크리스트를 따라 신청 준비하세요</div>
+        <div style="background:#FDF2F8;border:1px solid #FBCFE8;border-radius:12px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+          <div style="font-size:28px;line-height:1;margin-bottom:8px;">③</div>
+          <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">지원사업 전략</div>
+          <div style="font-size:12px;color:var(--gray-600);line-height:1.6;width:100%;overflow-wrap:break-word;word-break:keep-all;">1순위 체크리스트 따라 준비</div>
         </div>
-        <div style="background:#FEF3F4;border:1px solid #FBCFE8;border-radius:12px;padding:20px;text-align:center;">
-          <div style="font-size:24px;margin-bottom:8px;">④</div>
-          <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:var(--gray-900);">성장 로드맵</div>
-          <div style="font-size:13px;color:var(--gray-600);">1년·3년 시나리오를 저장하고 다음 사업을 준비하세요</div>
+        <div style="background:#FEF3F4;border:1px solid #FBCFE8;border-radius:12px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+          <div style="font-size:28px;line-height:1;margin-bottom:8px;">④</div>
+          <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">성장 로드맵</div>
+          <div style="font-size:12px;color:var(--gray-600);line-height:1.6;width:100%;overflow-wrap:break-word;word-break:keep-all;">1년·3년 시나리오 저장</div>
         </div>
       </div>
     </div>
   `;
   
   // TAB2 HTML - 진단 요약
-  const matchItems=programs.map((p,i)=>{const score=Number(p.score)||0;const scoreWidth=Math.min(Math.max(score,0),100);const tags=Array.isArray(p.tags)?p.tags.map(t=>`<span style="background:#F3F4F6;color:#6B7280;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:500;">${escapeHtml(t)}</span>`).join(''):'';const isTop=i===0;return `<div style="background:white;border:1px solid var(--gray-200);border-radius:12px;padding:${isTop?'24':'16'}px;margin-bottom:12px;${isTop?'border-left:4px solid #6366F1;':''}">${isTop?'<div style="display:inline-block;background:#FEE2E2;color:#991B1B;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:700;margin-bottom:12px;">D-'+metricDeadline+' 마감</div>':''}
+  const matchItems=programs.map((p,i)=>{const score=Number(p.score)||0;const scoreWidth=Math.min(Math.max(score,0),100);const tags=Array.isArray(p.tags)?p.tags.map(t=>`<span style="background:#F3F4F6;color:#6B7280;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:500;">${escapeHtml(t)}</span>`).join(''):'';const isTop=i===0;return `<div style="background:white;border:1px solid var(--gray-200);border-radius:12px;padding:${isTop?'24':'16'}px;margin-bottom:12px;${isTop?'border-left:4px solid #6366F1;':''};width:100%;overflow-wrap:break-word;word-break:keep-all;">${isTop?'<div style="display:inline-block;background:#FEE2E2;color:#991B1B;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:700;margin-bottom:12px;white-space:nowrap;">D-'+metricDeadline+' 마감</div>':''}
       <div style="display:flex;align-items:flex-start;gap:16px;">
-        <div style="min-width:32px;height:32px;background:${isTop?'#6366F1':'#E5E7EB'};color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">${i+1}</div>
-        <div style="flex:1;min-width:0;">
-          <div style="font-weight:700;font-size:16px;color:var(--gray-900);margin-bottom:4px;">${escapeHtml(p.title||'지원사업 정보 없음')}</div>
-          <div style="font-size:14px;color:var(--gray-700);margin-bottom:12px;line-height:1.8;">${highlightText(p.reason||'매칭 이유가 준비되지 않았습니다.')}</div>
+        <div style="min-width:32px;height:32px;background:${isTop?'#6366F1':'#E5E7EB'};color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;">${i+1}</div>
+        <div style="flex:1;min-width:0;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+          <div style="font-weight:700;font-size:16px;color:var(--gray-900);margin-bottom:4px;width:100%;overflow-wrap:break-word;word-break:keep-all;">${escapeHtml(p.title||'지원사업 정보 없음')}</div>
+          <div style="font-size:14px;color:var(--gray-700);margin-bottom:12px;line-height:1.8;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(p.reason||'매칭 이유가 준비되지 않았습니다.')}</div>
           ${tags?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">'+tags+'</div>':''}
           <div style="height:4px;background:#F3F4F6;border-radius:2px;overflow:hidden;margin-bottom:8px;"><div style="height:100%;background:linear-gradient(90deg,#6366F1,#8B5CF6);width:${scoreWidth}%;"></div></div>
-          <div style="font-size:12px;color:var(--gray-500);">적합도 ${score}점</div>
+          <div style="font-size:12px;color:var(--gray-500);white-space:nowrap;">적합도 <span style="white-space:nowrap;">${score}점</span></div>
         </div>
-        <div style="text-align:right;white-space:nowrap;"><div style="display:inline-block;background:#F3E8FF;color:#7C3AED;padding:6px 10px;border-radius:4px;font-size:14px;font-weight:700;">${score}점</div></div>
+        <div style="text-align:right;white-space:nowrap;flex-shrink:0;"><div style="display:inline-block;background:#F3E8FF;color:#7C3AED;padding:6px 10px;border-radius:4px;font-size:14px;font-weight:700;white-space:nowrap;">${score}점</div></div>
       </div>
     </div>`;}).join('');
 
   const tab2Html=`
-    <div style="text-align:right;margin-bottom:20px;"><div style="display:inline-block;background:#F0F9FF;color:#0369A1;padding:6px 12px;border-radius:4px;font-size:12px;font-weight:600;">생성일 ${genDate}</div></div>
-    <div class="metric-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px;">
-      <div style="background:#F8F7FF;border:1px solid #E9D5FF;border-radius:12px;padding:16px;text-align:center;">
-        <div style="font-size:20px;font-weight:700;color:#7C3AED;margin-bottom:4px;">${metricScore}점</div>
+    <div style="text-align:right;margin-bottom:20px;"><div style="display:inline-block;background:#F0F9FF;color:#0369A1;padding:6px 12px;border-radius:4px;font-size:12px;font-weight:600;white-space:nowrap;">생성일 ${genDate}</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;width:100%;overflow-wrap:break-word;">
+      <div style="background:#F8F7FF;border:1px solid #E9D5FF;border-radius:12px;padding:16px;text-align:center;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+        <div style="font-size:22px;font-weight:700;color:#7C3AED;margin-bottom:4px;white-space:nowrap;"><span style="white-space:nowrap;">${metricScore}</span>점</div>
         <div style="font-size:11px;color:var(--gray-600);">종합 매칭점수</div>
       </div>
-      <div style="background:#F0FDF4;border:1px solid #DCFCE7;border-radius:12px;padding:16px;text-align:center;">
-        <div style="font-size:20px;font-weight:700;color:#16A34A;margin-bottom:4px;">${metricPrograms}개</div>
+      <div style="background:#F0FDF4;border:1px solid #DCFCE7;border-radius:12px;padding:16px;text-align:center;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+        <div style="font-size:22px;font-weight:700;color:#16A34A;margin-bottom:4px;white-space:nowrap;"><span style="white-space:nowrap;">${metricPrograms}</span>개</div>
         <div style="font-size:11px;color:var(--gray-600);">적합 지원사업수</div>
       </div>
-      <div style="background:#FEF3C7;border:1px solid #FDE68A;border-radius:12px;padding:16px;text-align:center;">
-        <div style="font-size:20px;font-weight:700;color:#D97706;margin-bottom:4px;">${metricDeadline<999?'D-'+metricDeadline:'-'}</div>
+      <div style="background:#FEF3C7;border:1px solid #FDE68A;border-radius:12px;padding:16px;text-align:center;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+        <div style="font-size:22px;font-weight:700;color:#D97706;margin-bottom:4px;white-space:nowrap;">${metricDeadline<999?'<span style="white-space:nowrap;">D-'+metricDeadline+'</span>':'-'}</div>
         <div style="font-size:11px;color:var(--gray-600);">가장 빠른 마감</div>
       </div>
-      <div style="background:#FCE7F3;border:1px solid #FBCFE8;border-radius:12px;padding:16px;text-align:center;">
-        <div style="font-size:18px;font-weight:700;color:#BE185D;margin-bottom:4px;">${amountLabel}</div>
+      <div style="background:#FCE7F3;border:1px solid #FBCFE8;border-radius:12px;padding:16px;text-align:center;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+        <div style="font-size:18px;font-weight:700;color:#BE185D;margin-bottom:4px;white-space:nowrap;">${amountLabel}</div>
         <div style="font-size:11px;color:var(--gray-600);">추천 사업 총액</div>
       </div>
     </div>
     <div class="chart-section">
-      <div class="chart-section-title">${cd.company_name||'귀사'} 준비도 진단</div>
+      <div class="chart-section-title">[1] ${cd.company_name||'귀사'} 준비도 진단</div>
       <div class="chart-section-sub">6개 항목별 현재 준비 수준 — 60점 이상이 심사 통과 기준입니다</div>
       <div class="chart-row">
         <div class="chart-box">
           <canvas id="radarChart" width="340" height="340"></canvas>
         </div>
-        <div class="chart-legend" id="radar-legend"></div>
+        <div class="chart-legend" id="radar-legend" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;overflow-wrap:break-word;"></div>
       </div>
     </div>
     <div class="chart-section">
-      <div class="chart-section-title">동업종 평균 대비 ${cd.company_name||'귀사'} 현황</div>
+      <div class="chart-section-title">[2] 동업종 평균 대비 ${cd.company_name||'귀사'} 현황</div>
       <div class="chart-section-sub">같은 업종 소상공인 평균과 비교한 ${cd.company_name||'귀사'}의 위치입니다</div>
-      <canvas id="barChart" width="700" height="220"></canvas>
+      <canvas id="barChart" width="700" height="220" style="width:100%;overflow-wrap:break-word;"></canvas>
     </div>
-    <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);">매칭된 지원사업</h3>
-    ${matchItems}
-    <div class="strength-grid" style="display:grid;grid-template-columns:1fr;gap:16px;margin-top:24px;">
-      <div style="background:#F0FDF4;border-left:4px solid #16A34A;border-radius:8px;padding:20px;">
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">[3] 매칭된 지원사업</h3>
+    <div style="width:100%;overflow-wrap:break-word;word-break:keep-all;">${matchItems}</div>
+    <div style="display:grid;grid-template-columns:1fr;gap:16px;margin-top:24px;width:100%;overflow-wrap:break-word;">
+      <div style="background:#F0FDF4;border-left:4px solid #16A34A;border-radius:8px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
         <h4 style="font-weight:700;color:#166534;margin-bottom:12px;font-size:14px;">핵심 강점 (이게 ${cd.company_name||'귀사'}의 무기입니다)</h4>
-        ${(parsed.strengths.length?parsed.strengths:['강점 데이터가 준비되고 있습니다.']).map(s=>'<div style="font-size:14px;color:var(--gray-700);line-height:1.8;margin-bottom:8px;">✓ '+highlightText(s)+'</div>').join('')}
+        ${(parsed.strengths.length?parsed.strengths:['강점 데이터가 준비되고 있습니다.']).map(s=>'<div style="font-size:14px;color:var(--gray-700);line-height:1.8;margin-bottom:8px;width:100%;overflow-wrap:break-word;word-break:keep-all;">✓ '+highlightText(s)+'</div>').join('')}
       </div>
-      <div style="background:#FEF3C7;border-left:4px solid #D97706;border-radius:8px;padding:20px;">
+      <div style="background:#FEF3C7;border-left:4px solid #D97706;border-radius:8px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
         <h4 style="font-weight:700;color:#A16207;margin-bottom:12px;font-size:14px;">보완 영역 (지금 바로 채우세요)</h4>
-        ${(parsed.weaknesses.length?parsed.weaknesses:['개선 영역이 준비되고 있습니다.']).map(w=>'<div style="font-size:14px;color:var(--gray-700);line-height:1.8;margin-bottom:8px;">→ '+highlightText(w)+'</div>').join('')}
+        ${(parsed.weaknesses.length?parsed.weaknesses:['개선 영역이 준비되고 있습니다.']).map(w=>'<div style="font-size:14px;color:var(--gray-700);line-height:1.8;margin-bottom:8px;width:100%;overflow-wrap:break-word;word-break:keep-all;">→ '+highlightText(w)+'</div>').join('')}
       </div>
     </div>
   `;
@@ -1564,37 +1557,43 @@ function renderFullReport(raw,cd,iD,rev){
 
   const checklistHtml=(parsed.checklistItems.length?parsed.checklistItems:['체크리스트 항목 준비 중']).map((item,i)=>`<button type="button" class="checklist-item${checklistState[i]?' checked':''}" data-checklist-key="${checklistKey}" data-item-index="${i}" onclick="toggleChecklistItem(this)"><span class="check-item-icon">${checklistState[i]?'✓':'○'}</span><span style="flex:1;">${escapeHtml(item)}</span></button>`).join('');
 
-  const tipsHtml=(parsed.practicalTips.length?parsed.practicalTips:['실전 팁 준비 중']).map((t,i)=>`<div class="tip-box"><div class="tip-box-head">💡 TIP ${i+1}</div><div class="tip-item">${highlightText(t)}</div></div>`).join('');
+  const tipsHtml=(parsed.practicalTips.length?parsed.practicalTips:['실전 팁 준비 중']).map((t,i)=>`<div style="background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border:1px solid #F59E0B;border-radius:12px;padding:16px 20px;margin-bottom:12px;width:100%;overflow-wrap:break-word;word-break:keep-all;"><div style="font-size:13px;font-weight:700;color:#92400E;margin-bottom:10px;display:flex;align-items:center;gap:6px;">✨ TIP ${i+1}</div><div style="font-size:13px;color:#78350F;line-height:1.8;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(t)}</div></div>`).join('');
 
   if(!parsed.pipeline.length && allMatches.length>=1){
     parsed.pipeline = allMatches.slice(0,3).map(m=>(m.program?.title||'').replace(/^['`'「『【〔\s]+/, '').replace(/['`'」』】〕\s]+$/, '').trim()).filter(Boolean);
   }
 
+  const featureHtml=(parsed.features.length?parsed.features:['특징 1','특징 2','특징 3']).map((f,i)=>`<div style="background:white;border:1px solid var(--gray-200);border-radius:12px;padding:20px;margin-bottom:12px;width:100%;overflow-wrap:break-word;word-break:keep-all;"><h4 style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:10px;">[${i+1}] 특징 ${i+1}</h4><p style="font-size:14px;color:var(--gray-700);line-height:1.9;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(f)}</p></div>`).join('');
+  
+  const judgeHtml=(parsed.judgePoints.length?parsed.judgePoints:[{point:'심사 포인트 정보 준비 중',tip:''}]).map((j,idx)=>`<div style="background:white;border:1px solid var(--gray-200);border-radius:12px;padding:18px;margin-bottom:12px;display:grid;grid-template-columns:44px 1fr;gap:16px;align-items:start;width:100%;overflow-wrap:break-word;"><div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#534AB7);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">${idx+1}</div><div style="width:100%;overflow-wrap:break-word;word-break:keep-all;"><strong style="font-size:14px;font-weight:700;color:var(--gray-900);display:block;margin-bottom:4px;width:100%;overflow-wrap:break-word;word-break:keep-all;">${escapeHtml(j.point)}</strong>${idx===0?'<div style="display:inline-block;background:#FEE2E2;color:#991B1B;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:600;margin-bottom:8px;white-space:nowrap;">가장 중요</div>':''}${j.tip?`<div style="background:linear-gradient(135deg,#F3E8FF,#E9D5FF);border:1px solid #D8B4FE;border-radius:10px;padding:12px;font-size:13px;color:#5B21B6;line-height:1.8;margin-top:10px;width:100%;overflow-wrap:break-word;word-break:keep-all;"><strong>작성 팁:</strong> ${highlightText(j.tip)}</div>`:''}</div></div>`).join('');
+
+  const checklistHtml=(parsed.checklistItems.length?parsed.checklistItems:['체크리스트 항목 준비 중']).map((item,i)=>`<button type="button" class="checklist-item${checklistState[i]?' checked':''}" data-checklist-key="${checklistKey}" data-item-index="${i}" onclick="toggleChecklistItem(this)" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--gray-200);border-radius:10px;background:var(--gray-50);cursor:pointer;transition:all 0.15s;font-size:14px;color:var(--gray-700);width:100%;overflow-wrap:break-word;word-break:keep-all;"><span class="check-item-icon" style="width:20px;height:20px;border-radius:50%;background:white;border:1px solid var(--gray-300);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:12px;flex-shrink:0;font-weight:700;">${checklistState[i]?'✓':'○'}</span><span style="flex:1;text-align:left;width:100%;overflow-wrap:break-word;word-break:keep-all;">${escapeHtml(item)}</span></button>`).join('');
+
   const tab3Html=`
-    <div style="background:linear-gradient(135deg,#F3E8FF,#EDE9FE);border-radius:12px;padding:24px;margin-bottom:24px;">
+    <div style="background:linear-gradient(135deg,#F3E8FF,#EDE9FE);border-radius:12px;padding:24px;margin-bottom:24px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
       <div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;flex-wrap:wrap;">
         <div>
           <h2 style="font-size:18px;font-weight:700;color:var(--gray-900);margin-bottom:8px;">지원사업 전략</h2>
-          <p style="font-size:13px;color:var(--gray-600);">1순위 추천 사업을 중심으로 전략적으로 정리합니다.</p>
-          <div style="font-size:14px;font-weight:700;color:#7C3AED;margin-top:12px;margin-bottom:8px;">1순위 추천 사업: ${escapeHtml(topTitle)}</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;">${Array.isArray(topMatches[0]?.program?.tags)?topMatches[0].program.tags.map(t=>'<span style="background:#DDD6FE;color:#6B21A8;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:500;">'+escapeHtml(t)+'</span>').join(''):''}</div>
+          <p style="font-size:13px;color:var(--gray-600);line-height:1.6;">1순위 추천 사업을 중심으로 전략적으로 정리합니다.</p>
+          <div style="font-size:14px;font-weight:700;color:#7C3AED;margin-top:12px;margin-bottom:8px;width:100%;overflow-wrap:break-word;word-break:keep-all;">1순위 추천 사업: ${escapeHtml(topTitle)}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;width:100%;overflow-wrap:break-word;">${Array.isArray(topMatches[0]?.program?.tags)?topMatches[0].program.tags.map(t=>'<span style="background:#DDD6FE;color:#6B21A8;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:500;white-space:nowrap;">'+escapeHtml(t)+'</span>').join(''):''}</div>
         </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;width:100%;">
-          ${topDeadline&&topDeadline>0?'<div style="display:inline-block;background:#FEE2E2;color:#991B1B;padding:6px 12px;border-radius:4px;font-size:12px;font-weight:700;">D-'+topDeadline+' 마감</div>':''}
-          <div style="display:inline-block;background:#F3E8FF;color:#7C3AED;padding:6px 12px;border-radius:4px;font-size:12px;font-weight:700;">적합도 ${topScore}점</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;width:100%;overflow-wrap:break-word;">
+          ${topDeadline&&topDeadline>0?'<div style="display:inline-block;background:#FEE2E2;color:#991B1B;padding:6px 12px;border-radius:4px;font-size:12px;font-weight:700;white-space:nowrap;">D-'+topDeadline+' 마감</div>':''}
+          <div style="display:inline-block;background:#F3E8FF;color:#7C3AED;padding:6px 12px;border-radius:4px;font-size:12px;font-weight:700;white-space:nowrap;">적합도 ${topScore}점</div>
         </div>
       </div>
     </div>
-    <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);">이 사업의 핵심 특징</h3>
-    <div class="feature-grid" style="display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:32px;">${featureHtml}</div>
-    <h3 style="font-size:16px;font-weight:700;margin-bottom:4px;color:var(--gray-900);">핵심 심사 포인트 3가지</h3>
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">[1] 이 사업의 핵심 특징</h3>
+    <div style="margin-bottom:32px;width:100%;overflow-wrap:break-word;word-break:keep-all;">${featureHtml}</div>
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:4px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">[2] 핵심 심사 포인트 3가지</h3>
     <p style="font-size:12px;color:var(--gray-600);margin-bottom:16px;">심사위원이 실제로 집중해서 보는 항목입니다</p>
-    <div style="margin-bottom:32px;">${judgeHtml}</div>
-    <h3 style="font-size:16px;font-weight:700;margin-bottom:4px;color:var(--gray-900);">신청 전 준비 체크리스트</h3>
+    <div style="margin-bottom:32px;width:100%;overflow-wrap:break-word;word-break:keep-all;">${judgeHtml}</div>
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:4px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">[3] 신청 전 준비 체크리스트</h3>
     <p style="font-size:12px;color:var(--gray-600);margin-bottom:16px;">D-n 기준·지금 당장 준비 가능한 순서로 정렬</p>
-    <div style="margin-bottom:32px;background:white;border:1px solid var(--gray-200);border-radius:12px;padding:20px;">${checklistHtml}</div>
-    <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);">컨설턴트 실전 팁 (합격률을 높이는 3가지)</h3>
-    ${tipsHtml}
+    <div style="margin-bottom:32px;background:white;border:1px solid var(--gray-200);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:10px;width:100%;overflow-wrap:break-word;word-break:keep-all;">${checklistHtml}</div>
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">[4] 컨설턴트 실전 팁 (합격률을 높이는 3가지)</h3>
+    <div style="width:100%;overflow-wrap:break-word;word-break:keep-all;">${tipsHtml}</div>
   `;
   
   // TAB4 HTML - 성장 로드맵
@@ -1605,7 +1604,7 @@ function renderFullReport(raw,cd,iD,rev){
   while (pipeline.length < 3) pipeline.push('추후 지원사업 검토 예정');
   const pipelineHtml=pipeline.slice(0,3).map((p,i)=>{
     const header = i===0 ? '지금 → 3개월' : i===1 ? '1년 후' : '2~3년 후';
-    return `<div class="pipeline-step"><h4>${header}</h4><p>${highlightText(p)}</p></div>`;
+    return `<div style="background:white;border:1px solid var(--gray-200);border-radius:12px;padding:18px;margin-bottom:12px;width:100%;overflow-wrap:break-word;word-break:keep-all;"><h4 style="font-size:14px;font-weight:700;color:var(--gray-900);margin-bottom:10px;width:100%;overflow-wrap:break-word;word-break:keep-all;">${header}</h4><p style="font-size:14px;color:var(--gray-700);line-height:1.8;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(p)}</p></div>`;
   }).join('');
 
   const visionText = pf(parsed.tab4,'VISION')||parsed.vision||'';
@@ -1613,42 +1612,42 @@ function renderFullReport(raw,cd,iD,rev){
   const timeline3y = pf(parsed.tab4,'TIMELINE_3Y')||parsed.timeline3y||'';
 
   const tab4Html=`
-    <div style="background:#F8F7FF;border-left:4px solid #7C3AED;border-radius:8px;padding:20px;margin-bottom:24px;">
+    <div style="background:#F8F7FF;border-left:4px solid #7C3AED;border-radius:8px;padding:20px;margin-bottom:24px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
       <h3 style="font-size:14px;font-weight:700;color:var(--gray-900);margin-bottom:8px;">성장 로드맵</h3>
       <p style="font-size:12px;color:var(--gray-700);line-height:1.6;margin-bottom:12px;">사업명 선정 이후 ${cd.company_name||'기업'}에 일어날 변화 (현실적 시나리오)</p>
-      <div style="background:white;border:1px solid #E9D5FF;border-radius:6px;padding:16px;font-size:13px;color:var(--gray-700);line-height:1.7;">${highlightText(visionText||'이 로드맵의 전제 조건과 가정을 설명합니다.')}</div>
+      <div style="background:white;border:1px solid #E9D5FF;border-radius:6px;padding:16px;font-size:13px;color:var(--gray-700);line-height:1.7;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(visionText||'이 로드맵의 전제 조건과 가정을 설명합니다.')}</div>
     </div>
-    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:28px;">
-      <div class="timeline-dot now">지금</div>
-      <div style="flex:1;padding-top:12px;">
+    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:28px;width:100%;overflow-wrap:break-word;">
+      <div style="width:48px;height:48px;min-width:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;background:linear-gradient(135deg,#EF4444,#DC2626);box-shadow:0 4px 12px rgba(79,70,229,0.3);flex-shrink:0;">지금</div>
+      <div style="flex:1;padding-top:12px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
         <div style="font-size:16px;font-weight:700;margin-bottom:8px;">지금</div>
-        <div style="font-size:15px;color:#4B5563;line-height:1.9;">${highlightText(pf(parsed.tab4, 'TIMELINE_NOW') || parsed.timelineNow || '현재 상태와 즉시 실행 포인트')}</div>
+        <div style="font-size:15px;color:#4B5563;line-height:1.9;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(pf(parsed.tab4, 'TIMELINE_NOW') || parsed.timelineNow || '현재 상태와 즉시 실행 포인트')}</div>
       </div>
     </div>
-    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:28px;">
-      <div class="timeline-dot purple">3M</div>
-      <div style="flex:1;padding-top:12px;">
+    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:28px;width:100%;overflow-wrap:break-word;">
+      <div style="width:48px;height:48px;min-width:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;background:linear-gradient(135deg,#7C3AED,#6D28D9);box-shadow:0 4px 12px rgba(79,70,229,0.3);flex-shrink:0;">3M</div>
+      <div style="flex:1;padding-top:12px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
         <div style="font-size:16px;font-weight:700;margin-bottom:8px;">3개월</div>
-        <div style="font-size:15px;color:#4B5563;line-height:1.9;">${highlightText(pf(parsed.tab4, 'TIMELINE_3M') || parsed.timeline3m || '3개월 목표와 실행 계획')}</div>
+        <div style="font-size:15px;color:#4B5563;line-height:1.9;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(pf(parsed.tab4, 'TIMELINE_3M') || parsed.timeline3m || '3개월 목표와 실행 계획')}</div>
       </div>
     </div>
-    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:28px;">
-      <div class="timeline-dot purple">1Y</div>
-      <div style="flex:1;padding-top:12px;">
+    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:28px;width:100%;overflow-wrap:break-word;">
+      <div style="width:48px;height:48px;min-width:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;background:linear-gradient(135deg,#7C3AED,#6D28D9);box-shadow:0 4px 12px rgba(79,70,229,0.3);flex-shrink:0;">1Y</div>
+      <div style="flex:1;padding-top:12px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
         <div style="font-size:16px;font-weight:700;margin-bottom:8px;">1년</div>
-        <div style="font-size:15px;color:#4B5563;line-height:1.9;">${highlightText(timeline1y || '1년 후 목표와 현실적 수치')}</div>
+        <div style="font-size:15px;color:#4B5563;line-height:1.9;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(timeline1y || '1년 후 목표와 현실적 수치')}</div>
       </div>
     </div>
-    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:28px;">
-      <div class="timeline-dot green">3Y</div>
-      <div style="flex:1;padding-top:12px;">
+    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:28px;width:100%;overflow-wrap:break-word;">
+      <div style="width:48px;height:48px;min-width:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;background:linear-gradient(135deg,#10B981,#059669);box-shadow:0 4px 12px rgba(79,70,229,0.3);flex-shrink:0;">3Y</div>
+      <div style="flex:1;padding-top:12px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
         <div style="font-size:16px;font-weight:700;margin-bottom:8px;">3년</div>
-        <div style="font-size:15px;color:#4B5563;line-height:1.9;">${highlightText(timeline3y || '3년 후 비전과 성장 단계')}</div>
+        <div style="font-size:15px;color:#4B5563;line-height:1.9;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(timeline3y || '3년 후 비전과 성장 단계')}</div>
       </div>
     </div>
-    <h3 style="font-size:16px;font-weight:700;margin-top:32px;margin-bottom:4px;color:var(--gray-900);">지원사업 파이프라인 (3년 로드맵)</h3>
+    <h3 style="font-size:16px;font-weight:700;margin-top:32px;margin-bottom:4px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">지원사업 파이프라인 (3년 로드맵)</h3>
     <p style="font-size:12px;color:var(--gray-600);margin-bottom:16px;">이후 지원 가능한 사업 단계</p>
-    <div class="pipeline-grid">${pipelineHtml}</div>
+    <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:16px;width:100%;overflow-wrap:break-word;word-break:keep-all;">${pipelineHtml}</div>
   `;
 
   document.getElementById('report-area').innerHTML=`
