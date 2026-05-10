@@ -1551,7 +1551,7 @@ function renderFullReport(raw,cd,iD,rev){
   `;
   
   // TAB3 HTML - 지원사업 전략
-  const featureHtml=(parsed.features.length?parsed.features:['특징 1','특징 2','특징 3']).map((f,i)=>`<div class="feature-card"><h3>특징 ${i+1}</h3><p>${highlightText(f)}</p></div>`).join('');
+  
   
   const judgeHtml=(parsed.judgePoints.length?parsed.judgePoints:[{point:'심사 포인트 정보 준비 중',tip:''}]).map((j,idx)=>`<div class="judge-item"><div class="judge-number">${idx+1}</div><div class="judge-text"><strong>${escapeHtml(j.point)}</strong>${idx===0?'<div style="display:inline-block;background:#FEE2E2;color:#991B1B;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:600;margin-top:4px;">가장 중요</div>':''}${j.tip?`<div class="judge-tip-box"><strong>작성 팁:</strong> ${highlightText(j.tip)}</div>`:''}</div></div>`).join('');
 
