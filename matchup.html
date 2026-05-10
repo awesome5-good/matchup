@@ -1461,23 +1461,23 @@ function renderFullReport(raw,cd,iD,rev){
     </div>
     <div>
       <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);">지금 바로 확인하세요</h3>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;">
-        <div style="background:#F8F7FF;border:1px solid #E9D5FF;border-radius:12px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;">
+        <div style="background:#F8F7FF;border:1px solid #E9D5FF;border-radius:12px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;min-width:0;">
           <div style="font-size:28px;line-height:1;margin-bottom:8px;">①</div>
           <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">컨설턴트 진단</div>
           <div style="font-size:12px;color:var(--gray-600);line-height:1.6;width:100%;overflow-wrap:break-word;word-break:keep-all;">${cd.company_name||'귀사'} 현황과 핵심 리스크 확인</div>
         </div>
-        <div style="background:#F0FDF4;border:1px solid #DCFCE7;border-radius:12px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+        <div style="background:#F0FDF4;border:1px solid #DCFCE7;border-radius:12px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;min-width:0;">
           <div style="font-size:28px;line-height:1;margin-bottom:8px;">②</div>
           <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">진단 요약</div>
           <div style="font-size:12px;color:var(--gray-600);line-height:1.6;width:100%;overflow-wrap:break-word;word-break:keep-all;">매칭 점수와 강점·약점 파악</div>
         </div>
-        <div style="background:#FDF2F8;border:1px solid #FBCFE8;border-radius:12px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+        <div style="background:#FDF2F8;border:1px solid #FBCFE8;border-radius:12px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;min-width:0;">
           <div style="font-size:28px;line-height:1;margin-bottom:8px;">③</div>
           <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">지원사업 전략</div>
           <div style="font-size:12px;color:var(--gray-600);line-height:1.6;width:100%;overflow-wrap:break-word;word-break:keep-all;">1순위 체크리스트 따라 준비</div>
         </div>
-        <div style="background:#FEF3F4;border:1px solid #FBCFE8;border-radius:12px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+        <div style="background:#FEF3F4;border:1px solid #FBCFE8;border-radius:12px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;min-width:0;">
           <div style="font-size:28px;line-height:1;margin-bottom:8px;">④</div>
           <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">성장 로드맵</div>
           <div style="font-size:12px;color:var(--gray-600);line-height:1.6;width:100%;overflow-wrap:break-word;word-break:keep-all;">1년·3년 시나리오 저장</div>
@@ -1488,37 +1488,37 @@ function renderFullReport(raw,cd,iD,rev){
   
   // TAB2 HTML - 진단 요약
   const matchItems=programs.map((p,i)=>{const score=Number(p.score)||0;const scoreWidth=Math.min(Math.max(score,0),100);const tags=Array.isArray(p.tags)?p.tags.map(t=>`<span style="background:#F3F4F6;color:#6B7280;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:500;">${escapeHtml(t)}</span>`).join(''):'';const isTop=i===0;return `<div style="background:white;border:1px solid var(--gray-200);border-radius:12px;padding:${isTop?'24':'16'}px;margin-bottom:12px;${isTop?'border-left:4px solid #6366F1;':''};width:100%;overflow-wrap:break-word;word-break:keep-all;">${isTop?'<div style="display:inline-block;background:#FEE2E2;color:#991B1B;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:700;margin-bottom:12px;white-space:nowrap;">D-'+metricDeadline+' 마감</div>':''}
-      <div style="display:flex;align-items:flex-start;gap:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;">
         <div style="min-width:32px;height:32px;background:${isTop?'#6366F1':'#E5E7EB'};color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;">${i+1}</div>
-        <div style="flex:1;min-width:0;width:100%;overflow-wrap:break-word;word-break:keep-all;">
-          <div style="font-weight:700;font-size:16px;color:var(--gray-900);margin-bottom:4px;width:100%;overflow-wrap:break-word;word-break:keep-all;">${escapeHtml(p.title||'지원사업 정보 없음')}</div>
-          <div style="font-size:14px;color:var(--gray-700);margin-bottom:12px;line-height:1.8;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(p.reason||'매칭 이유가 준비되지 않았습니다.')}</div>
-          ${tags?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">'+tags+'</div>':''}
-          <div style="height:4px;background:#F3F4F6;border-radius:2px;overflow:hidden;margin-bottom:8px;"><div style="height:100%;background:linear-gradient(90deg,#6366F1,#8B5CF6);width:${scoreWidth}%;"></div></div>
-          <div style="font-size:12px;color:var(--gray-500);white-space:nowrap;">적합도 <span style="white-space:nowrap;">${score}점</span></div>
-        </div>
-        <div style="text-align:right;white-space:nowrap;flex-shrink:0;"><div style="display:inline-block;background:#F3E8FF;color:#7C3AED;padding:6px 10px;border-radius:4px;font-size:14px;font-weight:700;white-space:nowrap;">${score}점</div></div>
+        <div style="display:inline-block;background:#F3E8FF;color:#7C3AED;padding:6px 10px;border-radius:4px;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0;">${score}점</div>
+      </div>
+      <div style="flex:1;min-width:0;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+        <div style="font-weight:700;font-size:16px;color:var(--gray-900);margin-bottom:4px;width:100%;overflow-wrap:break-word;word-break:keep-all;">${escapeHtml(p.title||'지원사업 정보 없음')}</div>
+        <div style="font-size:14px;color:var(--gray-700);margin-bottom:12px;line-height:1.8;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(p.reason||'매칭 이유가 준비되지 않았습니다.')}</div>
+        ${tags?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">'+tags+'</div>':''}
+        <div style="height:4px;background:#F3F4F6;border-radius:2px;overflow:hidden;margin-bottom:8px;"><div style="height:100%;background:linear-gradient(90deg,#6366F1,#8B5CF6);width:${scoreWidth}%;"></div></div>
+        <div style="font-size:12px;color:var(--gray-500);white-space:nowrap;">적합도 <span style="white-space:nowrap;">${score}점</span></div>
       </div>
     </div>`;}).join('');
 
   const tab2Html=`
     <div style="text-align:right;margin-bottom:20px;"><div style="display:inline-block;background:#F0F9FF;color:#0369A1;padding:6px 12px;border-radius:4px;font-size:12px;font-weight:600;white-space:nowrap;">생성일 ${genDate}</div></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;width:100%;overflow-wrap:break-word;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;">
       <div style="background:#F8F7FF;border:1px solid #E9D5FF;border-radius:12px;padding:16px;text-align:center;width:100%;overflow-wrap:break-word;word-break:keep-all;">
-        <div style="font-size:22px;font-weight:700;color:#7C3AED;margin-bottom:4px;white-space:nowrap;"><span style="white-space:nowrap;">${metricScore}</span>점</div>
-        <div style="font-size:11px;color:var(--gray-600);">종합 매칭점수</div>
+        <div style="font-size:18px;font-weight:700;color:#7C3AED;margin-bottom:4px;white-space:nowrap;"><span style="white-space:nowrap;">${metricScore}</span>점</div>
+        <div style="font-size:11px;color:var(--gray-600);white-space:nowrap;">종합 매칭점수</div>
       </div>
       <div style="background:#F0FDF4;border:1px solid #DCFCE7;border-radius:12px;padding:16px;text-align:center;width:100%;overflow-wrap:break-word;word-break:keep-all;">
-        <div style="font-size:22px;font-weight:700;color:#16A34A;margin-bottom:4px;white-space:nowrap;"><span style="white-space:nowrap;">${metricPrograms}</span>개</div>
-        <div style="font-size:11px;color:var(--gray-600);">적합 지원사업수</div>
+        <div style="font-size:18px;font-weight:700;color:#16A34A;margin-bottom:4px;white-space:nowrap;"><span style="white-space:nowrap;">${metricPrograms}</span>개</div>
+        <div style="font-size:11px;color:var(--gray-600);white-space:nowrap;">적합 지원사업수</div>
       </div>
       <div style="background:#FEF3C7;border:1px solid #FDE68A;border-radius:12px;padding:16px;text-align:center;width:100%;overflow-wrap:break-word;word-break:keep-all;">
-        <div style="font-size:22px;font-weight:700;color:#D97706;margin-bottom:4px;white-space:nowrap;">${metricDeadline<999?'<span style="white-space:nowrap;">D-'+metricDeadline+'</span>':'-'}</div>
-        <div style="font-size:11px;color:var(--gray-600);">가장 빠른 마감</div>
+        <div style="font-size:18px;font-weight:700;color:#D97706;margin-bottom:4px;white-space:nowrap;">${metricDeadline<999?'<span style="white-space:nowrap;">D-'+metricDeadline+'</span>':'-'}</div>
+        <div style="font-size:11px;color:var(--gray-600);white-space:nowrap;">가장 빠른 마감</div>
       </div>
       <div style="background:#FCE7F3;border:1px solid #FBCFE8;border-radius:12px;padding:16px;text-align:center;width:100%;overflow-wrap:break-word;word-break:keep-all;">
         <div style="font-size:18px;font-weight:700;color:#BE185D;margin-bottom:4px;white-space:nowrap;">${amountLabel}</div>
-        <div style="font-size:11px;color:var(--gray-600);">추천 사업 총액</div>
+        <div style="font-size:11px;color:var(--gray-600);white-space:nowrap;">추천 사업 총액</div>
       </div>
     </div>
     <div class="chart-section">
@@ -1528,7 +1528,7 @@ function renderFullReport(raw,cd,iD,rev){
         <div class="chart-box">
           <canvas id="radarChart" width="340" height="340"></canvas>
         </div>
-        <div class="chart-legend" id="radar-legend" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;overflow-wrap:break-word;"></div>
+        <div class="chart-legend" id="radar-legend" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;overflow-wrap:break-word;"></div>
       </div>
     </div>
     <div class="chart-section">
@@ -1538,12 +1538,12 @@ function renderFullReport(raw,cd,iD,rev){
     </div>
     <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">[3] 매칭된 지원사업</h3>
     <div style="width:100%;overflow-wrap:break-word;word-break:keep-all;">${matchItems}</div>
-    <div style="display:grid;grid-template-columns:1fr;gap:16px;margin-top:24px;width:100%;overflow-wrap:break-word;">
-      <div style="background:#F0FDF4;border-left:4px solid #16A34A;border-radius:8px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px;width:100%;overflow-wrap:break-word;">
+      <div style="background:#F0FDF4;border-left:4px solid #16A34A;border-radius:8px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;min-width:0;">
         <h4 style="font-weight:700;color:#166534;margin-bottom:12px;font-size:14px;">핵심 강점 (이게 ${cd.company_name||'귀사'}의 무기입니다)</h4>
         ${(parsed.strengths.length?parsed.strengths:['강점 데이터가 준비되고 있습니다.']).map(s=>'<div style="font-size:14px;color:var(--gray-700);line-height:1.8;margin-bottom:8px;width:100%;overflow-wrap:break-word;word-break:keep-all;">✓ '+highlightText(s)+'</div>').join('')}
       </div>
-      <div style="background:#FEF3C7;border-left:4px solid #D97706;border-radius:8px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+      <div style="background:#FEF3C7;border-left:4px solid #D97706;border-radius:8px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;min-width:0;">
         <h4 style="font-weight:700;color:#A16207;margin-bottom:12px;font-size:14px;">보완 영역 (지금 바로 채우세요)</h4>
         ${(parsed.weaknesses.length?parsed.weaknesses:['개선 영역이 준비되고 있습니다.']).map(w=>'<div style="font-size:14px;color:var(--gray-700);line-height:1.8;margin-bottom:8px;width:100%;overflow-wrap:break-word;word-break:keep-all;">→ '+highlightText(w)+'</div>').join('')}
       </div>
@@ -1768,7 +1768,7 @@ function drawRadarChart(cd, scores) {
       const color = isGood ? '#16A34A' : '#EF4444';
       const status = isGood ? '✓ 양호' : '⚠ 보완 필요';
       const fillColor = isGood ? '#10B981' : '#F87171';
-      html += `<div class="legend-item">
+      html += `<div class="legend-item" style="min-width:0;word-break:keep-all;">
         <div class="legend-label"><span>${items[i]}</span><span style="color:${color};font-weight:700;">${score}점</span></div>
         <div class="legend-bar-wrap"><div class="legend-bar-fill" style="width:${Math.min(score,100)}%;background:${fillColor};"></div></div>
         <div class="legend-status" style="color:${color};">${status}</div>
