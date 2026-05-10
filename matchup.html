@@ -1552,9 +1552,7 @@ function renderFullReport(raw,cd,iD,rev){
   
   // TAB3 HTML - 지원사업 전략
   
-  
-
-  const checklistHtml=(parsed.checklistItems.length?parsed.checklistItems:['체크리스트 항목 준비 중']).map((item,i)=>`<button type="button" class="checklist-item${checklistState[i]?' checked':''}" data-checklist-key="${checklistKey}" data-item-index="${i}" onclick="toggleChecklistItem(this)"><span class="check-item-icon">${checklistState[i]?'✓':'○'}</span><span style="flex:1;">${escapeHtml(item)}</span></button>`).join('');
+   
 
   const tipsHtml=(parsed.practicalTips.length?parsed.practicalTips:['실전 팁 준비 중']).map((t,i)=>`<div style="background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border:1px solid #F59E0B;border-radius:12px;padding:16px 20px;margin-bottom:12px;display:block;width:100%;word-break:keep-all;overflow-wrap:break-word;float:none;position:static;"><div style="font-size:13px;font-weight:700;color:#92400E;margin-bottom:10px;display:flex;align-items:center;gap:6px;">✨ TIP ${i+1}</div><div style="font-size:13px;color:#78350F;line-height:1.8;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(t)}</div></div>`).join('');
 
