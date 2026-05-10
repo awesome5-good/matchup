@@ -1557,15 +1557,15 @@ function renderFullReport(raw,cd,iD,rev){
 
   const checklistHtml=(parsed.checklistItems.length?parsed.checklistItems:['체크리스트 항목 준비 중']).map((item,i)=>`<button type="button" class="checklist-item${checklistState[i]?' checked':''}" data-checklist-key="${checklistKey}" data-item-index="${i}" onclick="toggleChecklistItem(this)"><span class="check-item-icon">${checklistState[i]?'✓':'○'}</span><span style="flex:1;">${escapeHtml(item)}</span></button>`).join('');
 
-  const tipsHtml=(parsed.practicalTips.length?parsed.practicalTips:['실전 팁 준비 중']).map((t,i)=>`<div style="background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border:1px solid #F59E0B;border-radius:12px;padding:16px 20px;margin-bottom:12px;width:100%;overflow-wrap:break-word;word-break:keep-all;"><div style="font-size:13px;font-weight:700;color:#92400E;margin-bottom:10px;display:flex;align-items:center;gap:6px;">✨ TIP ${i+1}</div><div style="font-size:13px;color:#78350F;line-height:1.8;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(t)}</div></div>`).join('');
+  const tipsHtml=(parsed.practicalTips.length?parsed.practicalTips:['실전 팁 준비 중']).map((t,i)=>`<div style="background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border:1px solid #F59E0B;border-radius:12px;padding:16px 20px;margin-bottom:12px;display:block;width:100%;word-break:keep-all;overflow-wrap:break-word;float:none;position:static;"><div style="font-size:13px;font-weight:700;color:#92400E;margin-bottom:10px;display:flex;align-items:center;gap:6px;">✨ TIP ${i+1}</div><div style="font-size:13px;color:#78350F;line-height:1.8;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(t)}</div></div>`).join('');
 
   if(!parsed.pipeline.length && allMatches.length>=1){
     parsed.pipeline = allMatches.slice(0,3).map(m=>(m.program?.title||'').replace(/^['`'「『【〔\s]+/, '').replace(/['`'」』】〕\s]+$/, '').trim()).filter(Boolean);
   }
 
-  const featureHtml=(parsed.features.length?parsed.features:['특징 1','특징 2','특징 3']).map((f,i)=>`<div style="background:white;border:1px solid var(--gray-200);border-radius:12px;padding:20px;margin-bottom:12px;width:100%;overflow-wrap:break-word;word-break:keep-all;"><h4 style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:10px;">[${i+1}] 특징 ${i+1}</h4><p style="font-size:14px;color:var(--gray-700);line-height:1.9;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(f)}</p></div>`).join('');
+  const featureHtml=(parsed.features.length?parsed.features:['특징 1','특징 2','특징 3']).map((f,i)=>`<div style="background:white;border:1px solid var(--gray-200);border-radius:12px;padding:20px;width:100%;word-break:keep-all;overflow-wrap:break-word;min-width:0;"><h4 style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:10px;">[${i+1}] 특징 ${i+1}</h4><p style="font-size:14px;color:var(--gray-700);line-height:1.9;width:100%;word-break:keep-all;overflow-wrap:break-word;">${highlightText(f)}</p></div>`).join('');
   
-  const judgeHtml=(parsed.judgePoints.length?parsed.judgePoints:[{point:'심사 포인트 정보 준비 중',tip:''}]).map((j,idx)=>`<div style="background:white;border:1px solid var(--gray-200);border-radius:12px;padding:18px;margin-bottom:12px;display:grid;grid-template-columns:44px 1fr;gap:16px;align-items:start;width:100%;overflow-wrap:break-word;"><div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#534AB7);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">${idx+1}</div><div style="width:100%;overflow-wrap:break-word;word-break:keep-all;"><strong style="font-size:14px;font-weight:700;color:var(--gray-900);display:block;margin-bottom:4px;width:100%;overflow-wrap:break-word;word-break:keep-all;">${escapeHtml(j.point)}</strong>${idx===0?'<div style="display:inline-block;background:#FEE2E2;color:#991B1B;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:600;margin-bottom:8px;white-space:nowrap;">가장 중요</div>':''}${j.tip?`<div style="background:linear-gradient(135deg,#F3E8FF,#E9D5FF);border:1px solid #D8B4FE;border-radius:10px;padding:12px;font-size:13px;color:#5B21B6;line-height:1.8;margin-top:10px;width:100%;overflow-wrap:break-word;word-break:keep-all;"><strong>작성 팁:</strong> ${highlightText(j.tip)}</div>`:''}</div></div>`).join('');
+  const judgeHtml=(parsed.judgePoints.length?parsed.judgePoints:[{point:'심사 포인트 정보 준비 중',tip:''}]).map((j,idx)=>`<div style="background:white;border:1px solid var(--gray-200);border-radius:12px;padding:18px;margin-bottom:12px;width:100%;overflow-wrap:break-word;"><div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;"><div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#534AB7);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">${idx+1}</div><strong style="font-size:14px;font-weight:700;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">${escapeHtml(j.point)}</strong></div>${idx===0?'<div style="display:inline-block;background:#FEE2E2;color:#991B1B;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:600;margin-bottom:8px;white-space:nowrap;">가장 중요</div>':''}${j.tip?`<div style="background:linear-gradient(135deg,#F3E8FF,#E9D5FF);border:1px solid #D8B4FE;border-radius:10px;padding:12px;font-size:13px;color:#5B21B6;line-height:1.8;margin-top:10px;width:100%;word-break:keep-all;overflow-wrap:break-word;"><strong>작성 팁:</strong> ${highlightText(j.tip)}</div>`:''}</div>`).join('');
 
   const checklistHtml=(parsed.checklistItems.length?parsed.checklistItems:['체크리스트 항목 준비 중']).map((item,i)=>`<button type="button" class="checklist-item${checklistState[i]?' checked':''}" data-checklist-key="${checklistKey}" data-item-index="${i}" onclick="toggleChecklistItem(this)" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--gray-200);border-radius:10px;background:var(--gray-50);cursor:pointer;transition:all 0.15s;font-size:14px;color:var(--gray-700);width:100%;overflow-wrap:break-word;word-break:keep-all;"><span class="check-item-icon" style="width:20px;height:20px;border-radius:50%;background:white;border:1px solid var(--gray-300);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:12px;flex-shrink:0;font-weight:700;">${checklistState[i]?'✓':'○'}</span><span style="flex:1;text-align:left;width:100%;overflow-wrap:break-word;word-break:keep-all;">${escapeHtml(item)}</span></button>`).join('');
 
@@ -1574,18 +1574,18 @@ function renderFullReport(raw,cd,iD,rev){
       <div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;flex-wrap:wrap;">
         <div>
           <h2 style="font-size:18px;font-weight:700;color:var(--gray-900);margin-bottom:8px;">지원사업 전략</h2>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+            ${topDeadline&&topDeadline>0?'<div style="display:inline-block;background:#FEE2E2;color:#991B1B;padding:6px 12px;border-radius:4px;font-size:12px;font-weight:700;white-space:nowrap;">D-'+topDeadline+' 마감</div>':''}
+            <div style="display:inline-block;background:#F3E8FF;color:#7C3AED;padding:6px 12px;border-radius:4px;font-size:12px;font-weight:700;white-space:nowrap;">적합도 ${topScore}점</div>
+          </div>
           <p style="font-size:13px;color:var(--gray-600);line-height:1.6;">1순위 추천 사업을 중심으로 전략적으로 정리합니다.</p>
           <div style="font-size:14px;font-weight:700;color:#7C3AED;margin-top:12px;margin-bottom:8px;width:100%;overflow-wrap:break-word;word-break:keep-all;">1순위 추천 사업: ${escapeHtml(topTitle)}</div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;width:100%;overflow-wrap:break-word;">${Array.isArray(topMatches[0]?.program?.tags)?topMatches[0].program.tags.map(t=>'<span style="background:#DDD6FE;color:#6B21A8;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:500;white-space:nowrap;">'+escapeHtml(t)+'</span>').join(''):''}</div>
         </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;width:100%;overflow-wrap:break-word;">
-          ${topDeadline&&topDeadline>0?'<div style="display:inline-block;background:#FEE2E2;color:#991B1B;padding:6px 12px;border-radius:4px;font-size:12px;font-weight:700;white-space:nowrap;">D-'+topDeadline+' 마감</div>':''}
-          <div style="display:inline-block;background:#F3E8FF;color:#7C3AED;padding:6px 12px;border-radius:4px;font-size:12px;font-weight:700;white-space:nowrap;">적합도 ${topScore}점</div>
-        </div>
       </div>
     </div>
     <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">[1] 이 사업의 핵심 특징</h3>
-    <div style="margin-bottom:32px;width:100%;overflow-wrap:break-word;word-break:keep-all;">${featureHtml}</div>
+    <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:32px;width:100%;overflow-wrap:break-word;word-break:keep-all;">${featureHtml}</div>
     <h3 style="font-size:16px;font-weight:700;margin-bottom:4px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">[2] 핵심 심사 포인트 3가지</h3>
     <p style="font-size:12px;color:var(--gray-600);margin-bottom:16px;">심사위원이 실제로 집중해서 보는 항목입니다</p>
     <div style="margin-bottom:32px;width:100%;overflow-wrap:break-word;word-break:keep-all;">${judgeHtml}</div>
@@ -1614,33 +1614,33 @@ function renderFullReport(raw,cd,iD,rev){
   const tab4Html=`
     <div style="background:#F8F7FF;border-left:4px solid #7C3AED;border-radius:8px;padding:20px;margin-bottom:24px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
       <h3 style="font-size:14px;font-weight:700;color:var(--gray-900);margin-bottom:8px;">성장 로드맵</h3>
-      <p style="font-size:12px;color:var(--gray-700);line-height:1.6;margin-bottom:12px;">사업명 선정 이후 ${cd.company_name||'기업'}에 일어날 변화 (현실적 시나리오)</p>
+      <p style="font-size:12px;color:var(--gray-700);line-height:1.6;margin-bottom:12px;word-break:keep-all;overflow-wrap:break-word;">사업명 선정 이후 ${cd.company_name||'기업'}에 일어날 변화 (현실적 시나리오)</p>
       <div style="background:white;border:1px solid #E9D5FF;border-radius:6px;padding:16px;font-size:13px;color:var(--gray-700);line-height:1.7;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(visionText||'이 로드맵의 전제 조건과 가정을 설명합니다.')}</div>
     </div>
-    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:28px;width:100%;overflow-wrap:break-word;">
-      <div style="width:48px;height:48px;min-width:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;background:linear-gradient(135deg,#EF4444,#DC2626);box-shadow:0 4px 12px rgba(79,70,229,0.3);flex-shrink:0;">지금</div>
-      <div style="flex:1;padding-top:12px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+    <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:28px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+      <div style="width:48px;height:48px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;background:linear-gradient(135deg,#EF4444,#DC2626);box-shadow:0 4px 12px rgba(79,70,229,0.3);">지금</div>
+      <div style="flex:1;min-width:0;padding-top:12px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
         <div style="font-size:16px;font-weight:700;margin-bottom:8px;">지금</div>
         <div style="font-size:15px;color:#4B5563;line-height:1.9;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(pf(parsed.tab4, 'TIMELINE_NOW') || parsed.timelineNow || '현재 상태와 즉시 실행 포인트')}</div>
       </div>
     </div>
-    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:28px;width:100%;overflow-wrap:break-word;">
-      <div style="width:48px;height:48px;min-width:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;background:linear-gradient(135deg,#7C3AED,#6D28D9);box-shadow:0 4px 12px rgba(79,70,229,0.3);flex-shrink:0;">3M</div>
-      <div style="flex:1;padding-top:12px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+    <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:28px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+      <div style="width:48px;height:48px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;background:linear-gradient(135deg,#7C3AED,#6D28D9);box-shadow:0 4px 12px rgba(79,70,229,0.3);">3M</div>
+      <div style="flex:1;min-width:0;padding-top:12px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
         <div style="font-size:16px;font-weight:700;margin-bottom:8px;">3개월</div>
         <div style="font-size:15px;color:#4B5563;line-height:1.9;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(pf(parsed.tab4, 'TIMELINE_3M') || parsed.timeline3m || '3개월 목표와 실행 계획')}</div>
       </div>
     </div>
-    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:28px;width:100%;overflow-wrap:break-word;">
-      <div style="width:48px;height:48px;min-width:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;background:linear-gradient(135deg,#7C3AED,#6D28D9);box-shadow:0 4px 12px rgba(79,70,229,0.3);flex-shrink:0;">1Y</div>
-      <div style="flex:1;padding-top:12px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+    <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:28px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+      <div style="width:48px;height:48px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;background:linear-gradient(135deg,#7C3AED,#6D28D9);box-shadow:0 4px 12px rgba(79,70,229,0.3);">1Y</div>
+      <div style="flex:1;min-width:0;padding-top:12px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
         <div style="font-size:16px;font-weight:700;margin-bottom:8px;">1년</div>
         <div style="font-size:15px;color:#4B5563;line-height:1.9;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(timeline1y || '1년 후 목표와 현실적 수치')}</div>
       </div>
     </div>
-    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:28px;width:100%;overflow-wrap:break-word;">
-      <div style="width:48px;height:48px;min-width:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;background:linear-gradient(135deg,#10B981,#059669);box-shadow:0 4px 12px rgba(79,70,229,0.3);flex-shrink:0;">3Y</div>
-      <div style="flex:1;padding-top:12px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+    <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:28px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
+      <div style="width:48px;height:48px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;background:linear-gradient(135deg,#10B981,#059669);box-shadow:0 4px 12px rgba(79,70,229,0.3);">3Y</div>
+      <div style="flex:1;min-width:0;padding-top:12px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
         <div style="font-size:16px;font-weight:700;margin-bottom:8px;">3년</div>
         <div style="font-size:15px;color:#4B5563;line-height:1.9;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(timeline3y || '3년 후 비전과 성장 단계')}</div>
       </div>
