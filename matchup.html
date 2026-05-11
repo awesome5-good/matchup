@@ -122,16 +122,12 @@
     .sum-diagnosis-label{font-size:10px;font-weight:700;color:#a5b4fc;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;}
     .sum-diagnosis-text{font-size:14px;color:rgba(255,255,255,0.85);line-height:1.7;font-style:italic;}
     .sum-diagnosis-text .em{color:#FDE68A;font-weight:600;font-style:normal;}
-    .sum-top1{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;margin-bottom:16px;}
-    .sum-top1-label{font-size:10px;font-weight:700;color:#a5b4fc;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;}
-    .sum-top1-title{font-size:15px;font-weight:700;color:white;margin-bottom:10px;}
-    .sum-top1-rows{display:flex;flex-direction:column;gap:6px;}
-    .sum-row{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;}
-    .sum-row .arr{color:#818cf8;font-weight:700;flex-shrink:0;}
-    .sum-point{background:linear-gradient(135deg,rgba(234,179,8,0.15),rgba(245,158,11,0.08));border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:flex-start;gap:10px;}
-    .sum-point-icon{font-size:16px;flex-shrink:0;}
-    .sum-point-text{font-size:13px;color:rgba(255,255,255,0.85);line-height:1.6;}
-    .sum-point-text strong{color:#FDE68A;}
+    .sum-summary-line{padding:28px 28px 0;font-size:24px;font-weight:800;color:white;line-height:1.2;}
+    .sum-top1{padding:20px 28px 0;}
+    .sum-top1-title{font-size:22px;font-weight:800;color:white;margin-bottom:12px;line-height:1.1;}
+    .sum-deadline-badge{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;background:rgba(248,113,113,0.16);border:1px solid rgba(248,113,113,0.35);border-radius:999px;color:#fecaca;font-size:13px;font-weight:700;}
+    .sum-top1-rows{display:none;}
+    .sum-point{display:none;}
     .sum-cta{padding:0 28px 24px;display:flex;justify-content:center;}
     .btn-report-cta{background:linear-gradient(135deg,#4F46E5,#7C3AED);color:white;border:none;padding:16px 36px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(79,70,229,0.45);transition:all 0.2s;width:100%;justify-content:center;max-width:480px;}
     .btn-report-cta:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(79,70,229,0.55);}
@@ -727,26 +723,10 @@
           <div class="sum-loading-text">기업 맞춤 분석 중입니다...</div>
         </div>
         <div class="sum-body" id="sum-body" style="display:none">
-          <div class="sum-topbar">
-            <span class="sum-badge">📊 기업 분석 요약</span>
-            <span class="sum-company" id="sum-company"></span>
-            <span class="sum-biztag" id="sum-biztag"></span>
-          </div>
-          <div class="sum-main">
-            <div class="sum-pills" id="sum-pills"></div>
-            <div class="sum-diagnosis">
-              <div class="sum-diagnosis-label">🔍 기업 진단 핵심</div>
-              <div class="sum-diagnosis-text" id="sum-diagnosis-text"></div>
-            </div>
-            <div class="sum-top1">
-              <div class="sum-top1-label">⭐ 1순위 추천 지원사업</div>
-              <div class="sum-top1-title" id="sum-top1-title"></div>
-              <div class="sum-top1-rows" id="sum-top1-rows"></div>
-            </div>
-            <div class="sum-point">
-              <div class="sum-point-icon">⚡</div>
-              <div class="sum-point-text" id="sum-point-text"></div>
-            </div>
+          <div class="sum-summary-line" id="sum-summary-line"></div>
+          <div class="sum-top1">
+            <div class="sum-top1-title" id="sum-top1-title"></div>
+            <div class="sum-deadline-badge" id="sum-deadline-badge"></div>
           </div>
           <div class="sum-cta">
             <button class="btn-report-cta" onclick="goToReport()">📋 기업 진단 리포트 전체 보기 →</button>
@@ -1102,37 +1082,21 @@ async function startSummaryGen(){
   sc.classList.add('show');
   document.getElementById('sum-loading').style.display='flex';
   document.getElementById('sum-body').style.display='none';
-  const cd=companyData||{};
   const today=new Date();
-  const urgent=allMatches.filter(m=>{if(!m.program?.deadline)return false;return Math.ceil((new Date(m.program.deadline)-today)/86400000)<=14&&Math.ceil((new Date(m.program.deadline)-today)/86400000)>0;}).length;
   const top1=allMatches[0];
-  const top1Amt=top1?.program?.max_support_amount;
-  const top1AmtStr=top1Amt>=100000000?`${(top1Amt/100000000).toFixed(0)}억원`:top1Amt?`${Math.round(top1Amt/10000)}만원`:null;
   const top1Dl=top1?.program?.deadline?Math.ceil((new Date(top1.program.deadline)-today)/86400000):null;
 
-  let diag='귀사의 현재 사업 방향과 필요를 분석했습니다.';
-  let hook='이 사업, 준비된 기업만 선정됩니다.';
-  let action='지금 바로 신청 자격을 확인해보세요.';
-
-  document.getElementById('sum-company').textContent=cd.company_name||'';
-  document.getElementById('sum-biztag').textContent=cd.biz_type||'';
-  const pills=[];
-  if(cd.industry)pills.push({t:cd.industry,h:false});
-  if(cd.age_years!=null)pills.push({t:`창업 ${cd.age_years}년차`,h:true});
-  if(cd.region)pills.push({t:cd.region+(cd.district?' '+cd.district:''),h:false});
-  if(cd.employee_count!=null)pills.push({t:`상시직원 ${cd.employee_count}명`,h:false});
-  if(cd.annual_revenue)pills.push({t:`매출 ${Math.round(cd.annual_revenue/10000).toLocaleString()}만원`,h:false});
-  if(urgent>0)pills.push({t:`⚠️ 마감임박 ${urgent}건`,h:true});
-  document.getElementById('sum-pills').innerHTML=pills.map(p=>`<span class="sum-pill${p.h?' hi':''}">${p.t}</span>`).join('');
-  document.getElementById('sum-diagnosis-text').innerHTML=diag;
+  document.getElementById('sum-summary-line').textContent=`✅ ${allMatches.length}개 지원사업이 매칭되었습니다`;
   document.getElementById('sum-top1-title').textContent=top1?.program?.title||'매칭된 지원사업';
-  const rows=[];
-  if(top1?.match_reason)rows.push(`<div class="sum-row"><span class="arr">→</span><span>${top1.match_reason}</span></div>`);
-  if(top1AmtStr)rows.push(`<div class="sum-row"><span class="arr">→</span><span>최대 지원금액 <strong style="color:#a5b4fc">${top1AmtStr}</strong></span></div>`);
-  if(top1Dl&&top1Dl>0&&top1Dl<=30)rows.push(`<div class="sum-row"><span class="arr">→</span><span>마감까지 <strong style="color:#F87171">D-${top1Dl}</strong> — 서두르세요</span></div>`);
-  rows.push(`<div class="sum-row"><span class="arr">→</span><span style="color:#FDE68A;font-weight:600">${hook}</span></div>`);
-  document.getElementById('sum-top1-rows').innerHTML=rows.join('');
-  document.getElementById('sum-point-text').innerHTML=`<strong>지금 바로 하셔야 할 것:</strong> ${action}`;
+
+  const badge=document.getElementById('sum-deadline-badge');
+  if(top1Dl!=null){
+    badge.textContent=top1Dl>0?`D-${top1Dl}`:'D-day';
+    badge.style.display='inline-flex';
+  } else {
+    badge.style.display='none';
+  }
+
   document.getElementById('sum-loading').style.display='none';
   document.getElementById('sum-body').style.display='block';
 }
