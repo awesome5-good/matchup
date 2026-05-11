@@ -346,6 +346,14 @@
       .sum-main { padding: 14px 16px; overflow: hidden; }
       .sum-cta { padding: 0 16px 16px; }
       .btn-report-cta { font-size: 14px; padding: 14px 20px; }
+      .tab2-summary-cards > div { white-space: nowrap; }
+      #t2 .chart-legend { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+      #t2 .chart-legend .legend-item { flex-direction: row !important; align-items: center !important; gap: 8px !important; }
+      #t2 .chart-section { overflow-x: auto !important; }
+      #t2 canvas#barChart { min-width: 640px !important; width: 100% !important; max-width: none !important; }
+      #t2 .tab2-match-header { flex-wrap: wrap !important; }
+      #t2 .tab2-strength-grid { grid-template-columns: 1fr 1fr !important; }
+      #t2 .tab2-strength-grid > div { min-width: 0; }
       .rpt-tabs { gap: 0; }
       .rpt-tab { font-size: 12px; padding: 10px 12px; }
       .rpt-card { padding: 18px; }
@@ -1454,7 +1462,7 @@ function renderFullReport(raw,cd,iD,rev){
   
   // TAB2 HTML - 진단 요약
   const matchItems=programs.map((p,i)=>{const score=Number(p.score)||0;const scoreWidth=Math.min(Math.max(score,0),100);const tags=Array.isArray(p.tags)?p.tags.map(t=>`<span style="background:#F3F4F6;color:#6B7280;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:500;">${escapeHtml(t)}</span>`).join(''):'';const isTop=i===0;return `<div style="background:white;border:1px solid var(--gray-200);border-radius:12px;padding:${isTop?'24':'16'}px;margin-bottom:12px;${isTop?'border-left:4px solid #6366F1;':''};width:100%;overflow-wrap:break-word;word-break:keep-all;">${isTop?'<div style="display:inline-block;background:#FEE2E2;color:#991B1B;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:700;margin-bottom:12px;white-space:nowrap;">D-'+metricDeadline+' 마감</div>':''}
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;">
+      <div class="tab2-match-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px;">
         <div style="min-width:32px;height:32px;background:${isTop?'#6366F1':'#E5E7EB'};color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;">${i+1}</div>
         <div style="display:inline-block;background:#F3E8FF;color:#7C3AED;padding:6px 10px;border-radius:4px;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0;">${score}점</div>
       </div>
@@ -1469,7 +1477,7 @@ function renderFullReport(raw,cd,iD,rev){
 
   const tab2Html=`
     <div style="text-align:right;margin-bottom:20px;"><div style="display:inline-block;background:#F0F9FF;color:#0369A1;padding:6px 12px;border-radius:4px;font-size:12px;font-weight:600;white-space:nowrap;">생성일 ${genDate}</div></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;">
+    <div class="tab2-summary-cards" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;">
       <div style="background:#F8F7FF;border:1px solid #E9D5FF;border-radius:12px;padding:16px;text-align:center;width:100%;overflow-wrap:break-word;word-break:keep-all;">
         <div style="font-size:18px;font-weight:700;color:#7C3AED;margin-bottom:4px;white-space:nowrap;"><span style="white-space:nowrap;">${metricScore}</span>점</div>
         <div style="font-size:11px;color:var(--gray-600);white-space:nowrap;">종합 매칭점수</div>
@@ -1504,7 +1512,7 @@ function renderFullReport(raw,cd,iD,rev){
     </div>
     <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">[3] 매칭된 지원사업</h3>
     <div style="width:100%;overflow-wrap:break-word;word-break:keep-all;">${matchItems}</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px;width:100%;overflow-wrap:break-word;">
+    <div class="tab2-strength-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px;width:100%;overflow-wrap:break-word;">
       <div style="background:#F0FDF4;border-left:4px solid #16A34A;border-radius:8px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;min-width:0;">
         <h4 style="font-weight:700;color:#166534;margin-bottom:12px;font-size:14px;">핵심 강점 (이게 ${cd.company_name||'귀사'}의 무기입니다)</h4>
         ${(parsed.strengths.length?parsed.strengths:['강점 데이터가 준비되고 있습니다.']).map(s=>'<div style="font-size:14px;color:var(--gray-700);line-height:1.8;margin-bottom:8px;width:100%;overflow-wrap:break-word;word-break:keep-all;">✓ '+highlightText(s)+'</div>').join('')}
