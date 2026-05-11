@@ -122,12 +122,10 @@
     .sum-diagnosis-label{font-size:10px;font-weight:700;color:#a5b4fc;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;}
     .sum-diagnosis-text{font-size:14px;color:rgba(255,255,255,0.85);line-height:1.7;font-style:italic;}
     .sum-diagnosis-text .em{color:#FDE68A;font-weight:600;font-style:normal;}
-    .sum-summary-line{padding:28px 28px 0;font-size:24px;font-weight:800;color:white;line-height:1.2;}
-    .sum-top1{padding:20px 28px 0;}
-    .sum-top1-title{font-size:22px;font-weight:800;color:white;margin-bottom:12px;line-height:1.1;}
-    .sum-deadline-badge{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;background:rgba(248,113,113,0.16);border:1px solid rgba(248,113,113,0.35);border-radius:999px;color:#fecaca;font-size:13px;font-weight:700;}
-    .sum-top1-rows{display:none;}
-    .sum-point{display:none;}
+    .sum-summary-subtitle{padding:24px 28px 8px;font-size:14px;font-weight:500;color:rgba(255,255,255,0.6);}
+    .sum-summary-main{padding:0 28px 12px;font-size:20px;font-weight:700;color:white;line-height:1.3;}
+    .sum-summary-main strong{font-weight:800;color:white;}
+    .sum-summary-comment{padding:0 28px 18px;font-size:15px;color:rgba(255,255,255,0.8);font-style:italic;text-align:center;line-height:1.6;}
     .sum-cta{padding:0 28px 24px;display:flex;justify-content:center;}
     .btn-report-cta{background:linear-gradient(135deg,#4F46E5,#7C3AED);color:white;border:none;padding:16px 36px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(79,70,229,0.45);transition:all 0.2s;width:100%;justify-content:center;max-width:480px;}
     .btn-report-cta:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(79,70,229,0.55);}
@@ -723,11 +721,9 @@
           <div class="sum-loading-text">기업 맞춤 분석 중입니다...</div>
         </div>
         <div class="sum-body" id="sum-body" style="display:none">
-          <div class="sum-summary-line" id="sum-summary-line"></div>
-          <div class="sum-top1">
-            <div class="sum-top1-title" id="sum-top1-title"></div>
-            <div class="sum-deadline-badge" id="sum-deadline-badge"></div>
-          </div>
+          <div class="sum-summary-subtitle" id="sum-summary-subtitle">기업 진단 및 분석이 완료되었습니다.</div>
+          <div class="sum-summary-main" id="sum-summary-main"></div>
+          <div class="sum-summary-comment" id="sum-summary-comment"></div>
           <div class="sum-cta">
             <button class="btn-report-cta" onclick="goToReport()">📋 기업 진단 리포트 전체 보기 →</button>
           </div>
@@ -1082,21 +1078,27 @@ async function startSummaryGen(){
   sc.classList.add('show');
   document.getElementById('sum-loading').style.display='flex';
   document.getElementById('sum-body').style.display='none';
-  const today=new Date();
-  const top1=allMatches[0];
-  const top1Dl=top1?.program?.deadline?Math.ceil((new Date(top1.program.deadline)-today)/86400000):null;
+  const cd=companyData||{};
+  const companyName=cd.company_name||'귀사';
+  const industry=cd.industry||cd.biz_type||'기타';
+  const matchCount=allMatches.length;
 
-  document.getElementById('sum-summary-line').textContent=`✅ ${allMatches.length}개 지원사업이 매칭되었습니다`;
-  document.getElementById('sum-top1-title').textContent=top1?.program?.title||'매칭된 지원사업';
+  document.getElementById('sum-summary-subtitle').textContent='기업 진단 및 분석이 완료되었습니다.';
+  document.getElementById('sum-summary-main').innerHTML=`<strong>${companyName}</strong>은 ${industry} 분야에서 ${matchCount}개 지원사업이 매칭되었습니다.`;
 
-  const badge=document.getElementById('sum-deadline-badge');
-  if(top1Dl!=null){
-    badge.textContent=top1Dl>0?`D-${top1Dl}`:'D-day';
-    badge.style.display='inline-flex';
+  const normalizedIndustry=industry.toLowerCase();
+  let comment;
+  if(/제조|기술/.test(normalizedIndustry)){
+    comment=`"제조 특화 지원사업 ${matchCount}개가 확인되었습니다. 기술 고도화와 제품화에 집중해야 할 시점입니다."`;
+  } else if(/소상공인|유통|서비스/.test(normalizedIndustry)){
+    comment=`"바우처·판로 지원사업 ${matchCount}개가 매칭되었습니다. 매출 기반 확대에 집중해야 합니다."`;
+  } else if(/창업|스타트업/.test(normalizedIndustry)){
+    comment=`"창업 초기 특화 지원 ${matchCount}개가 확인되었습니다. 빠른 시장 검증에 집중해야 할 단계입니다."`;
   } else {
-    badge.style.display='none';
+    comment=`"귀사에 적합한 지원사업 ${matchCount}개가 확인되었습니다. 지금이 정부지원을 활용해야 할 시점입니다."`;
   }
 
+  document.getElementById('sum-summary-comment').textContent=comment;
   document.getElementById('sum-loading').style.display='none';
   document.getElementById('sum-body').style.display='block';
 }
