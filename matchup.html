@@ -346,13 +346,15 @@
       .sum-main { padding: 14px 16px; overflow: hidden; }
       .sum-cta { padding: 0 16px 16px; }
       .btn-report-cta { font-size: 14px; padding: 14px 20px; }
-      .tab2-summary-cards > div { white-space: nowrap; }
-      #t2 .chart-legend { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+      .tab2-summary-cards { grid-template-columns: repeat(2, 1fr) !important; }
+      .tab2-summary-cards > div { white-space: nowrap; font-size: 0.95rem; }
+      #t2 .chart-legend { display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
       #t2 .chart-legend .legend-item { flex-direction: row !important; align-items: center !important; gap: 8px !important; }
       #t2 .chart-section { overflow-x: auto !important; }
+      #t2 .chart-section canvas { width: 100% !important; max-width: none !important; }
       #t2 canvas#barChart { min-width: 640px !important; width: 100% !important; max-width: none !important; }
       #t2 .tab2-match-header { flex-wrap: wrap !important; }
-      #t2 .tab2-strength-grid { grid-template-columns: 1fr 1fr !important; }
+      #t2 .tab2-strength-grid { grid-template-columns: repeat(2, 1fr) !important; }
       #t2 .tab2-strength-grid > div { min-width: 0; }
       .rpt-tabs { gap: 0; }
       .rpt-tab { font-size: 12px; padding: 10px 12px; }
