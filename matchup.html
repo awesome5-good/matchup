@@ -186,7 +186,7 @@
     .rpt-generating{text-align:center;padding:80px 40px;}
     .rpt-gen-icons{font-size:40px;margin-bottom:20px;}
     .rpt-gen-title{font-size:20px;font-weight:800;color:var(--gray-900);margin-bottom:12px;}
-    .rpt-gen-sub{font-size:14px;color:var(--gray-500);line-height:1.8;max-width:420px;margin:0 auto;}
+    .rpt-gen-sub{font-size:14px;color:var(--gray-500);line-height:1.8;max-width:420px;margin:0 auto;word-break:keep-all;}
     .rpt-gen-sub strong{color:var(--primary);}
     .rpt-gen-bar{width:280px;height:12px;background:#E9E7FF;border-radius:999px;margin:24px auto 8px;overflow:hidden;}
     .rpt-gen-fill{width:0%;height:100%;background:linear-gradient(90deg,#534AB7,#7C3AED);border-radius:999px;transition:width 0.2s ease;}
@@ -485,7 +485,7 @@
     .judge-number{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#534AB7);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;}
     .judge-text{display:flex;flex-direction:column;gap:8px;}
     .judge-text strong{font-size:14px;font-weight:700;color:var(--gray-900);}
-    .judge-tip-box{background:linear-gradient(135deg,#F3E8FF,#E9D5FF);border:1px solid #D8B4FE;border-radius:14px;padding:12px;font-size:14px;color:#5B21B6;line-height:1.9;}
+    .judge-tip-box{background:linear-gradient(135deg,#F3E8FF,#E9D5FF);border:1px solid #D8B4FE;border-radius:14px;padding:12px;font-size:14px;color:#5B21B6;line-height:1.9;width:100%;box-sizing:border-box;}
     .checklist-panel{background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:20px;margin:24px 0;}
     .checklist-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;}
     .checklist-header h3{font-size:15px;font-weight:800;color:var(--gray-900);}
@@ -514,7 +514,8 @@
     .pipeline-step{background:#fff;border:1px solid var(--gray-200);border-radius:16px;padding:18px;}
     .pipeline-step h4{font-size:14px;font-weight:700;color:var(--gray-900);margin-bottom:10px;}
     .pipeline-step p{font-size:14px;color:var(--gray-600);line-height:1.8;}
-    @media(max-width: 768px){.feature-grid{grid-template-columns:1fr !important;}.feature-card{min-height:auto !important;padding:16px !important;}.strength-grid{grid-template-columns:1fr !important;}.usage-guide-grid{grid-template-columns:repeat(2,1fr) !important;}.metric-grid{grid-template-columns:1fr 1fr !important;}.metric-grid > div > div:nth-child(1){font-size:1.4rem !important;}.metric-grid > div > div:nth-child(2){font-size:0.7rem !important;white-space:normal !important;}.pipeline-grid{grid-template-columns:1fr !important;}.rpt-tabs{overflow-x:auto;white-space:nowrap;}.rpt-tab{font-size:13px !important;padding:10px 14px !important;}.chart-row{flex-direction:column;}.chart-section{overflow-x:auto;}.chart-box canvas{width:100% !important;max-width:340px;}.chart-legend{padding:10px 0 !important;}.judge-item{grid-template-columns:36px 1fr !important;}.tip-item{display:block !important;position:static !important;float:none !important;width:auto !important;}.tip-item::before{display:inline-block !important;}.timeline-body{font-size:14px !important;}.section-list{grid-template-columns:1fr !important;}.chart-section canvas#barChart{width:100% !important;max-width:100% !important;height:auto !important;}.timeline-dot{flex-shrink:0;}}
+    .usage-guide-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px;}
+    @media(max-width: 768px){.feature-grid{grid-template-columns:1fr !important;}.feature-card{min-height:auto !important;padding:16px !important;}.strength-grid{grid-template-columns:1fr !important;}.usage-guide-grid{grid-template-columns:1fr !important;}.metric-grid{grid-template-columns:1fr 1fr !important;}.metric-grid > div > div:nth-child(1){font-size:1.4rem !important;}.metric-grid > div > div:nth-child(2){font-size:0.7rem !important;white-space:normal !important;}.pipeline-grid{grid-template-columns:1fr !important;}.rpt-tabs{overflow-x:auto;white-space:nowrap;}.rpt-tab{font-size:13px !important;padding:10px 14px !important;}.chart-row{flex-direction:column;}.chart-section{overflow-x:auto;}.chart-box canvas{width:100% !important;max-width:340px;}.chart-legend{padding:10px 0 !important;}.judge-item{grid-template-columns:36px 1fr !important;}.tip-item{display:block !important;position:static !important;float:none !important;width:auto !important;}.tip-item::before{display:inline-block !important;}.timeline-body{font-size:14px !important;}.section-list{grid-template-columns:1fr !important;}.chart-section canvas#barChart{width:100% !important;max-width:100% !important;height:auto !important;}.timeline-dot{flex-shrink:0;}}
     @media(max-width: 992px){.section-list{grid-template-columns:1fr;}.metric-grid{grid-template-columns:1fr 1fr;}.feature-grid{grid-template-columns:1fr;}.timeline-stats{grid-template-columns:1fr;}.pipeline-grid{grid-template-columns:1fr;}}
 
     @media (max-width: 768px) {
@@ -1225,10 +1226,28 @@ async function generateFullReport(){
       <div class="rpt-gen-title">귀사만을 위한 맞춤 진단 리포트를<br>작성하고 있습니다</div>
       <div class="rpt-gen-sub">지금까지 <strong>500여 개 기업</strong>을 직접 만나며 쌓아온<br>컨설팅·멘토링 노하우와 누적 데이터,<br>그리고 입력해주신 귀사 정보를 종합하여 분석 중입니다.<br><br>잠시만 기다려 주세요 ☕</div>
       <div class="spinner"></div>
+      <div style="width:100%;max-width:340px;margin:20px auto 0;background:#e5e7eb;border-radius:3px;height:6px;">
+        <div id="rpt-progress-bar" style="height:6px;border-radius:3px;background:#6366f1;width:0%;transition:width 0.5s ease;"></div>
+      </div>
+      <div id="rpt-progress-pct" style="font-size:12px;color:var(--gray-500);margin-top:8px;">0%</div>
       <div class="rpt-gen-status" id="rpt-gen-status">리포트 생성 중...</div>
     </div>`;
 
   const statusEl=document.getElementById('rpt-gen-status');
+
+  let _rptPct=0;
+  if(window._rptProgressInterval)clearInterval(window._rptProgressInterval);
+  window._rptProgressInterval=setInterval(()=>{
+    if(_rptPct<90){
+      _rptPct+=10;
+      const bar=document.getElementById('rpt-progress-bar');
+      const pct=document.getElementById('rpt-progress-pct');
+      if(bar)bar.style.width=_rptPct+'%';
+      if(pct)pct.textContent=_rptPct+'%';
+    }else{
+      clearInterval(window._rptProgressInterval);
+    }
+  },1000);
 
   const top3=allMatches.slice(0,3).map((m,i)=>`${i+1}순위: ${m.program?.title||''} (${m.match_score}점) — ${m.match_reason||''}`).join('\n');
 
@@ -1451,23 +1470,23 @@ function renderFullReport(raw,cd,iD,rev){
     <div style="margin-bottom:32px;">
       <div style="background:#EFF6FF;border-left:4px solid #3B82F6;border-radius:12px;padding:20px;margin-bottom:16px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
         <div style="color:#3B82F6;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">[1] SITUATION</div>
-        <div style="font-size:17px;font-weight:700;margin-bottom:12px;color:var(--gray-900);">현재 ${cd.company_name||'귀사'}의 상황</div>
+        <div style="font-size:17px;font-weight:700;margin-bottom:12px;color:var(--gray-900);">1. 현재 ${cd.company_name||'귀사'}의 상황</div>
         <div style="font-size:15px;color:var(--gray-700);line-height:1.9;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(parsed.situation||'현재 상황을 분석하고 있습니다.')}</div>
       </div>
       <div style="background:#FFF7ED;border-left:4px solid #F97316;border-radius:12px;padding:20px;margin-bottom:16px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
         <div style="color:#F97316;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">[2] COMPLICATION</div>
-        <div style="font-size:17px;font-weight:700;margin-bottom:12px;color:var(--gray-900);">그러나 지금 이 문제가 있습니다</div>
+        <div style="font-size:17px;font-weight:700;margin-bottom:12px;color:var(--gray-900);">2. 그러나 지금 이 문제가 있습니다</div>
         <div style="font-size:15px;color:var(--gray-700);line-height:1.9;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(parsed.complication||'잠재적 문제를 진단하고 있습니다.')}</div>
       </div>
       <div style="background:#F0FDF4;border-left:4px solid #22C55E;border-radius:12px;padding:20px;margin-bottom:16px;width:100%;overflow-wrap:break-word;word-break:keep-all;">
         <div style="color:#16A34A;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:8px;">[3] RESOLUTION</div>
-        <div style="font-size:17px;font-weight:700;margin-bottom:12px;color:var(--gray-900);">지금 당장 이렇게 하십시오</div>
+        <div style="font-size:17px;font-weight:700;margin-bottom:12px;color:var(--gray-900);">3. 지금 당장 이렇게 하십시오</div>
         <div style="font-size:15px;color:var(--gray-700);line-height:1.9;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(parsed.resolution||'구체적 행동 방안을 제시합니다.')}</div>
       </div>
     </div>
     <div>
-      <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);">지금 바로 확인하세요</h3>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;">
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);">이 리포트, 이렇게 활용하세요</h3>
+      <div class="usage-guide-grid">
         <div style="background:#F8F7FF;border:1px solid #E9D5FF;border-radius:12px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;min-width:0;">
           <div style="font-size:28px;line-height:1;margin-bottom:8px;">①</div>
           <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">컨설턴트 진단</div>
@@ -1528,7 +1547,7 @@ function renderFullReport(raw,cd,iD,rev){
       </div>
     </div>
     <div class="chart-section">
-      <div class="chart-section-title">[1] ${cd.company_name||'귀사'} 준비도 진단</div>
+      <div class="chart-section-title">1. ${cd.company_name||'귀사'} 준비도 진단</div>
       <div class="chart-section-sub">6개 항목별 현재 준비 수준 — 60점 이상이 심사 통과 기준입니다</div>
       <div class="chart-row">
         <div class="chart-box">
@@ -1538,11 +1557,11 @@ function renderFullReport(raw,cd,iD,rev){
       </div>
     </div>
     <div class="chart-section">
-      <div class="chart-section-title">[2] 동업종 평균 대비 ${cd.company_name||'귀사'} 현황</div>
+      <div class="chart-section-title">2. 동업종 평균 대비 ${cd.company_name||'귀사'} 현황</div>
       <div class="chart-section-sub">같은 업종 소상공인 평균과 비교한 ${cd.company_name||'귀사'}의 위치입니다</div>
       <canvas id="barChart" width="700" height="220" style="width:100%;overflow-wrap:break-word;"></canvas>
     </div>
-    <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">[3] 매칭된 지원사업</h3>
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">3. 매칭된 지원사업</h3>
     <div style="width:100%;overflow-wrap:break-word;word-break:keep-all;">${matchItems}</div>
     <div class="tab2-strength-grid">
       <div style="background:#F0FDF4;border-left:4px solid #16A34A;border-radius:8px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;min-width:0;">
@@ -1587,15 +1606,15 @@ function renderFullReport(raw,cd,iD,rev){
         </div>
       </div>
     </div>
-    <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">[1] 이 사업의 핵심 특징</h3>
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">1. 이 사업의 핵심 특징</h3>
     <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:32px;width:100%;overflow-wrap:break-word;word-break:keep-all;">${featureHtml}</div>
-    <h3 style="font-size:16px;font-weight:700;margin-bottom:4px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">[2] 핵심 심사 포인트 3가지</h3>
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:4px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">2. 핵심 심사 포인트 3가지</h3>
     <p style="font-size:12px;color:var(--gray-600);margin-bottom:16px;">심사위원이 실제로 집중해서 보는 항목입니다</p>
     <div style="margin-bottom:32px;width:100%;overflow-wrap:break-word;word-break:keep-all;">${judgeHtml}</div>
-    <h3 style="font-size:16px;font-weight:700;margin-bottom:4px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">[3] 신청 전 준비 체크리스트</h3>
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:4px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">3. 신청 전 준비 체크리스트</h3>
     <p style="font-size:12px;color:var(--gray-600);margin-bottom:16px;">D-n 기준·지금 당장 준비 가능한 순서로 정렬</p>
     <div style="margin-bottom:32px;background:white;border:1px solid var(--gray-200);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:10px;width:100%;overflow-wrap:break-word;word-break:keep-all;">${checklistHtml}</div>
-    <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">[4] 컨설턴트 실전 팁 (합격률을 높이는 3가지)</h3>
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">4. 컨설턴트 실전 팁 (합격률을 높이는 3가지)</h3>
     <div style="width:100%;overflow-wrap:break-word;word-break:keep-all;">${tipsHtml}</div>
   `;
   
@@ -1653,6 +1672,7 @@ function renderFullReport(raw,cd,iD,rev){
     <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:16px;width:100%;overflow-wrap:break-word;word-break:keep-all;">${pipelineHtml}</div>
   `;
 
+  if(window._rptProgressInterval){clearInterval(window._rptProgressInterval);window._rptProgressInterval=null;}
   document.getElementById('report-area').innerHTML=`
     <div class="rpt-tabs">
       <div class="rpt-tab active" onclick="switchTab('t1',this)">① 컨설턴트 진단</div>
