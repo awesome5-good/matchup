@@ -320,6 +320,9 @@
       width: 100%;
       overflow-wrap: break-word;
     }
+    .tab2-summary-val { font-size: 18px; font-weight: 700; margin-bottom: 4px; white-space: nowrap; }
+    .radar-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; overflow-wrap: break-word; text-align: left; }
+    .bar-chart-wrap { overflow-x: auto; width: 100%; }
 
     .mobile-login-banner{display:none;background:linear-gradient(135deg,#4F46E5,#7C3AED);padding:12px 16px;flex-direction:row;align-items:center;justify-content:space-between;gap:10px;}
     .mobile-login-banner .banner-text{font-size:13px;font-weight:500;color:rgba(255,255,255,0.9);flex:1;line-height:1.4;}
@@ -369,15 +372,15 @@
       .sum-cta { padding: 0 16px 12px; }
       .btn-report-cta { font-size: 14px; padding: 14px 20px; width: 100%; }
       .tab2-summary-cards { grid-template-columns: repeat(2, 1fr) !important; }
-      .tab2-summary-cards > div { white-space: nowrap; font-size: 0.95rem; }
-      #t2 .chart-legend { display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
-      #t2 .chart-legend .legend-item { flex-direction: row !important; align-items: center !important; gap: 8px !important; }
+      .tab2-summary-cards > div { white-space: nowrap; }
+      .tab2-summary-val { font-size: 16px !important; }
+      .radar-legend { grid-template-columns: 1fr !important; }
       #t2 .chart-section { overflow-x: auto !important; }
       #t2 .chart-section canvas { width: 100% !important; max-width: none !important; }
-      #t2 canvas#barChart { min-width: 640px !important; width: 100% !important; max-width: none !important; }
+      #t2 canvas#barChart { min-width: 300px !important; width: 100% !important; max-width: none !important; }
       #t2 .tab2-match-header { flex-wrap: wrap !important; }
-      #t2 .tab2-strength-grid { grid-template-columns: repeat(2, 1fr) !important; }
-      #t2 .tab2-strength-grid > div { min-width: 0; }
+      .tab2-strength-grid { grid-template-columns: 1fr !important; }
+      .tab2-strength-grid > div { min-width: 0; width: 100%; }
       .rpt-tabs { gap: 0; }
       .rpt-tab { font-size: 12px; padding: 10px 12px; }
       .rpt-card { padding: 18px; }
@@ -1531,19 +1534,19 @@ function renderFullReport(raw,cd,iD,rev){
     <div style="text-align:right;margin-bottom:20px;"><div style="display:inline-block;background:#F0F9FF;color:#0369A1;padding:6px 12px;border-radius:4px;font-size:12px;font-weight:600;white-space:nowrap;">생성일 ${genDate}</div></div>
     <div class="tab2-summary-cards">
       <div style="background:#F8F7FF;border:1px solid #E9D5FF;border-radius:12px;padding:16px;text-align:center;width:100%;overflow-wrap:break-word;word-break:keep-all;">
-        <div style="font-size:18px;font-weight:700;color:#7C3AED;margin-bottom:4px;white-space:nowrap;"><span style="white-space:nowrap;">${metricScore}</span>점</div>
-        <div style="font-size:11px;color:var(--gray-600);white-space:nowrap;">종합 매칭점수</div>
+        <div class="tab2-summary-val" style="color:#7C3AED;">${metricScore}점</div>
+        <div style="font-size:11px;color:var(--gray-600);white-space:nowrap;">종합매칭점수</div>
       </div>
       <div style="background:#F0FDF4;border:1px solid #DCFCE7;border-radius:12px;padding:16px;text-align:center;width:100%;overflow-wrap:break-word;word-break:keep-all;">
-        <div style="font-size:18px;font-weight:700;color:#16A34A;margin-bottom:4px;white-space:nowrap;"><span style="white-space:nowrap;">${metricPrograms}</span>개</div>
-        <div style="font-size:11px;color:var(--gray-600);white-space:nowrap;">적합 지원사업수</div>
+        <div class="tab2-summary-val" style="color:#16A34A;">${metricPrograms}개</div>
+        <div style="font-size:11px;color:var(--gray-600);white-space:nowrap;">적합지원사업수</div>
       </div>
       <div style="background:#FEF3C7;border:1px solid #FDE68A;border-radius:12px;padding:16px;text-align:center;width:100%;overflow-wrap:break-word;word-break:keep-all;">
-        <div style="font-size:18px;font-weight:700;color:#D97706;margin-bottom:4px;white-space:nowrap;">${metricDeadline<999?'<span style="white-space:nowrap;">D-'+metricDeadline+'</span>':'-'}</div>
+        <div class="tab2-summary-val" style="color:#D97706;">${metricDeadline<999?'D-'+metricDeadline:'-'}</div>
         <div style="font-size:11px;color:var(--gray-600);white-space:nowrap;">가장 빠른 마감</div>
       </div>
       <div style="background:#FCE7F3;border:1px solid #FBCFE8;border-radius:12px;padding:16px;text-align:center;width:100%;overflow-wrap:break-word;word-break:keep-all;">
-        <div style="font-size:18px;font-weight:700;color:#BE185D;margin-bottom:4px;white-space:nowrap;">${amountLabel}</div>
+        <div class="tab2-summary-val" style="color:#BE185D;">${amountLabel}</div>
         <div style="font-size:11px;color:var(--gray-600);white-space:nowrap;">추천 사업 총액</div>
       </div>
     </div>
@@ -1554,13 +1557,13 @@ function renderFullReport(raw,cd,iD,rev){
         <div class="chart-box">
           <canvas id="radarChart" width="340" height="340"></canvas>
         </div>
-        <div class="chart-legend" id="radar-legend" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;overflow-wrap:break-word;"></div>
+        <div class="radar-legend" id="radar-legend"></div>
       </div>
     </div>
     <div class="chart-section">
       <div class="chart-section-title">2. 동업종 평균 대비 ${cd.company_name||'귀사'} 현황</div>
       <div class="chart-section-sub">같은 업종 소상공인 평균과 비교한 ${cd.company_name||'귀사'}의 위치입니다</div>
-      <canvas id="barChart" width="700" height="220" style="width:100%;overflow-wrap:break-word;"></canvas>
+      <div class="bar-chart-wrap"><canvas id="barChart" width="700" height="220" style="width:100%;min-width:300px;"></canvas></div>
     </div>
     <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">3. 매칭된 지원사업</h3>
     <div style="width:100%;overflow-wrap:break-word;word-break:keep-all;">${matchItems}</div>
@@ -1809,8 +1812,8 @@ function drawBarChart(cd, iD) {
   
   const companyName = cd.company_name || '귀사';
   
-  // 동적 캔버스 크기 설정
-  const container = canvas.parentElement;
+  // 동적 캔버스 크기 설정 (bar-chart-wrap → chart-section 순으로 올라감)
+  const container = canvas.parentElement?.parentElement || canvas.parentElement;
   const containerWidth = container.clientWidth || 400;
   canvas.width = Math.min(containerWidth - 20, 600);
   canvas.height = 320;
