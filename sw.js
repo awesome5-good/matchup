@@ -1,4 +1,4 @@
-const CACHE_NAME = 'matchup-v1';
+const CACHE_NAME = 'matchup-v2';
 const urlsToCache = [
   '/matchup.html',
   '/login.html',
