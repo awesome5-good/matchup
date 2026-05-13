@@ -113,18 +113,6 @@
     .sum-loading-text{color:rgba(255,255,255,0.7);font-size:15px;font-weight:500;}
     .sum-body{background:linear-gradient(135deg,#0F0E17 0%,#1a1740 60%,#0d1a2e 100%);border-radius:16px;overflow:hidden;position:relative;}
     .sum-body::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;background:radial-gradient(circle,rgba(79,70,229,0.2),transparent 70%);border-radius:50%;pointer-events:none;}
-    .sum-topbar{padding:20px 28px 16px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-    .sum-badge{background:rgba(79,70,229,0.35);border:1px solid rgba(99,102,241,0.5);color:#a5b4fc;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;}
-    .sum-company{font-size:15px;font-weight:700;color:white;}
-    .sum-biztag{font-size:11px;color:rgba(255,255,255,0.4);padding:3px 8px;background:rgba(255,255,255,0.06);border-radius:4px;}
-    .sum-main{padding:20px 28px;}
-    .sum-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
-    .sum-pill{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.75);font-size:12px;font-weight:500;padding:5px 12px;border-radius:20px;}
-    .sum-pill.hi{background:rgba(79,70,229,0.3);border-color:rgba(99,102,241,0.5);color:#c7d2fe;}
-    .sum-diagnosis{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;margin-bottom:16px;}
-    .sum-diagnosis-label{font-size:10px;font-weight:700;color:#a5b4fc;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;}
-    .sum-diagnosis-text{font-size:14px;color:rgba(255,255,255,0.85);line-height:1.7;font-style:italic;}
-    .sum-diagnosis-text .em{color:#FDE68A;font-weight:600;font-style:normal;}
     .sum-summary-subtitle{padding:24px 28px 8px;font-size:14px;font-weight:500;color:rgba(255,255,255,0.6);}
     .sum-summary-main{padding:0 28px 12px;font-size:20px;font-weight:700;color:white;line-height:1.3;}
     .sum-summary-main strong{font-weight:800;color:white;}
@@ -382,8 +370,6 @@
       .filter-bar { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
       .filter-bar::-webkit-scrollbar { display: none; }
       .sort-select { min-width: 90px; font-size: 11px; }
-      .sum-topbar { flex-wrap: wrap; gap: 6px; padding: 14px 16px 12px; }
-      .sum-main { padding: 14px 16px; overflow: hidden; }
       .sum-loading-wrap { padding: 16px 12px; gap: 8px; }
       .sum-summary-subtitle { padding: 12px 16px 6px; font-size: 12px; word-break: keep-all; }
       .sum-summary-main { padding: 0 16px 8px; font-size: 16px; word-break: keep-all; }
@@ -420,6 +406,7 @@
       .expert-quote-card { padding: 20px; }
       .expert-quote-mark { font-size: 60px; top: 8px; left: 16px; }
       .expert-text { font-size: 14px; }
+      .rpt-card, .rpt-card-sub, .callout-text, .str-body, .roadmap-body, .expert-text, .expert-action-text, .strategy-body, .kpi-desc, .judge-desc, .consultant-intro p { word-break: keep-all; }
     }
 
     .mobile-tabbar {
@@ -722,6 +709,10 @@
             <div class="form-group" style="grid-column:1/-1">
               <label>기업 소개 <span class="req">*</span><span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">주요 사업·제품·서비스를 자유롭게 소개해주세요&#10;AI 매칭 정확도에 가장 큰 영향을 줍니다</span></span></label>
               <textarea class="form-control" id="description" placeholder="기업의 주요 사업, 제품, 서비스, 기술을 간략히 소개해주세요. 상세할수록 AI 매칭 정확도가 높아집니다." rows="4"></textarea>
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>컨설팅 받고 싶은 내용</label>
+              <textarea class="form-control" id="consulting-needs" placeholder="예) 정부지원사업 신청, 마케팅 전략, 자금조달 방법 등" rows="3"></textarea>
             </div>
             <div class="form-group" style="grid-column:1/-1">
               <label>지금 가장 필요한 것 <span class="req">*</span><span class="field-tooltip"><span class="tip-icon">?</span><span class="tip-box">복수 선택 가능 — 선택한 분야 위주로 매칭합니다</span></span></label>
@@ -1037,6 +1028,7 @@ async function submitAndMatch(){
     annual_revenue:getRaw('annual_revenue'),
     homepage:document.getElementById('homepage').value.trim(),
     description:desc,needs:selNeeds,
+    consulting_needs:document.getElementById('consulting-needs').value.trim(),
   };
   companyData=cd;
   const {data:{session}}=await db.auth.getSession();
@@ -1247,7 +1239,7 @@ async function generateFullReport(){
     <div class="rpt-generating">
       <div class="rpt-gen-icons">🧑‍💼📋</div>
       <div class="rpt-gen-title">귀사만을 위한 맞춤 진단 리포트를<br>작성하고 있습니다</div>
-      <div class="rpt-gen-sub">지금까지 <strong>500여 개 기업</strong>을 직접 만나며 쌓아온<br>컨설팅·멘토링 노하우와 누적 데이터,<br>그리고 입력해주신 귀사 정보를 종합하여 분석 중입니다.<br><br>잠시만 기다려 주세요 ☕</div>
+      <div class="rpt-gen-sub" style="word-break:keep-all;white-space:normal;">지금까지 <strong>500여 개 기업</strong>을 직접 만나며 쌓아온 컨설팅·멘토링 노하우와 누적 데이터, 그리고 입력해주신 귀사 정보를 종합하여 분석 중입니다.<br><br>잠시만 기다려 주세요 ☕</div>
       <div class="spinner"></div>
       <div style="width:100%;max-width:340px;margin:20px auto 0;background:#e5e7eb;border-radius:3px;height:6px;">
         <div id="rpt-progress-bar" style="height:6px;border-radius:3px;background:#6366f1;width:0%;transition:width 0.5s ease;"></div>
@@ -1296,6 +1288,7 @@ async function generateFullReport(){
 연매출: ${rev>0?(rev/10000).toFixed(0)+'만원':'미입력'}
 현재 필요한 것: ${(cd.needs||[]).join(', ')||'미입력'}
 기업 소개: ${cd.description||'미입력'}
+컨설팅 니즈: ${cd.consulting_needs||'미입력'}
 
 매칭 Top 3 사업:
 ${top3}
@@ -1583,6 +1576,7 @@ function renderFullReport(raw,cd,iD,rev){
     </div>
     <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">3. 매칭된 지원사업</h3>
     <div style="width:100%;overflow-wrap:break-word;word-break:keep-all;">${matchItems}</div>
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;margin-top:8px;color:var(--gray-900);width:100%;overflow-wrap:break-word;word-break:keep-all;">4. 핵심 강점 &amp; 보완 영역</h3>
     <div class="tab2-strength-grid">
       <div style="background:#F0FDF4;border-left:4px solid #16A34A;border-radius:8px;padding:20px;width:100%;overflow-wrap:break-word;word-break:keep-all;min-width:0;">
         <h4 style="font-weight:700;color:#166534;margin-bottom:12px;font-size:14px;">핵심 강점 (이게 ${cd.company_name||'귀사'}의 무기입니다)</h4>
@@ -1599,7 +1593,7 @@ function renderFullReport(raw,cd,iD,rev){
   
    
 
-  const tipsHtml=(parsed.practicalTips.length?parsed.practicalTips:['실전 팁 준비 중']).map((t,i)=>`<div style="background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border:1px solid #F59E0B;border-radius:12px;padding:16px 20px;margin-bottom:12px;display:block;width:100%;word-break:keep-all;overflow-wrap:break-word;float:none;position:static;"><div style="font-size:13px;font-weight:700;color:#92400E;margin-bottom:10px;display:flex;align-items:center;gap:6px;">✨ TIP ${i+1}</div><div style="font-size:13px;color:#78350F;line-height:1.8;width:100%;overflow-wrap:break-word;word-break:keep-all;">${highlightText(t)}</div></div>`).join('');
+  const tipsHtml=(parsed.practicalTips.length?parsed.practicalTips:['실전 팁 준비 중']).map((t,i)=>`<div style="background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border:1px solid #F59E0B;border-radius:12px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:flex-start;gap:12px;width:100%;word-break:keep-all;overflow-wrap:break-word;box-sizing:border-box;"><div style="flex:1;word-break:keep-all;overflow-wrap:break-word;min-width:0;"><div style="font-size:11px;font-weight:700;color:#92400E;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.04em;">✨ 컨설턴트 실전 팁</div><div style="font-size:13px;color:#78350F;line-height:1.8;">${highlightText(t)}</div></div><div style="flex-shrink:0;margin-left:auto;background:#D97706;color:white;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:800;white-space:nowrap;">TIP ${i+1}</div></div>`).join('');
 
   const featureHtml=(parsed.features.length?parsed.features:['특징 1','특징 2','특징 3']).map((f,i)=>`<div class="feature-card-item"><h4 style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:10px;">${i+1}. 특징 ${i+1}</h4><p style="font-size:14px;color:var(--gray-700);line-height:1.9;width:100%;word-break:keep-all;overflow-wrap:break-word;">${highlightText(f)}</p></div>`).join('');
   
