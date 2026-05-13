@@ -14,7 +14,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root{--primary:#4F46E5;--primary-light:#EEF2FF;--primary-dark:#3730A3;--success:#10B981;--warning:#F59E0B;--danger:#EF4444;--gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;--gray-300:#D1D5DB;--gray-400:#9CA3AF;--gray-500:#6B7280;--gray-600:#4B5563;--gray-700:#374151;--gray-900:#111827;--sidebar-width:240px;}
-    * { box-sizing: border-box; max-width: 100%; }
+    * { box-sizing: border-box; }
+    img, video, canvas, svg { max-width: 100%; }
     html, body { overflow-x: hidden; width: 100%; max-width: 100%; box-sizing: border-box; touch-action: pan-y; }
     body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--gray-50);color:var(--gray-900);display:flex;min-height:100vh;overflow-x:hidden;width:100%;max-width:100%;}
     .sidebar{width:var(--sidebar-width);background:#fff;border-right:1px solid var(--gray-200);display:flex;flex-direction:column;position:fixed;height:100vh;z-index:100;}
@@ -346,7 +347,7 @@
       .search-box { display: none; }
       .topbar-actions { display: none; }
       .breadcrumb { font-size: 13px; }
-      .content { padding: 12px 0 80px; overflow-x: hidden; width: 100%; max-width: 100%; box-sizing: border-box; }
+      .content { padding: 12px 12px 80px; overflow-x: hidden; width: 100%; max-width: 100%; box-sizing: border-box; }
       .form-grid { grid-template-columns: 1fr; gap: 14px; }
       .form-group[style*="grid-column:1/-1"] { grid-column: 1; }
       .steps { gap: 0; margin-bottom: 20px; }
@@ -394,11 +395,9 @@
       .judge-grid .judge-item { flex-direction: column; gap: 8px; }
       .loading { padding: 40px 20px; }
       .rpt-generating { padding: 40px 20px; }
-      .onboarding-header { padding: 0 16px; }
       .onboarding-header h1 { font-size: 20px; }
       .onboarding-header p { font-size: 13px; }
-      .required-notice { padding: 0 16px; }
-      .form-card { padding: 18px 16px; }
+      .form-card { padding: 18px 12px; }
       .form-footer { flex-direction: column; gap: 10px; }
       .form-footer button { width: 100%; justify-content: center; }
       .need-chips { gap: 6px; }
