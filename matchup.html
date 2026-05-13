@@ -2030,8 +2030,10 @@ let startY = 0;
 document.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, { passive: false });
 document.addEventListener('touchmove', e => {
   const y = e.touches[0].clientY;
-  if (y > startY && window.scrollY === 0) { e.preventDefault(); }
-}, { passive: false });
+  if (y > startY && window.scrollY === 0) {
+    e.preventDefault();
+  }
+}, { passive: true });
 </script>
 <script>
 if ('serviceWorker' in navigator) {
