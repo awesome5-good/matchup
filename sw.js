@@ -1,5 +1,5 @@
-const CACHE_NAME = 'matchup-v3';
-const urlsToCache = ['/matchup.html', '/login.html', '/landing.html', '/manifest.json'];
+const CACHE_NAME = 'matchup-v4';
+const urlsToCache = ['/matchup.html', '/app.html', '/login.html', '/landing.html', '/manifest.json'];
 
 self.addEventListener('install', e => {
   self.skipWaiting();
