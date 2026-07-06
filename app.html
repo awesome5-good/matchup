@@ -443,7 +443,7 @@
   </div>
   <div class="contact-btns">
     <a class="btn-kakao" id="btn-kakao" target="_blank" rel="noopener">💬 카카오톡으로 상담 예약</a>
-    <a class="btn-tel" id="btn-tel">📞 전화 상담</a>
+    <a class="btn-tel hidden" id="btn-tel">📞 전화 상담</a>
   </div>
 </section>
 
@@ -498,9 +498,9 @@
 /* ═══════════ 상수 ═══════════ */
 const SUPABASE_URL='https://wykupodtnbcrebgbzyxr.supabase.co';
 const SUPABASE_KEY='sb_publishable_THekjy2-GusHmZ7FrjX9UQ_gm41EUr2';
-const KAKAO_CHANNEL_URL='https://pf.kakao.com/_matchup'; // TODO: 실제 카카오톡 채널 URL로 교체
-const PHONE_NUMBER='010-0000-0000'; // TODO: 실제 상담 전화번호로 교체
-const CONSULTANT={name:'오성민 대표 컨설턴트',career:'정부지원사업 컨설팅 경력 12년',count:'컨설팅 500+건'};
+const KAKAO_CHANNEL_URL='http://pf.kakao.com/_hRqxon';
+const PHONE_NUMBER='010-0000-0000'; // TODO: 전화 상담 재개 시 실제 번호로 교체
+const CONSULTANT={name:'오동훈 박사 · 경영학박사 · 브라보경영컨설팅 대표',career:'정부지원사업 컨설팅 경력 12년',count:'컨설팅 500+건'};
 const {createClient}=supabase;
 const db=createClient(SUPABASE_URL,SUPABASE_KEY);
 
