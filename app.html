@@ -203,7 +203,8 @@
     .plan-feat{font-size:15px;color:var(--gray-600);display:flex;gap:8px;align-items:flex-start;}
     .plan-feat-check{color:var(--brand);font-weight:800;flex-shrink:0;}
     .trust-block{background:var(--gray-50);border-radius:16px;padding:20px;margin-bottom:20px;display:flex;align-items:center;gap:16px;}
-    .trust-avatar{width:56px;height:56px;border-radius:50%;background:var(--brand);color:#fff;font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .trust-avatar{width:56px;height:56px;border-radius:50%;background:var(--brand);color:#fff;font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+    #consultant-avatar img{width:56px;height:56px;border-radius:50%;object-fit:cover;display:block;}
     .trust-name{font-size:17px;font-weight:800;margin-bottom:2px;}
     .trust-career{font-size:14px;color:var(--gray-500);}
     .trust-count{display:inline-block;margin-top:6px;background:var(--brand-50);color:var(--brand);font-size:13px;font-weight:700;padding:3px 10px;border-radius:10px;}
@@ -468,8 +469,9 @@
     </div>
   </div>
   <div class="trust-block">
-    <!-- TODO: 컨설턴트 사진 URL 준비 시 consultant-avatar를 <img src="URL" alt="오동훈 박사">로 교체 -->
-    <div class="trust-avatar" id="consultant-avatar"></div>
+    <div class="trust-avatar" id="consultant-avatar">
+      <img src="/images/consultant.jpg" alt="오동훈 박사" width="56" height="56" onerror="this.remove();this.parentElement.textContent='오';">
+    </div>
     <div>
       <div class="trust-name" id="trust-name"></div>
       <div class="trust-career" id="trust-career"></div>
@@ -1454,7 +1456,6 @@ $('btn-clear').addEventListener('click',()=>{
 $('btn-go-match').addEventListener('click',()=>navTab('match'));
 $('btn-kakao').href=KAKAO_CHANNEL_URL;
 $('btn-tel').href='tel:'+PHONE_NUMBER.replace(/-/g,'');
-$('consultant-avatar').textContent=CONSULTANT.name.charAt(0);
 $('trust-name').textContent=CONSULTANT.name;
 $('trust-career').textContent=CONSULTANT.career;
 $('trust-count').textContent=CONSULTANT.count;
