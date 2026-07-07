@@ -123,13 +123,15 @@
     /* ── 결과 화면 ── */
     .result-head{padding:24px 0 4px;}
     .base-date{font-size:13px;color:var(--gray-400);margin-bottom:20px;}
-    .match-card{position:relative;width:100%;text-align:left;background:#fff;border:1.5px solid var(--gray-200);border-radius:16px;padding:20px;margin-bottom:12px;transition:border-color 0.15s;}
+    #results-list{display:flex;flex-direction:column;gap:12px;}
+    .match-card{position:relative;width:100%;text-align:left;background:#fff;border:0.5px solid var(--gray-200);border-radius:16px;padding:16px;transition:border-color 0.15s;box-shadow:none;}
     .match-card.rank1{border:2px solid var(--brand);}
-    .rank1-badge{position:absolute;top:-11px;left:16px;background:var(--brand);color:#fff;font-size:12px;font-weight:800;padding:3px 10px;border-radius:10px;}
-    .match-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;}
-    .match-score{flex-shrink:0;background:var(--brand-50);color:var(--brand);font-size:14px;font-weight:800;padding:5px 10px;border-radius:10px;white-space:nowrap;}
+    .rank1-badge{display:inline-block;background:var(--brand);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;margin-bottom:8px;}
+    .match-score{display:inline-block;background:var(--brand-50);color:var(--brand);font-size:12px;font-weight:700;padding:3px 8px;border-radius:20px;line-height:1.2;}
     .match-score.mid{background:var(--gray-100);color:var(--gray-600);}
-    .match-title{font-size:17px;font-weight:700;line-height:1.4;flex:1;}
+    .match-title{font-size:16px;font-weight:700;line-height:1.4;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .match-sub{font-size:13px;color:var(--gray-400);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .match-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;}
     .match-org{font-size:14px;color:var(--gray-400);margin-bottom:10px;}
     .match-reason{font-size:15px;color:var(--gray-600);margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
     .match-reason-check{color:var(--brand);font-weight:700;}
@@ -577,6 +579,20 @@ let guideCache={};
 /* ═══════════ 유틸 ═══════════ */
 function $(id){return document.getElementById(id);}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function decodeEntities(s){
+  if(s==null||s==='')return '';
+  const el=document.createElement('textarea');
+  el.innerHTML=String(s);
+  return el.value;
+}
+function plain(s){return decodeEntities(s==null?'':s);}
+function txt(s){return esc(plain(s));}
+function fmtCardSub(p){
+  const org=plain(p.organization||'');
+  const dl=dday(p.deadline);
+  if(org&&dl!=null)return `${org} · D-${dl}`;
+  return org||'';
+}
 function showToast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 function numOrNull(v){if(v==null||v==='')return null;const n=parseInt(String(v).replace(/[^0-9]/g,''),10);return isNaN(n)?null:n;}
 function fmtAmount(n){if(!n)return null;return n>=100000000?`최대 ${(n/100000000).toFixed(1).replace(/\.0$/,'')}억원`:`최대 ${Math.round(n/10000).toLocaleString()}만원`;}
@@ -1002,21 +1018,11 @@ function renderResults(){
   $('result-sub').textContent='적합도가 높은 순서로 보여드려요';
   $('results-list').innerHTML=allMatches.map((m,i)=>{
     const p=m.program||{};
-    const dl=dday(p.deadline);
-    const amt=fmtAmount(p.max_support_amount);
     return `<button class="match-card ${i===0?'rank1':''}" data-idx="${i}">
       ${i===0?'<span class="rank1-badge">가장 잘 맞아요</span>':''}
-      <div class="match-top">
-        <span class="match-score ${m.match_score>=85?'':'mid'}">${m.match_score}점</span>
-        <span class="match-title">${esc(p.title)}</span>
-      </div>
-      <div class="match-org">${esc(p.organization||'')}</div>
-      <div class="match-reason"><span class="match-reason-check">✓</span> ${esc(m.match_reason||p.eligibility||'지원 조건 확인 필요')}</div>
-      <div class="match-meta">
-        ${dl?`<span class="meta-pill dday">D-${dl}</span>`:'<span class="meta-pill">상시·마감정보 없음</span>'}
-        ${amt?`<span class="meta-pill amount">${amt}</span>`:''}
-        ${p.category?`<span class="meta-pill">${esc(p.category)}</span>`:''}
-      </div>
+      <span class="match-score ${m.match_score>=85?'':'mid'}">${m.match_score}점</span>
+      <div class="match-title">${txt(p.title)}</div>
+      <div class="match-sub">${txt(fmtCardSub(p))}</div>
     </button>`;
   }).join('');
   document.querySelectorAll('.match-card').forEach(c=>c.addEventListener('click',()=>openDetail(parseInt(c.dataset.idx,10))));
@@ -1028,16 +1034,16 @@ function openDetail(idx){
   if(!m)return;
   currentDetail=m;
   const p=m.program||{};
-  $('d-title').textContent=p.title||'';
-  $('d-org').textContent=p.organization||'';
+  $('d-title').textContent=plain(p.title||'');
+  $('d-org').textContent=plain(p.organization||'');
   const dl=dday(p.deadline);
   const amt=fmtAmount(p.max_support_amount);
   $('d-meta').innerHTML=`
     <span class="meta-pill amount">적합도 ${m.match_score}점</span>
     ${dl?`<span class="meta-pill dday">마감 D-${dl}</span>`:''}
-    ${amt?`<span class="meta-pill">${amt}</span>`:''}
-    ${p.category?`<span class="meta-pill">${esc(p.category)}</span>`:''}`;
-  $('d-elig').innerHTML=`<strong>지원 자격</strong><br>${esc(p.eligibility||'공고문에서 확인이 필요해요')}<br><br><strong>매칭 이유</strong><br>${esc(m.match_reason||'-')}`;
+    ${amt?`<span class="meta-pill">${txt(amt)}</span>`:''}
+    ${p.category?`<span class="meta-pill">${txt(p.category)}</span>`:''}`;
+  $('d-elig').innerHTML=`<strong>지원 자격</strong><br>${txt(p.eligibility||'공고문에서 확인이 필요해요')}<br><br><strong>매칭 이유</strong><br>${txt(m.match_reason||'-')}`;
   const link=$('btn-d-link');
   if(p.source_url&&p.source_url!=='#'){link.href=p.source_url;link.classList.remove('hidden');}
   else link.classList.add('hidden');
