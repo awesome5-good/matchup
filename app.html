@@ -1544,6 +1544,19 @@ updateBadges();
 renderHome();
 show('scr-home');
 
+db.auth.onAuthStateChange(async(event,session)=>{
+  if(!session||!(event==='SIGNED_IN'||event==='INITIAL_SESSION'))return;
+  try{
+    const {data:saved}=await db.from('saved_programs').select('*').eq('user_id',session.user.id).order('created_at',{ascending:false}).limit(50);
+    if(saved&&saved.length>0){
+      const ids=saved.map(s=>s.program_id);
+      const {data:programs}=await db.from('programs').select('*').in('id',ids);
+      savedList=saved.map(s=>({match_score:s.match_score,match_reason:s.match_reason,program:programs?.find(p=>p.id===s.program_id)||{},saved_at:s.created_at}));
+    }else savedList=[];
+    persistSaved();
+  }catch(e){updateBadges();}
+});
+
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/sw.js');
 }
