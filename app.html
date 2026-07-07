@@ -220,7 +220,7 @@
     .profile-avatar{width:52px;height:52px;border-radius:50%;background:var(--brand);color:#fff;font-size:20px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
     .profile-name{font-size:17px;font-weight:800;}
     .profile-email{font-size:14px;color:var(--gray-500);}
-    .btn-login-kakao{display:flex;align-items:center;justify-content:center;width:100%;height:52px;border:none;border-radius:14px;background:#FEE500;color:#191919;font-size:16px;font-weight:700;text-decoration:none;margin-bottom:10px;}
+    .btn-login-kakao{display:flex;align-items:center;justify-content:center;width:100%;height:52px;border:none;border-radius:14px;background:#FEE500;color:#191919;font-size:16px;font-weight:700;text-decoration:none;margin-bottom:10px;font-family:inherit;cursor:pointer;}
     .btn-login-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:52px;border:1.5px solid var(--gray-200);border-radius:14px;background:#fff;color:var(--gray-700);font-size:16px;font-weight:600;font-family:inherit;cursor:pointer;margin-bottom:16px;}
     .btn-login-google svg{flex-shrink:0;}
     .info-list{background:#fff;border:1px solid var(--gray-200);border-radius:16px;overflow:hidden;margin-bottom:16px;}
@@ -597,12 +597,12 @@ function icon(name,size){
 }
 
 const NEED_CATS=[
-  {id:'사업 자금',icon:'cash',subs:['운전자금 대출','시설자금 대출','특례보증','긴급경영자금','기타']},
-  {id:'마케팅·판로',icon:'speakerphone',subs:['온라인몰 입점','오프라인 판로개척','광고홍보비 지원','브랜딩 컨설팅','기타']},
-  {id:'기술개발',icon:'bulb',subs:['신제품 개발','특허·인증 지원','스마트공장 구축','AI·디지털전환','기타']},
+  {id:'사업 자금',icon:'cash',subs:['운영자금 지원','시설 구입 자금','저금리 보증 대출','긴급 자금 지원','기타']},
+  {id:'마케팅·판로',icon:'speakerphone',subs:['쿠팡·네이버 입점 지원','오프라인 판로개척','광고비 지원','브랜드 만들기 지원','기타']},
+  {id:'기술개발',icon:'bulb',subs:['신제품 개발','특허·인증 지원','공장 자동화 지원','디지털 전환 지원','기타']},
   {id:'직원 채용',icon:'users',subs:['청년채용 지원금','고용유지 지원금','직무교육 지원','기타']},
   {id:'시설·장비',icon:'building-factory-2',subs:['매장 인테리어','장비구입 자금','공간 임차 지원','기타']},
-  {id:'수출·해외',icon:'world',subs:['수출 초보기업 지원','해외전시회 참가','해외인증 지원','기타']},
+  {id:'수출·해외',icon:'world',subs:['수출 초보기업 지원','해외전시회 참가','해외 판매 인증 지원','기타']},
   {id:'창업·사업화',icon:'rocket',subs:['예비창업패키지','초기창업패키지','시제품 제작','기타']},
   {id:'경영 상담',icon:'clipboard-text',subs:['세무·회계 컨설팅','법률 자문','경영진단','기타']}
 ];
@@ -1363,6 +1363,11 @@ async function toggleSave(m){
   const pid=m.program?.id;
   if(!pid)return;
   const {data:{session}}=await db.auth.getSession();
+  if(!session&&!isSaved(pid)){
+    showToast('로그인하면 저장 목록이 영구 보관됩니다');
+    navTab('profile');
+    return;
+  }
   if(isSaved(pid)){
     savedList=savedList.filter(s=>s.program?.id!==pid);
     if(session)await db.from('saved_programs').delete().eq('user_id',session.user.id).eq('program_id',pid);
@@ -1421,6 +1426,21 @@ async function renderSaved(){
 
 /* ═══════════ 내정보 ═══════════ */
 const GOOGLE_LOGIN_SVG=`<svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>`;
+async function loginWithKakao(){
+  const btn=$('btn-login-kakao');
+  if(btn){btn.disabled=true;btn.textContent='로그인 중...';}
+  const {error}=await db.auth.signInWithOAuth({
+    provider:'kakao',
+    options:{
+      redirectTo:window.location.origin+'/app.html',
+      queryParams:{scope:'profile_nickname profile_image'}
+    }
+  });
+  if(error){
+    showToast('카카오 로그인 오류: '+error.message);
+    if(btn){btn.disabled=false;btn.innerHTML=`<span class="ico">${icon('message-circle')}</span>카카오로 3초 만에 로그인`;}
+  }
+}
 async function loginWithGoogle(){
   const ua=navigator.userAgent.toLowerCase();
   const isInApp=/kakaotalk|line|naver|instagram|facebook|fbav/i.test(ua);
@@ -1466,8 +1486,9 @@ async function renderProfile(){
       navTab('match');
     });
   }else{
-    auth.innerHTML=`<a class="btn-login-kakao" href="login.html"><span class="ico">${icon('message-circle')}</span>카카오로 3초 만에 로그인</a>
+    auth.innerHTML=`<button type="button" class="btn-login-kakao" id="btn-login-kakao"><span class="ico">${icon('message-circle')}</span>카카오로 3초 만에 로그인</button>
       <button type="button" class="btn-login-google" id="btn-login-google">${GOOGLE_LOGIN_SVG} Google로 로그인</button>`;
+    $('btn-login-kakao').addEventListener('click',loginWithKakao);
     $('btn-login-google').addEventListener('click',loginWithGoogle);
   }
   const a=S.a;
