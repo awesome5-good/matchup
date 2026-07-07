@@ -106,6 +106,8 @@
     .pick-item-icon{display:flex;color:#6B7280;margin-bottom:6px;}
     .pick-item.selected .pick-item-icon{color:var(--brand);}
     .needs-sub-block{margin-top:20px;}
+    .industry-sub-search{margin-bottom:12px;}
+    #industry-custom-wrap{margin-top:4px;}
     .sub-section{margin-top:24px;}
     .sub-title{font-size:16px;font-weight:700;margin-bottom:10px;}
     .chip-wrap{display:flex;flex-wrap:wrap;gap:8px;}
@@ -295,7 +297,11 @@
   <div class="step-panel" id="st-industry-detail">
     <h2 class="q-title">조금 더 자세히<br>알려주세요</h2>
     <p class="q-sub" id="industry-detail-sub">선택하신 업종의 세부 항목을 골라주세요</p>
+    <input class="inp industry-sub-search" id="inp-industry-sub-search" type="search" placeholder="세부업종 검색" autocomplete="off">
     <div class="chip-wrap" id="industry-subs"></div>
+    <div class="hidden" id="industry-custom-wrap">
+      <input class="inp" id="inp-industry-custom" type="text" placeholder="업종을 직접 입력해주세요" autocomplete="off">
+    </div>
   </div>
 
   <!-- 예비: 창업 희망 업종 -->
@@ -568,20 +574,20 @@ const NEED_CATS=[
 
 /* 업태 → 세부업종 (쉬운 설명 포함) */
 const CATS=[
-  {name:'음식점업',desc:'식당, 카페, 주점 등',subs:['한식','중식','일식','양식','카페·디저트','주점','기타 음식점']},
-  {name:'도매 및 소매업',desc:'물건을 사서 파는 업종',subs:['온라인 쇼핑몰','오프라인 매장','농수산물 유통','의류·잡화','식자재 유통','편의점·마트','기타 도소매']},
-  {name:'제조업',desc:'제품을 직접 만드는 업종',subs:['식품 제조','화장품·뷰티','전자·전기','기계·부품','섬유·의류','바이오·화학','기타 제조']},
-  {name:'정보통신업',desc:'IT, 소프트웨어, 콘텐츠',subs:['소프트웨어 개발','앱·웹 서비스','게임','영상·콘텐츠','IT 운영·유지보수','데이터·AI','기타 IT']},
-  {name:'서비스업',desc:'미용, 수리, 대행 등',subs:['미용·뷰티','세탁·청소','광고·마케팅','디자인·사진','경영·법률 대행','여행·관광','기타 서비스']},
-  {name:'교육서비스업',desc:'학원, 강습, 온라인 교육',subs:['입시·어학 학원','직업·기술 교육','온라인 교육','스포츠·예체능','유아·보육','기타 교육']},
-  {name:'숙박업',desc:'펜션, 모텔, 호텔 등',subs:['펜션·게스트하우스','모텔·호텔','리조트·콘도','기타 숙박']},
-  {name:'건설업',desc:'공사, 인테리어 등',subs:['종합 건설','인테리어·리모델링','전기·설비','토목·조경','기타 건설']},
-  {name:'보건업 및 사회복지서비스업',desc:'병원, 요양, 돌봄',subs:['병·의원','요양·돌봄','재활·복지','동물병원','기타 보건복지']},
-  {name:'부동산업',desc:'중개, 임대 등',subs:['부동산 중개','임대·관리','부동산 개발','기타 부동산']},
-  {name:'운수 및 창고업',desc:'운송, 배달, 물류',subs:['화물 운송','택배·배달','창고·물류','여객 운송','기타 운수']},
-  {name:'예술·스포츠·여가',desc:'헬스장, 공연, 오락',subs:['헬스·스포츠','공연·전시','오락·게임','문화·예술','기타 여가']},
-  {name:'농업·임업·어업',desc:'재배, 축산, 어업',subs:['작물 재배','축산','어업·양식','임업·산림','스마트팜','기타 농림어업']},
-  {name:'기타',desc:'해당하는 게 없어요',subs:['기타 업종']}
+  {name:'음식점업',desc:'식당, 카페, 주점 등',subs:['한식','중식','일식','양식','분식','카페·디저트','베이커리','주점·호프','치킨·피자','배달전문','기타음식점']},
+  {name:'도매 및 소매업',desc:'물건을 사서 파는 업종',subs:['온라인쇼핑몰','오프라인매장','농수산물유통','의류잡화','식품유통','생활용품','전자제품','자동차부품','기타도소매']},
+  {name:'제조업',desc:'제품을 직접 만드는 업종',subs:['식품제조','의류제조','가구제조','금속가공','플라스틱제조','화장품제조','전자부품제조','인쇄물제조','기타제조']},
+  {name:'정보통신업',desc:'IT, 소프트웨어, 콘텐츠',subs:['소프트웨어개발','앱개발','웹개발','IT컨설팅','게임개발','콘텐츠제작','데이터분석','기타IT']},
+  {name:'서비스업',desc:'미용, 수리, 대행 등',subs:['미용실','네일샵','세탁소','청소용역','수리서비스','렌탈서비스','이벤트기획','기타서비스']},
+  {name:'교육서비스업',desc:'학원, 강습, 온라인 교육',subs:['입시학원','어학원','예체능학원','온라인교육','직업훈련','유아교육','기타교육']},
+  {name:'숙박업',desc:'펜션, 모텔, 호텔 등',subs:['펜션','모텔','호텔','게스트하우스','한옥스테이','기타숙박']},
+  {name:'건설업',desc:'공사, 인테리어 등',subs:['종합건설','전문건설','인테리어','전기공사','설비공사','조경','기타건설']},
+  {name:'보건업 및 사회복지서비스업',desc:'병원, 요양, 돌봄',subs:['의원','한의원','치과','약국','요양시설','돌봄서비스','기타보건복지']},
+  {name:'부동산업',desc:'중개, 임대 등',subs:['중개업','임대업','개발업','관리업','기타부동산']},
+  {name:'운수 및 창고업',desc:'운송, 배달, 물류',subs:['화물운송','택배대행','창고업','이사서비스','렌터카','기타운수']},
+  {name:'예술·스포츠·여가',desc:'헬스장, 공연, 오락',subs:['헬스장','필라테스·요가','공연기획','사진스튜디오','공방·클래스','기타예술여가']},
+  {name:'농업·임업·어업',desc:'재배, 축산, 어업',subs:['작물재배','축산업','임업','어업·양식업','스마트팜','농산물가공','화훼재배','기타농림어업']},
+  {name:'기타',desc:'해당하는 게 없어요',subs:[],custom:true}
 ];
 
 /* 업종별 기업규모 기준 (중소기업기본법 시행령 기준 단순화)
@@ -611,6 +617,7 @@ let savedList=[];
 let companyId=null;
 let currentDetail=null;
 let guideCache={};
+let industrySubFilter='';
 
 /* ═══════════ 유틸 ═══════════ */
 function $(id){return document.getElementById(id);}
@@ -842,6 +849,8 @@ document.querySelectorAll('.yn-card').forEach(c=>c.addEventListener('click',()=>
 }));
 
 $('inp-intro').addEventListener('input',e=>{S.a.intro=e.target.value;saveDraft();refreshCta();});
+$('inp-industry-sub-search').addEventListener('input',e=>{industrySubFilter=e.target.value;renderIndustrySubChips();});
+$('inp-industry-custom').addEventListener('input',e=>{S.a.industryDetail=e.target.value.trim();saveDraft();refreshCta();});
 
 /* ── 그리드 렌더 ── */
 function buildIndustryGrid(){
@@ -853,19 +862,42 @@ function buildIndustryGrid(){
   document.querySelectorAll('#industry-grid .pick-item').forEach(b=>b.addEventListener('click',()=>{
     S.a.industry=b.dataset.cat;
     S.a.industryDetail=null;
+    industrySubFilter='';
+    const se=$('inp-industry-sub-search');if(se)se.value='';
     buildIndustryGrid();updateSizeBadge();saveDraft();refreshCta();
+  }));
+}
+function renderIndustrySubChips(){
+  const cat=CATS.find(c=>c.name===S.a.industry);
+  if(!cat||cat.custom)return;
+  const q=industrySubFilter.trim().toLowerCase();
+  const subs=cat.subs.filter(s=>!q||s.toLowerCase().includes(q));
+  const wrap=$('industry-subs');
+  if(!subs.length){
+    wrap.innerHTML='<p class="inp-hint">검색 결과가 없어요. 다른 키워드로 검색해보세요</p>';
+    return;
+  }
+  wrap.innerHTML=subs.map(s=>`
+    <button type="button" class="chip ${S.a.industryDetail===s?'selected':''}" data-sub="${esc(s)}">${esc(s)}</button>`).join('');
+  document.querySelectorAll('#industry-subs .chip').forEach(b=>b.addEventListener('click',()=>{
+    S.a.industryDetail=b.dataset.sub;
+    renderIndustrySubChips();saveDraft();refreshCta();
   }));
 }
 function buildIndustryDetailStep(){
   const cat=CATS.find(c=>c.name===S.a.industry);
   if(!cat)return;
+  const isOther=!!cat.custom;
+  $('inp-industry-sub-search').classList.toggle('hidden',isOther);
+  $('industry-subs').classList.toggle('hidden',isOther);
+  $('industry-custom-wrap').classList.toggle('hidden',!isOther);
+  if(isOther){
+    $('industry-detail-sub').textContent='해당하는 업종이 없으면 직접 입력해주세요';
+    $('inp-industry-custom').value=S.a.industryDetail||'';
+    return;
+  }
   $('industry-detail-sub').textContent=`${S.a.industry} 중 가장 가까운 항목을 골라주세요`;
-  $('industry-subs').innerHTML=cat.subs.map(s=>`
-    <button class="chip ${S.a.industryDetail===s?'selected':''}" data-sub="${esc(s)}">${esc(s)}</button>`).join('');
-  document.querySelectorAll('#industry-subs .chip').forEach(b=>b.addEventListener('click',()=>{
-    S.a.industryDetail=b.dataset.sub;
-    buildIndustryDetailStep();saveDraft();refreshCta();
-  }));
+  renderIndustrySubChips();
 }
 function buildWishGrid(){
   $('wish-grid').innerHTML=CATS.map(c=>`
