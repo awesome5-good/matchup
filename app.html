@@ -220,7 +220,9 @@
     .profile-avatar{width:52px;height:52px;border-radius:50%;background:var(--brand);color:#fff;font-size:20px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
     .profile-name{font-size:17px;font-weight:800;}
     .profile-email{font-size:14px;color:var(--gray-500);}
-    .btn-login-kakao{display:flex;align-items:center;justify-content:center;width:100%;height:52px;border:none;border-radius:14px;background:#FEE500;color:#191919;font-size:16px;font-weight:700;text-decoration:none;margin-bottom:16px;}
+    .btn-login-kakao{display:flex;align-items:center;justify-content:center;width:100%;height:52px;border:none;border-radius:14px;background:#FEE500;color:#191919;font-size:16px;font-weight:700;text-decoration:none;margin-bottom:10px;}
+    .btn-login-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:52px;border:1.5px solid var(--gray-200);border-radius:14px;background:#fff;color:var(--gray-700);font-size:16px;font-weight:600;font-family:inherit;cursor:pointer;margin-bottom:16px;}
+    .btn-login-google svg{flex-shrink:0;}
     .info-list{background:#fff;border:1px solid var(--gray-200);border-radius:16px;overflow:hidden;margin-bottom:16px;}
     .info-row{display:flex;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--gray-100);font-size:15px;}
     .info-row:last-child{border-bottom:none;}
@@ -1418,6 +1420,23 @@ async function renderSaved(){
 }
 
 /* ═══════════ 내정보 ═══════════ */
+const GOOGLE_LOGIN_SVG=`<svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>`;
+async function loginWithGoogle(){
+  const ua=navigator.userAgent.toLowerCase();
+  const isInApp=/kakaotalk|line|naver|instagram|facebook|fbav/i.test(ua);
+  if(isInApp){
+    if(/iphone|ipad|ipod/i.test(ua))window.location.href='x-safari-'+window.location.href;
+    else window.location.href='intent://'+window.location.host+window.location.pathname+'#Intent;scheme=https;package=com.android.chrome;end';
+    return;
+  }
+  const btn=$('btn-login-google');
+  if(btn){btn.disabled=true;btn.textContent='로그인 중...';}
+  const {error}=await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/app.html'}});
+  if(error){
+    showToast('로그인 중 오류가 발생했습니다. 다시 시도해주세요');
+    if(btn){btn.disabled=false;btn.innerHTML=GOOGLE_LOGIN_SVG+' Google로 로그인';}
+  }
+}
 async function renderProfile(){
   const {data:{session}}=await db.auth.getSession();
   const auth=$('profile-auth');
@@ -1434,11 +1453,22 @@ async function renderProfile(){
       <button class="btn-list" id="btn-logout">로그아웃</button>`;
     $('btn-logout').addEventListener('click',async()=>{
       await db.auth.signOut();
+      localStorage.clear();
+      sessionStorage.clear();
+      clearDraft();
+      allMatches=[];baseDate=null;savedList=[];companyId=null;currentDetail=null;
+      guideCache={};detailCopyCache={};
+      updateBadges();
+      renderResults();
+      renderSaved();
+      renderHome();
       showToast('로그아웃 되었어요');
-      renderProfile();
+      navTab('match');
     });
   }else{
-    auth.innerHTML=`<a class="btn-login-kakao" href="login.html"><span class="ico">${icon('message-circle')}</span>카카오로 3초 만에 로그인</a>`;
+    auth.innerHTML=`<a class="btn-login-kakao" href="login.html"><span class="ico">${icon('message-circle')}</span>카카오로 3초 만에 로그인</a>
+      <button type="button" class="btn-login-google" id="btn-login-google">${GOOGLE_LOGIN_SVG} Google로 로그인</button>`;
+    $('btn-login-google').addEventListener('click',loginWithGoogle);
   }
   const a=S.a;
   const rows=[];

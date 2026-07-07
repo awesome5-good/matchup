@@ -216,11 +216,11 @@
   const { createClient } = supabase;
   const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // 이미 로그인된 경우 matchup.html로 이동
+  // 이미 로그인된 경우 app.html로 이동
   async function checkSession() {
     const { data: { session } } = await db.auth.getSession();
     if (session) {
-      window.location.href = 'matchup.html';
+      window.location.href = 'app.html';
     }
   }
   checkSession();
@@ -244,7 +244,7 @@
   const { error } = await db.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: window.location.origin + '/matchup.html'
+      redirectTo: window.location.origin + '/app.html'
     }
   });
 
@@ -266,7 +266,7 @@
     const { data, error } = await db.auth.signInWithOAuth({
       provider: 'kakao',
       options: {
-        redirectTo: window.location.origin + '/matchup.html',
+        redirectTo: window.location.origin + '/app.html',
         queryParams: {
           scope: 'profile_nickname profile_image'
         }
