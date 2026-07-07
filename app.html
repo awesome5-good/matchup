@@ -108,7 +108,8 @@
     .yn-cards{display:flex;flex-direction:column;gap:12px;}
     .yn-card{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:1.5px solid var(--gray-200);border-radius:16px;background:#fff;padding:20px;}
     .yn-card.selected{border-color:var(--brand);background:var(--brand-50);}
-    .yn-icon{font-size:26px;flex-shrink:0;}
+    .yn-icon{flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--gray-500);}
+    .yn-icon svg{width:24px;height:24px;}
     .yn-name{font-size:17px;font-weight:700;}
     .yn-desc{font-size:14px;color:var(--gray-500);}
 
@@ -140,6 +141,7 @@
     .empty-box-icon{font-size:44px;margin-bottom:14px;}
     .empty-box h3{font-size:19px;font-weight:700;color:var(--gray-600);margin-bottom:8px;}
     .empty-box p{font-size:15px;line-height:1.7;margin-bottom:20px;}
+    .empty-hint{font-size:14px;color:var(--gray-400);margin-top:12px;line-height:1.6;}
     .btn-inline{display:inline-block;border:none;background:var(--brand);color:#fff;font-size:16px;font-weight:700;padding:14px 28px;border-radius:14px;}
 
     /* ── 상세 화면 ── */
@@ -276,10 +278,13 @@
     <h2 class="q-title">어떤 일을 하시나요?</h2>
     <p class="q-sub">가장 가까운 것을 골라주세요</p>
     <div class="pick-grid" id="industry-grid"></div>
-    <div class="sub-section hidden" id="industry-sub-section">
-      <div class="sub-title">조금 더 자세히 알려주세요</div>
-      <div class="chip-wrap" id="industry-subs"></div>
-    </div>
+  </div>
+
+  <!-- 기업: 세부업종 -->
+  <div class="step-panel" id="st-industry-detail">
+    <h2 class="q-title">조금 더 자세히<br>알려주세요</h2>
+    <p class="q-sub" id="industry-detail-sub">선택하신 업종의 세부 항목을 골라주세요</p>
+    <div class="chip-wrap" id="industry-subs"></div>
   </div>
 
   <!-- 예비: 창업 희망 업종 -->
@@ -315,11 +320,11 @@
     <p class="q-sub">처음이면 첫 수혜자 우대 사업을 챙겨드려요</p>
     <div class="yn-cards">
       <button class="yn-card" data-hist="있음">
-        <span class="yn-icon">✅</span>
+        <span class="yn-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10"/></svg></span>
         <span><span class="yn-name">있어요</span><br><span class="yn-desc">지원금·바우처 등을 받아본 적 있어요</span></span>
       </button>
       <button class="yn-card" data-hist="없음">
-        <span class="yn-icon">🆕</span>
+        <span class="yn-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm0 -12a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm-7 12a6 6 0 0 1 6 -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6z"/></svg></span>
         <span><span class="yn-name">없어요</span><br><span class="yn-desc">이번이 처음이에요</span></span>
       </button>
     </div>
@@ -654,7 +659,7 @@ $('btn-restart').addEventListener('click',()=>{clearDraft();renderHome();showToa
 
 /* ═══════════ 스텝 플로우 ═══════════ */
 const FLOW_PRE=['st-name','st-region','st-wish','st-needs'];
-const FLOW_BIZ=['st-bizname','st-opendate','st-industry','st-region','st-scale','st-history','st-needs','st-intro'];
+const FLOW_BIZ=['st-bizname','st-opendate','st-industry','st-industry-detail','st-region','st-scale','st-history','st-needs','st-intro'];
 function flow(){return S.type==='pre'?FLOW_PRE:FLOW_BIZ;}
 
 function enterSteps(){
@@ -672,6 +677,7 @@ function renderStep(){
   prog.innerHTML=f.map((_,i)=>`<div class="step-seg ${i<=S.step?'on':''}"></div>`).join('');
   $('btn-step-next').textContent=S.step===f.length-1?'🔍 매칭 시작하기':'다음';
   refreshCta();
+  if(cur==='st-industry-detail') buildIndustryDetailStep();
   window.scrollTo(0,0);
 }
 
@@ -681,7 +687,8 @@ function validateStep(){
     case 'st-name':return !!(a.name&&a.name.trim());
     case 'st-bizname':return !!(a.bizName&&a.bizName.trim());
     case 'st-opendate':return /^\d{4}-\d{2}-\d{2}$/.test(a.openDate||'')&&ageYears(a.openDate)!=null;
-    case 'st-industry':return !!a.industry&&!!a.industryDetail;
+    case 'st-industry':return !!a.industry;
+    case 'st-industry-detail':return !!a.industryDetail;
     case 'st-wish':return !!a.wishIndustry;
     case 'st-region':return !!a.region;
     case 'st-scale':return numOrNull(a.revenue)!=null&&a.employees!==''&&a.employees!=null;
@@ -758,19 +765,18 @@ function buildIndustryGrid(){
   document.querySelectorAll('#industry-grid .pick-item').forEach(b=>b.addEventListener('click',()=>{
     S.a.industry=b.dataset.cat;
     S.a.industryDetail=null;
-    buildIndustryGrid();buildIndustrySubs();updateSizeBadge();saveDraft();refreshCta();
+    buildIndustryGrid();updateSizeBadge();saveDraft();refreshCta();
   }));
-  buildIndustrySubs();
 }
-function buildIndustrySubs(){
+function buildIndustryDetailStep(){
   const cat=CATS.find(c=>c.name===S.a.industry);
-  $('industry-sub-section').classList.toggle('hidden',!cat);
   if(!cat)return;
+  $('industry-detail-sub').textContent=`${S.a.industry} 중 가장 가까운 항목을 골라주세요`;
   $('industry-subs').innerHTML=cat.subs.map(s=>`
     <button class="chip ${S.a.industryDetail===s?'selected':''}" data-sub="${esc(s)}">${esc(s)}</button>`).join('');
   document.querySelectorAll('#industry-subs .chip').forEach(b=>b.addEventListener('click',()=>{
     S.a.industryDetail=b.dataset.sub;
-    buildIndustrySubs();saveDraft();refreshCta();
+    buildIndustryDetailStep();saveDraft();refreshCta();
   }));
 }
 function buildWishGrid(){
@@ -853,8 +859,19 @@ async function startMatching(){
     }).select().single();
     companyId=company?.id||null;
 
-    const {data:programs}=await db.from('programs').select('*').eq('is_active',true).limit(80);
-    if(!programs||programs.length===0){finishMatching([],[]);return;}
+    const programsRes=await db.from('programs').select('*').eq('is_active',true).limit(80);
+    const {data:programs,error:programsError}=programsRes;
+    console.log('[매칭] programs 테이블 조회',{
+      건수:programs?.length??0,
+      error:programsError,
+      샘플:(programs||[]).slice(0,3).map(p=>({id:p.id,title:p.title,organization:p.organization,is_active:p.is_active}))
+    });
+    if(programsError)console.error('[매칭] programs 조회 오류:',programsError);
+    if(!programs||programs.length===0){
+      console.warn('[매칭] 활성 programs 데이터 없음 — 매칭 결과 0건으로 종료');
+      finishMatching([],[]);
+      return;
+    }
 
     const pl=programs.slice(0,60).map(p=>({
       id:p.id,title:p.title,organization:p.organization||'',
@@ -960,9 +977,17 @@ function updateBadges(){
 function renderResults(){
   $('base-date').textContent=baseDate?`공고 기준일 ${fmtDate(baseDate)}`:'';
   if(!allMatches.length){
-    $('result-title').textContent='매칭 결과';
-    $('result-sub').textContent='적합도가 높은 순서로 보여드려요';
-    $('results-list').innerHTML=`
+    const attempted=!!baseDate;
+    $('result-title').textContent=attempted?'맞는 지원사업을 찾지 못했어요':'매칭 결과';
+    $('result-sub').textContent=attempted?'입력하신 조건에 맞는 사업이 없었어요':'적합도가 높은 순서로 보여드려요';
+    $('results-list').innerHTML=attempted?`
+      <div class="empty-box">
+        <div class="empty-box-icon">🔍</div>
+        <h3>조건에 맞는 지원사업이 없어요</h3>
+        <p>입력하신 정보로는 적합한 사업을<br>찾지 못했어요</p>
+        <button class="btn-inline" id="btn-go-match">조건 넓혀서 다시 찾기</button>
+        <p class="empty-hint">필요한 분야를 줄이거나 세부업종을 다르게 선택하면 더 많은 결과가 나와요</p>
+      </div>`:`
       <div class="empty-box">
         <div class="empty-box-icon">🔍</div>
         <h3>아직 매칭 결과가 없어요</h3>
@@ -970,7 +995,7 @@ function renderResults(){
         <button class="btn-inline" id="btn-go-match">매칭 시작하기</button>
       </div>`;
     const b=$('btn-go-match');
-    if(b)b.addEventListener('click',()=>navTab('match'));
+    if(b)b.addEventListener('click',()=>attempted?enterSteps():navTab('match'));
     return;
   }
   $('result-title').textContent=`${allMatches.length}개 사업이 매칭됐어요`;
