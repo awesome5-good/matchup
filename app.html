@@ -105,7 +105,13 @@
     .pick-item.selected .pick-item-desc{color:var(--brand);}
     .pick-item-icon{display:flex;color:#6B7280;margin-bottom:6px;}
     .pick-item.selected .pick-item-icon{color:var(--brand);}
-    .needs-sub-block{margin-top:20px;}
+    #needs-grid .pick-item{display:flex;flex-direction:column;align-items:flex-start;gap:6px;}
+    #needs-grid .pick-item-name{font-size:14px;font-weight:700;color:var(--gray-900);line-height:1.35;display:block;width:100%;}
+    #needs-grid .pick-item.selected .pick-item-name{color:var(--brand);}
+    .needs-sub-block{margin-top:0;}
+    .needs-sub-divider{border-top:1px solid var(--gray-200);margin:18px 0;}
+    .needs-sub-group-title{font-size:13px;color:var(--gray-500);font-weight:600;margin-bottom:10px;}
+    #needs-sub-wrap:not(:empty){margin-top:20px;}
     .industry-sub-search{margin-bottom:12px;}
     #industry-custom-wrap{margin-top:4px;}
     .sub-section{margin-top:24px;}
@@ -426,15 +432,15 @@
   <div class="detail-header">
     <button class="btn-back" id="btn-plans-back">←</button>
   </div>
-  <h1 class="screen-title">어떻게 준비하실래요?</h1>
-  <p class="screen-sub">대표님 상황에 맞는 방법을 골라보세요</p>
+  <h1 class="screen-title">전문가와 함께 준비하시겠어요?</h1>
+  <p class="screen-sub">대표님 상황에 맞는 지원 방식을 선택해주세요</p>
   <div class="plan-cards">
     <div class="plan-card">
       <div class="plan-name">셀프 준비</div>
       <div class="plan-price">무료</div>
       <div class="plan-feats">
-        <div class="plan-feat"><span class="plan-feat-check">✓</span>AI 준비 가이드 무제한 이용</div>
-        <div class="plan-feat"><span class="plan-feat-check">✓</span>매칭 결과·마감 알림 저장</div>
+        <div class="plan-feat"><span class="plan-feat-check">✓</span>AI 진단 리포트 무제한 열람</div>
+        <div class="plan-feat"><span class="plan-feat-check">✓</span>매칭 결과 및 마감일 알림 서비스</div>
       </div>
     </div>
     <div class="plan-card featured">
@@ -442,18 +448,18 @@
       <div class="plan-name">방향 진단</div>
       <div class="plan-price">7만원 <small>· 줌 30분</small></div>
       <div class="plan-feats">
-        <div class="plan-feat"><span class="plan-feat-check">✓</span>전문가가 매칭 결과 직접 검토</div>
-        <div class="plan-feat"><span class="plan-feat-check">✓</span>우리 회사에 맞는 신청 전략 제시</div>
-        <div class="plan-feat"><span class="plan-feat-check">✓</span>합격 가능성 솔직한 진단</div>
+        <div class="plan-feat"><span class="plan-feat-check">✓</span>12년 경력 컨설턴트의 1:1 진단</div>
+        <div class="plan-feat"><span class="plan-feat-check">✓</span>귀사 맞춤 신청 우선순위 및 전략 제시</div>
+        <div class="plan-feat"><span class="plan-feat-check">✓</span>선정 가능성 객관적 평가</div>
       </div>
     </div>
     <div class="plan-card">
-      <div class="plan-name">신청 동행 패키지</div>
-      <div class="plan-price">협의 <small>· 사업별 맞춤</small></div>
+      <div class="plan-name">신청서 작성 전담 서비스</div>
+      <div class="plan-price">맞춤견적 <small>· 사업별 상이</small></div>
       <div class="plan-feats">
-        <div class="plan-feat"><span class="plan-feat-check">✓</span>사업계획서 작성 밀착 지원</div>
-        <div class="plan-feat"><span class="plan-feat-check">✓</span>제출 서류 준비부터 접수까지 동행</div>
-        <div class="plan-feat"><span class="plan-feat-check">✓</span>발표 평가 대비 코칭</div>
+        <div class="plan-feat"><span class="plan-feat-check">✓</span>사업계획서 초안 작성 지원</div>
+        <div class="plan-feat"><span class="plan-feat-check">✓</span>제출 서류 준비 및 접수 대행</div>
+        <div class="plan-feat"><span class="plan-feat-check">✓</span>발표평가 대비 리허설 코칭</div>
       </div>
     </div>
   </div>
@@ -617,6 +623,7 @@ let savedList=[];
 let companyId=null;
 let currentDetail=null;
 let guideCache={};
+let detailCopyCache={};
 let industrySubFilter='';
 
 /* ═══════════ 유틸 ═══════════ */
@@ -939,12 +946,12 @@ function buildNeedsSubs(){
   ensureNeedsState();
   const wrap=$('needs-sub-wrap');
   if(!S.a.needCats.length){wrap.innerHTML='';return;}
-  wrap.innerHTML=S.a.needCats.map(catId=>{
+  wrap.innerHTML=S.a.needCats.map((catId,i)=>{
     const cat=NEED_CATS.find(c=>c.id===catId);
     if(!cat)return '';
     const picked=S.a.needSubs[catId]||[];
-    return `<div class="needs-sub-block">
-      <div class="sub-title">${esc(cat.name)}</div>
+    return `${i>0?'<div class="needs-sub-divider"></div>':''}<div class="needs-sub-block">
+      <div class="needs-sub-group-title">${esc(catId)} - 세부 선택</div>
       <div class="chip-wrap">${cat.subs.map(s=>`
         <button type="button" class="chip ${picked.includes(s)?'selected':''}" data-need-cat="${esc(catId)}" data-need-sub="${esc(s)}">${esc(s)}</button>`).join('')}
       </div>
@@ -1179,13 +1186,62 @@ function openDetail(idx){
     ${dl?`<span class="meta-pill dday">마감 D-${dl}</span>`:''}
     ${amt?`<span class="meta-pill">${txt(amt)}</span>`:''}
     ${p.category?`<span class="meta-pill">${txt(p.category)}</span>`:''}`;
-  $('d-elig').innerHTML=`<strong>지원 자격</strong><br>${txt(p.eligibility||'공고문에서 확인이 필요해요')}<br><br><strong>매칭 이유</strong><br>${txt(m.match_reason||'-')}`;
+  $('d-elig').innerHTML='<div class="guide-loading"><div class="guide-spinner"></div>지원 자격과 매칭 이유를 쉽게 풀어 설명하고 있어요...</div>';
   const link=$('btn-d-link');
   if(p.source_url&&p.source_url!=='#'){link.href=p.source_url;link.classList.remove('hidden');}
   else link.classList.add('hidden');
   refreshDetailSaveBtn();
   show('scr-detail');
+  loadDetailCopy(m);
   loadGuide(m);
+}
+
+function renderDetailCopy(data){
+  $('d-elig').innerHTML=`<strong>지원 자격</strong><br>${txt(data.eligibility||'공고문에서 확인이 필요해요')}<br><br><strong>매칭 이유</strong><br>${txt(data.match_reason||'-')}`;
+}
+
+async function loadDetailCopy(m){
+  const p=m.program||{};
+  const key=(p.id||p.title)+'_copy';
+  if(detailCopyCache[key]){renderDetailCopy(detailCopyCache[key]);return;}
+  const a=S.a;
+  const isPre=S.type==='pre';
+  const prompt=`당신은 정부 지원사업을 안내하는 친절한 컨설턴트입니다. 아래 정보를 바탕으로 "지원 자격"과 "매칭 이유"를 대표님께 말씀드리듯 친절하게 작성하세요.
+
+## 신청자
+- 사업자 상태: ${statusLabel()}
+- ${isPre?'이름':'기업명'}: ${isPre?(a.name||''):(a.bizName||'')}
+- 업종: ${isPre?(a.wishIndustry||'미정'):`${a.industry||''} / ${a.industryDetail||''}`}
+- 지역: ${a.region||''}
+- 필요한 것: ${needsFlatList().join(', ')||'미입력'}
+
+## 지원사업
+- 사업명: ${p.title||''}
+- 주관: ${p.organization||''}
+- 공고 원문 지원자격: ${(p.eligibility||'').slice(0,500)}
+- AI 매칭 이유(참고): ${m.match_reason||''}
+
+## 작성 규칙 (반드시 준수)
+- 원문 딱딱한 나열 금지, ~~에요/~~드려요/~~하실 수 있어요 대화체로 통일
+- eligibility(지원 자격): "이런 분들이 신청할 수 있어요. 첫째, ~~. 둘째, ~~. 대표님은 ○○ 조건에 해당하시니 신청 가능합니다." 식으로 3~4문장
+- match_reason(매칭 이유): "대표님께 이 사업을 추천드리는 이유는요, ~~때문이에요. 특히 ~~ 부분에서 강점이 있으실 거예요." 식으로 2~3문장
+- 마크다운 금지, JSON만 답변:
+{"eligibility":"","match_reason":""}`;
+  try{
+    const raw=await callAPI(prompt,900);
+    const c=raw.replace(/```json|```/g,'').trim();
+    const s=c.indexOf('{'),e=c.lastIndexOf('}')+1;
+    let data=null;
+    if(s>=0&&e>s)data=JSON.parse(c.slice(s,e));
+    if(!data||!data.eligibility)throw new Error('empty');
+    detailCopyCache[key]=data;
+    if(currentDetail===m)renderDetailCopy(data);
+  }catch(e){
+    if(currentDetail===m)renderDetailCopy({
+      eligibility:plain(p.eligibility||'공고문에서 확인이 필요해요'),
+      match_reason:plain(m.match_reason||'-')
+    });
+  }
 }
 
 function refreshDetailSaveBtn(){
