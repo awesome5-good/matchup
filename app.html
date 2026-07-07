@@ -717,7 +717,7 @@ function renderHome(){
 }
 document.querySelectorAll('.type-card').forEach(c=>c.addEventListener('click',()=>{
   const t=c.dataset.type;
-  if(S.type!==t){S={type:t,step:0,a:{needs:[],needCats:[],needSubs:{}};};}
+  if(S.type!==t){S={type:t,step:0,a:{needs:[],needCats:[],needSubs:{}}};}
   saveDraft();
   enterSteps();
 }));
@@ -751,20 +751,25 @@ function renderStep(){
 
 function validateStep(){
   const cur=flow()[S.step];const a=S.a;
+  let ok=false;
   switch(cur){
-    case 'st-name':return !!(a.name&&a.name.trim());
-    case 'st-bizname':return !!(a.bizName&&a.bizName.trim());
-    case 'st-opendate':return /^\d{4}-\d{2}-\d{2}$/.test(a.openDate||'')&&ageYears(a.openDate)!=null;
-    case 'st-industry':return !!a.industry;
-    case 'st-industry-detail':return !!a.industryDetail;
-    case 'st-wish':return !!a.wishIndustry;
-    case 'st-region':return !!a.region;
-    case 'st-scale':return numOrNull(a.revenue)!=null&&a.employees!==''&&a.employees!=null;
-    case 'st-history':return !!a.history;
-    case 'st-needs':return needsFlatList().length>0;
-    case 'st-intro':return !!(a.intro&&a.intro.trim());
+    case 'st-name':ok=!!(a.name&&a.name.trim());break;
+    case 'st-bizname':ok=!!(a.bizName&&a.bizName.trim());break;
+    case 'st-opendate':ok=/^\d{4}-\d{2}-\d{2}$/.test(a.openDate||'')&&ageYears(a.openDate)!=null;break;
+    case 'st-industry':ok=!!a.industry;break;
+    case 'st-industry-detail':ok=!!a.industryDetail;break;
+    case 'st-wish':ok=!!a.wishIndustry;break;
+    case 'st-region':ok=!!a.region;break;
+    case 'st-scale':ok=numOrNull(a.revenue)!=null&&a.employees!==''&&a.employees!=null;break;
+    case 'st-history':ok=!!a.history;break;
+    case 'st-needs':ok=needsFlatList().length>0;break;
+    case 'st-intro':ok=!!(a.intro&&a.intro.trim());break;
   }
-  return false;
+  return ok;
+}
+function stepDebugSnapshot(){
+  const cur=flow()[S.step];
+  return {step:S.step,cur,valid:validateStep(),state:S.a,needs:needsFlatList(),needCats:S.a.needCats,needSubs:S.a.needSubs};
 }
 function refreshCta(){$('btn-step-next').disabled=!validateStep();}
 
@@ -773,8 +778,13 @@ $('btn-step-back').addEventListener('click',()=>{
   else {renderHome();show('scr-home');}
 });
 $('btn-step-next').addEventListener('click',()=>{
-  if(!validateStep())return;
-  if(S.step<flow().length-1){S.step++;saveDraft();renderStep();}
+  const snap=stepDebugSnapshot();
+  console.log('[온보딩] 다음 클릭',snap);
+  if(!snap.valid){
+    console.warn('[온보딩] 단계 검증 실패 — 다음으로 넘어가지 않음',snap);
+    return;
+  }
+  if(S.step<flow().length-1){S.step++;saveDraft();renderStep();console.log('[온보딩] 다음 단계',stepDebugSnapshot());}
   else {saveDraft();startMatching();}
 });
 
