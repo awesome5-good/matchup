@@ -5,8 +5,6 @@
 - 변경 파일: {변경된 파일 목록}
 - 푸시: origin main 완료
 
-- Actions: https://github.com/awesome5-good/matchup/actions
-- Releases: https://github.com/awesome5-good/matchup/releases/latest
 - 배포: https://matchup-liard.vercel.app
 
 git push를 하지 않았다면 '푸시: 미완료 (git push 필요)'로 표시할 것.
