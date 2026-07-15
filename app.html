@@ -772,7 +772,7 @@ $('btn-resume').addEventListener('click',()=>enterSteps());
 $('btn-restart').addEventListener('click',()=>{clearDraft();renderHome();showToast('처음부터 다시 시작해요');});
 
 /* ═══════════ 스텝 플로우 ═══════════ */
-const FLOW_PRE=['st-name','st-region','st-wish','st-needs'];
+const FLOW_PRE=['st-name','st-region','st-industry','st-industry-detail','st-needs'];
 const FLOW_BIZ=['st-bizname','st-opendate','st-industry','st-industry-detail','st-region','st-scale','st-history','st-needs','st-intro'];
 function flow(){return S.type==='pre'?FLOW_PRE:FLOW_BIZ;}
 
@@ -1033,14 +1033,14 @@ async function startMatching(){
   try{
     const {data:{session}}=await db.auth.getSession();
     const desc=isPre
-      ?`[예비창업자] 창업 희망 업종: ${a.wishIndustry||''}`
+      ?`[예비창업자] 창업 희망 업종: ${a.industry||a.wishIndustry||''}${a.industryDetail?' / '+a.industryDetail:''}`
       :(a.intro||'');
     const {data:company}=await db.from('companies').insert({
       company_name:isPre?(a.name||''):(a.bizName||''),
       business_number:'',ceo_name:'',
       founded_date:isPre?null:(a.openDate||null),
-      industry:isPre?(a.wishIndustry||''):(a.industry||''),
-      industry_detail:isPre?'':(a.industryDetail||''),
+      industry:isPre?(a.industry||a.wishIndustry||''):(a.industry||''),
+      industry_detail:isPre?(a.industryDetail||''):(a.industryDetail||''),
       region:a.region||'',district:'',
       employee_count:isPre?null:numOrNull(a.employees),
       annual_revenue:isPre?null:numOrNull(a.revenue),
@@ -1081,15 +1081,15 @@ async function startMatching(){
 ## 신청자 정보
 - 사업자 상태: ${statusLabel()}
 - ${isPre?'이름':'기업명'}: ${isPre?(a.name||''):(a.bizName||'')}
-- 업태: ${isPre?(a.wishIndustry||'미정')+' (창업 희망 업종)':(a.industry||'미상')}
-- 세부업종: ${isPre?'미정 (예비창업)':(a.industryDetail||'미입력')}
+- 업태: ${isPre?(a.industry||a.wishIndustry||'미정')+' (창업 희망 업종)':(a.industry||'미상')}
+- 세부업종: ${isPre?(a.industryDetail||'미입력'):(a.industryDetail||'미입력')}
 - 소재지: ${a.region||'미입력'}
 - 업력: ${isPre?'해당 없음 (예비창업자)':(yrs!=null?`창업 ${yrs}년차`:'업력 미입력')}
 - 규모: ${isPre?'해당 없음 (예비창업자)':`${empStr} / ${revStr}`}
 - 기업규모 자동판별: ${sz?sz.label:'해당 없음'}
 - 과거 지원사업 수혜 이력: ${isPre?'해당 없음':(a.history||'미입력')}
 - 현재 필요한 것: ${needsFlatList().join(', ')||'미입력'}
-- 소개: ${isPre?`${a.wishIndustry||''} 업종으로 창업을 준비 중인 예비창업자`:(a.intro||'미입력')}
+- 소개: ${isPre?`${a.industry||a.wishIndustry||''}${a.industryDetail?' / '+a.industryDetail:''} 업종으로 창업을 준비 중인 예비창업자`:(a.intro||'미입력')}
 
 ## 지원사업 목록 (${pl.length}건)
 ${JSON.stringify(pl)}
