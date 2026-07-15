@@ -182,19 +182,18 @@ img{max-width:100%;display:block}
 
 /* ===== Consultant ===== */
 .consultant{
-  display:grid;grid-template-columns:280px 1fr;gap:44px;align-items:center;
+  display:grid;grid-template-columns:1fr;max-width:560px;margin:0 auto;text-align:center;
   background:#fff;border:1px solid var(--border);
   border-radius:var(--radius);padding:44px;
 }
 .consultant-photo{
-  width:100%;aspect-ratio:1/1.15;object-fit:cover;
-  border-radius:var(--radius-sm);
+  width:120px;height:120px;border-radius:50%;object-fit:cover;margin:0 auto 24px;
   background:var(--bg-alt);
 }
 .consultant-name{font-size:24px;font-weight:800;margin-bottom:4px}
 .consultant-title{font-size:15px;color:var(--primary);font-weight:600;margin-bottom:18px}
 .consultant-desc{font-size:16px;color:var(--text-sub);line-height:1.75;margin-bottom:24px}
-.consultant-stats{display:flex;gap:36px}
+.consultant-stats{display:flex;gap:36px;justify-content:center}
 .stat b{display:block;font-size:26px;font-weight:800;color:var(--text)}
 .stat span{font-size:13px;color:var(--text-weak)}
 
@@ -374,16 +373,15 @@ img{max-width:100%;display:block}
     <div class="consultant">
       <img src="images/consultant.jpg" alt="오동훈 박사" class="consultant-photo">
       <div>
-        <div class="section-eyebrow">경영컨설턴트</div>
         <div class="consultant-name">오동훈 박사</div>
-        <div class="consultant-title">경영학박사 · 브라보경영컨설팅 대표</div>
+        <div class="consultant-title">경영학박사</div>
         <p class="consultant-desc">
-          16년간 500여 개 기업의 정부지원사업을 직접 도우며 쌓은 심사·선정 기준을 매칭 로직에 담았습니다.
-          결과 확인 후 준비가 막막하시면, 그때 도와드리겠습니다.
+          16년간 500여 개 기업의 정부지원사업을 직접 도우며 쌓은 <strong>심사·선정 기준</strong>을 매칭 로직에 담았습니다. 결과 확인 후 준비가 막막하시면, <strong>그때 도와드리겠습니다.</strong>
         </p>
         <div class="consultant-stats">
           <div class="stat"><b>16년</b><span>기업지원 경력</span></div>
           <div class="stat"><b>500+</b><span>기업 컨설팅</span></div>
+          <div class="stat"><b>50+</b><span>창업·기업지원사업 심사</span></div>
         </div>
       </div>
     </div>
