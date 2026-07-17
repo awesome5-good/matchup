@@ -216,14 +216,31 @@
   const { createClient } = supabase;
   const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // 이미 로그인된 경우 app.html로 이동
+  function redirectAfterLogin() {
+    if (sessionStorage.getItem('redirect_after_login') === 'consulting') {
+      sessionStorage.removeItem('redirect_after_login');
+      window.location.href = 'app.html#plans';
+      return;
+    }
+    window.location.href = 'app.html';
+  }
+
+  // 이미 로그인된 경우 app.html로 이동 (결제 유도 시 컨설팅 플랜으로)
   async function checkSession() {
     const { data: { session } } = await db.auth.getSession();
     if (session) {
-      window.location.href = 'app.html';
+      redirectAfterLogin();
     }
   }
   checkSession();
+
+  db.auth.onAuthStateChange((event, session) => {
+    if (session && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
+      if (sessionStorage.getItem('redirect_after_login') === 'consulting') {
+        redirectAfterLogin();
+      }
+    }
+  });
 
   // 구글 로그인
   async function loginWithGoogle() {

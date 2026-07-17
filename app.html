@@ -468,7 +468,7 @@
       <div class="plan-name">셀프 준비</div>
       <div class="plan-price">무료</div>
       <div class="plan-feats">
-        <div class="plan-feat"><span class="plan-feat-check">✓</span>AI 진단 리포트 무제한 열람</div>
+        <div class="plan-feat"><span class="plan-feat-check">✓</span>매칭 결과 무제한 열람</div>
         <div class="plan-feat"><span class="plan-feat-check">✓</span>매칭 결과 및 마감일 알림 서비스</div>
       </div>
     </button>
@@ -655,9 +655,7 @@ async function requestConsultingPayment(){
   }
 }
 
-document.getElementById('btn-plan-action')?.addEventListener('click',()=>{
-  if(document.querySelector('.plan-card.selected')?.dataset.plan==='consulting')requestConsultingPayment();
-});
+window.requestConsultingPayment=requestConsultingPayment;
 document.getElementById('btn-pay-success-close')?.addEventListener('click',hidePaySuccess);
 document.getElementById('pay-success')?.addEventListener('click',e=>{
   if(e.target.id==='pay-success')hidePaySuccess();
@@ -1484,6 +1482,17 @@ document.querySelectorAll('.plan-card').forEach(card=>{
 });
 updatePlanSelection('consulting');
 
+$('btn-plan-action').addEventListener('click',async()=>{
+  if(document.querySelector('.plan-card.selected')?.dataset.plan!=='consulting')return;
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){
+    sessionStorage.setItem('redirect_after_login','consulting');
+    window.location.href='login.html';
+    return;
+  }
+  if(typeof window.requestConsultingPayment==='function')window.requestConsultingPayment();
+});
+
 async function loadGuide(m){
   const p=m.program||{};
   const key=p.id||p.title;
@@ -1725,10 +1734,22 @@ loadResults();
 loadSaved();
 updateBadges();
 renderHome();
-show('scr-home');
+if(sessionStorage.getItem('redirect_after_login')==='consulting'||location.hash==='#plans'){
+  sessionStorage.removeItem('redirect_after_login');
+  if(location.hash==='#plans')history.replaceState(null,'',location.pathname+location.search);
+  updatePlanSelection('consulting');
+  show('scr-plans');
+}else{
+  show('scr-home');
+}
 
 db.auth.onAuthStateChange(async(event,session)=>{
   if(!session||!(event==='SIGNED_IN'||event==='INITIAL_SESSION'))return;
+  if(sessionStorage.getItem('redirect_after_login')==='consulting'){
+    sessionStorage.removeItem('redirect_after_login');
+    updatePlanSelection('consulting');
+    show('scr-plans');
+  }
   try{
     const {data:saved}=await db.from('saved_programs').select('*').eq('user_id',session.user.id).order('created_at',{ascending:false}).limit(50);
     if(saved&&saved.length>0){
