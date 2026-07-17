@@ -204,6 +204,17 @@
     .plan-feats{display:flex;flex-direction:column;gap:6px;}
     .plan-feat{font-size:15px;color:var(--gray-600);display:flex;gap:8px;align-items:flex-start;}
     .plan-feat-check{color:var(--brand);font-weight:800;flex-shrink:0;}
+    .plan-actions{margin-top:16px;}
+    .btn-plan-pay{display:flex;align-items:center;justify-content:center;width:100%;height:48px;border:none;border-radius:12px;background:var(--brand);color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;}
+    .btn-plan-pay:disabled{background:var(--gray-100);color:var(--gray-400);cursor:not-allowed;}
+    .plan-card.featured .btn-plan-pay{box-shadow:0 4px 12px rgba(79,70,229,.25);}
+    .pay-success-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
+    .pay-success-overlay.show{display:flex;}
+    .pay-success-card{background:#fff;border-radius:20px;padding:28px 24px;max-width:360px;width:100%;text-align:center;}
+    .pay-success-title{font-size:20px;font-weight:800;margin-bottom:10px;}
+    .pay-success-msg{font-size:15px;color:var(--gray-600);line-height:1.65;margin-bottom:20px;}
+    .btn-pay-success-kakao{display:flex;align-items:center;justify-content:center;width:100%;height:52px;border:none;border-radius:14px;background:#FEE500;color:#191919;font-size:16px;font-weight:700;text-decoration:none;margin-bottom:10px;}
+    .btn-pay-success-close{width:100%;height:44px;border:1px solid var(--gray-200);border-radius:12px;background:#fff;color:var(--gray-600);font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;}
     .trust-block{background:var(--gray-50);border-radius:16px;padding:20px;margin-bottom:20px;display:flex;align-items:center;gap:16px;}
     .trust-avatar{width:56px;height:56px;border-radius:50%;background:var(--brand);color:#fff;font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
     #consultant-avatar img{width:56px;height:56px;border-radius:50%;object-fit:cover;display:block;}
@@ -467,6 +478,9 @@
         <div class="plan-feat"><span class="plan-feat-check">✓</span>귀사 맞춤 신청 우선순위 및 전략 제시</div>
         <div class="plan-feat"><span class="plan-feat-check">✓</span>신청 전략 요약 보고서 제공</div>
       </div>
+      <div class="plan-actions">
+        <button type="button" class="btn-plan-pay" id="btn-pay-consulting" data-product-id="consulting-30min">50,000원 결제하기</button>
+      </div>
     </div>
     <div class="plan-card">
       <div class="plan-name">신청서 작성 전담 서비스</div>
@@ -475,6 +489,9 @@
         <div class="plan-feat"><span class="plan-feat-check">✓</span>사업계획서 초안 작성 지원</div>
         <div class="plan-feat"><span class="plan-feat-check">✓</span>제출 서류 준비 및 접수 대행</div>
         <div class="plan-feat"><span class="plan-feat-check">✓</span>발표평가 대비 리허설 코칭</div>
+      </div>
+      <div class="plan-actions">
+        <button type="button" class="btn-plan-pay" id="btn-pay-custom" disabled>상담 후 결제</button>
       </div>
     </div>
   </div>
@@ -552,6 +569,97 @@
 </nav>
 
 <div class="toast" id="toast"></div>
+
+<div class="pay-success-overlay" id="pay-success">
+  <div class="pay-success-card">
+    <div class="pay-success-title">결제가 완료되었어요</div>
+    <p class="pay-success-msg">맞춤 전략 상담 신청 감사합니다.<br>카카오톡 채널에서 상담 일정을 안내해드릴게요.</p>
+    <a class="btn-pay-success-kakao" href="http://pf.kakao.com/_hRqxon" target="_blank" rel="noopener">카카오톡 채널 바로가기</a>
+    <button type="button" class="btn-pay-success-close" id="btn-pay-success-close">닫기</button>
+  </div>
+</div>
+
+<script type="module">
+import { PortOne } from 'https://esm.sh/@portone/browser-sdk/v2';
+
+const PAY_PRODUCTS={
+  'consulting-30min':{name:'맞춤 전략 상담',amount:50000}
+};
+
+function payToast(msg){
+  const t=document.getElementById('toast');
+  if(!t)return;
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+function showPaySuccess(){
+  const overlay=document.getElementById('pay-success');
+  if(!overlay)return;
+  overlay.classList.add('show');
+}
+
+function hidePaySuccess(){
+  const overlay=document.getElementById('pay-success');
+  if(!overlay)return;
+  overlay.classList.remove('show');
+}
+
+let portoneConfigPromise=null;
+function loadPortoneConfig(){
+  if(!portoneConfigPromise){
+    portoneConfigPromise=fetch('/api/portone-config')
+      .then(r=>r.json().then(data=>({ok:r.ok,data})))
+      .then(({ok,data})=>{
+        if(!ok||!data?.channelKey)throw new Error(data?.error||'결제 설정을 불러오지 못했어요');
+        return data;
+      });
+  }
+  return portoneConfigPromise;
+}
+
+async function requestConsultingPayment(){
+  const product=PAY_PRODUCTS['consulting-30min'];
+  const btn=document.getElementById('btn-pay-consulting');
+  if(btn)btn.disabled=true;
+  try{
+    const config=await loadPortoneConfig();
+    if(!config.storeId)throw new Error('PORTONE_STORE_ID 설정이 필요해요');
+    const paymentId=`consulting-30min-${Date.now()}-${crypto.randomUUID().slice(0,8)}`;
+    const response=await PortOne.requestPayment({
+      storeId:config.storeId,
+      channelKey:config.channelKey,
+      paymentId,
+      orderName:product.name,
+      totalAmount:product.amount,
+      currency:'CURRENCY_KRW',
+      payMethod:'CARD',
+      products:[{
+        id:'consulting-30min',
+        name:product.name,
+        amount:product.amount,
+        quantity:1
+      }]
+    });
+    if(response?.code){
+      payToast(response.message||'결제에 실패했어요. 다시 시도해주세요');
+      return;
+    }
+    showPaySuccess();
+  }catch(e){
+    payToast(e.message||'결제 중 오류가 발생했어요');
+  }finally{
+    if(btn)btn.disabled=false;
+  }
+}
+
+document.getElementById('btn-pay-consulting')?.addEventListener('click',requestConsultingPayment);
+document.getElementById('btn-pay-success-close')?.addEventListener('click',hidePaySuccess);
+document.getElementById('pay-success')?.addEventListener('click',e=>{
+  if(e.target.id==='pay-success')hidePaySuccess();
+});
+</script>
 
 <script>
 /* ═══════════ 상수 ═══════════ */
