@@ -195,8 +195,8 @@
 
     /* ── 전문가 플랜 ── */
     .plan-cards{display:flex;flex-direction:column;gap:12px;margin-bottom:28px;}
-    .plan-card{border:1.5px solid var(--gray-200);border-radius:16px;padding:20px;background:#fff;position:relative;}
-    .plan-card.featured{border:2px solid var(--brand);}
+    .plan-card{border:1.5px solid var(--gray-200);border-radius:16px;padding:20px;background:#fff;position:relative;cursor:pointer;text-align:left;font-family:inherit;width:100%;}
+    .plan-card.selected{border:2px solid var(--brand);box-shadow:0 4px 12px rgba(79,70,229,.12);}
     .plan-pop{position:absolute;top:-11px;left:16px;background:var(--brand);color:#fff;font-size:12px;font-weight:800;padding:3px 10px;border-radius:10px;}
     .plan-name{font-size:18px;font-weight:800;margin-bottom:4px;}
     .plan-price{font-size:20px;font-weight:800;color:var(--brand);margin-bottom:10px;}
@@ -205,9 +205,10 @@
     .plan-feat{font-size:15px;color:var(--gray-600);display:flex;gap:8px;align-items:flex-start;}
     .plan-feat-check{color:var(--brand);font-weight:800;flex-shrink:0;}
     .plan-actions{margin-top:16px;}
+    .plan-checkout{margin-bottom:28px;}
+    .plan-refund-notice{font-size:12px;color:var(--gray-500);line-height:1.7;margin-bottom:12px;}
     .btn-plan-pay{display:flex;align-items:center;justify-content:center;width:100%;height:48px;border:none;border-radius:12px;background:var(--brand);color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;}
     .btn-plan-pay:disabled{background:var(--gray-100);color:var(--gray-400);cursor:not-allowed;}
-    .plan-card.featured .btn-plan-pay{box-shadow:0 4px 12px rgba(79,70,229,.25);}
     .pay-success-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
     .pay-success-overlay.show{display:flex;}
     .pay-success-card{background:#fff;border-radius:20px;padding:28px 24px;max-width:360px;width:100%;text-align:center;}
@@ -461,15 +462,15 @@
   <h1 class="screen-title">전문가와 함께 준비하시겠어요?</h1>
   <p class="screen-sub">대표님 상황에 맞는 지원 방식을 선택해주세요</p>
   <div class="plan-cards">
-    <div class="plan-card">
+    <button type="button" class="plan-card" data-plan="self">
       <div class="plan-name">셀프 준비</div>
       <div class="plan-price">무료</div>
       <div class="plan-feats">
         <div class="plan-feat"><span class="plan-feat-check">✓</span>AI 진단 리포트 무제한 열람</div>
         <div class="plan-feat"><span class="plan-feat-check">✓</span>매칭 결과 및 마감일 알림 서비스</div>
       </div>
-    </div>
-    <div class="plan-card featured">
+    </button>
+    <button type="button" class="plan-card selected" data-plan="consulting">
       <div class="plan-pop">가장 많이 선택</div>
       <div class="plan-name">맞춤 전략 상담</div>
       <div class="plan-price">5만원 <small>· 30분 (줌 또는 대구 대면 가능)</small></div>
@@ -478,11 +479,8 @@
         <div class="plan-feat"><span class="plan-feat-check">✓</span>귀사 맞춤 신청 우선순위 및 전략 제시</div>
         <div class="plan-feat"><span class="plan-feat-check">✓</span>신청 전략 요약 보고서 제공</div>
       </div>
-      <div class="plan-actions">
-        <button type="button" class="btn-plan-pay" id="btn-pay-consulting" data-product-id="consulting-30min">50,000원 결제하기</button>
-      </div>
-    </div>
-    <div class="plan-card">
+    </button>
+    <button type="button" class="plan-card" data-plan="custom">
       <div class="plan-name">신청서 작성 전담 서비스</div>
       <div class="plan-price">맞춤견적 <small>· 사업별 상이</small></div>
       <div class="plan-feats">
@@ -490,10 +488,11 @@
         <div class="plan-feat"><span class="plan-feat-check">✓</span>제출 서류 준비 및 접수 대행</div>
         <div class="plan-feat"><span class="plan-feat-check">✓</span>발표평가 대비 리허설 코칭</div>
       </div>
-      <div class="plan-actions">
-        <button type="button" class="btn-plan-pay" id="btn-pay-custom" disabled>상담 후 결제</button>
-      </div>
-    </div>
+    </button>
+  </div>
+  <div class="plan-checkout" id="plan-checkout">
+    <p class="plan-refund-notice">· 결제일로부터 30일 이내 서비스 제공<br>· 서비스 제공 전 7일 이내 청약철회 가능</p>
+    <button type="button" class="btn-plan-pay" id="btn-plan-action" data-product-id="consulting-30min">50,000원 결제하기</button>
   </div>
   <div class="trust-block">
     <div class="trust-avatar" id="consultant-avatar">
@@ -621,7 +620,7 @@ function loadPortoneConfig(){
 
 async function requestConsultingPayment(){
   const product=PAY_PRODUCTS['consulting-30min'];
-  const btn=document.getElementById('btn-pay-consulting');
+  const btn=document.getElementById('btn-plan-action');
   if(btn)btn.disabled=true;
   try{
     const config=await loadPortoneConfig();
@@ -654,7 +653,9 @@ async function requestConsultingPayment(){
   }
 }
 
-document.getElementById('btn-pay-consulting')?.addEventListener('click',requestConsultingPayment);
+document.getElementById('btn-plan-action')?.addEventListener('click',()=>{
+  if(document.querySelector('.plan-card.selected')?.dataset.plan==='consulting')requestConsultingPayment();
+});
 document.getElementById('btn-pay-success-close')?.addEventListener('click',hidePaySuccess);
 document.getElementById('pay-success')?.addEventListener('click',e=>{
   if(e.target.id==='pay-success')hidePaySuccess();
@@ -667,7 +668,7 @@ const SUPABASE_URL='https://wykupodtnbcrebgbzyxr.supabase.co';
 const SUPABASE_KEY='sb_publishable_THekjy2-GusHmZ7FrjX9UQ_gm41EUr2';
 const KAKAO_CHANNEL_URL='http://pf.kakao.com/_hRqxon';
 const PHONE_NUMBER='010-0000-0000'; // TODO: 전화 상담 재개 시 실제 번호로 교체
-const CONSULTANT={name:'오동훈 박사 · 경영학박사 · 브라보경영컨설팅 대표',career:'정부지원사업 컨설팅 경력 16년',count:'컨설팅 500+건'};
+const CONSULTANT={name:'오동훈 박사 · 경영학박사',career:'정부지원사업 컨설팅 경력 16년',count:'컨설팅 500+건'};
 const {createClient}=supabase;
 const db=createClient(SUPABASE_URL,SUPABASE_KEY);
 
@@ -1408,6 +1409,30 @@ $('btn-go-plans').addEventListener('click',()=>show('scr-plans'));
 $('btn-plans-back').addEventListener('click',()=>{
   if(currentDetail)show('scr-detail');else navTab('results');
 });
+
+function updatePlanSelection(plan){
+  document.querySelectorAll('.plan-card').forEach(c=>{
+    c.classList.toggle('selected',c.dataset.plan===plan);
+  });
+  const checkout=$('plan-checkout');
+  const btn=$('btn-plan-action');
+  if(plan==='self'){
+    checkout.classList.add('hidden');
+    return;
+  }
+  checkout.classList.remove('hidden');
+  if(plan==='consulting'){
+    btn.textContent='50,000원 결제하기';
+    btn.disabled=false;
+  }else{
+    btn.textContent='상담 후 결제';
+    btn.disabled=true;
+  }
+}
+document.querySelectorAll('.plan-card').forEach(card=>{
+  card.addEventListener('click',()=>updatePlanSelection(card.dataset.plan));
+});
+updatePlanSelection('consulting');
 
 async function loadGuide(m){
   const p=m.program||{};
