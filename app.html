@@ -1284,7 +1284,7 @@ JSON 배열만 답변 (다른 텍스트 절대 금지):
       if(s>=0&&e>s)ai=JSON.parse(c.slice(s,e));
     }catch(e){console.error('매칭 파싱 오류:',e);}
 
-    ai=(ai||[]).filter(m=>m.score>=65);
+    ai=(ai||[]).filter(m=>m.score>=70);
     finishMatching(ai,programs);
   }catch(e){
     console.error(e);
