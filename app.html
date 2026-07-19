@@ -465,7 +465,7 @@
   <h2 class="eg-title">전문가 실무 가이드</h2>
   <p class="eg-sub">16년간 500개 기업 컨설팅·100건 이상 심사에서 나온 실전 노하우</p>
 
-  <div class="eg-item">
+  <div class="eg-item" data-for="pre">
     <div class="eg-head" onclick="this.parentElement.classList.toggle('open')">📝 사업계획서, 심사위원은 이렇게 읽습니다<span class="eg-arrow">▼</span></div>
     <div class="eg-body">
       <strong>① 문제 정의</strong> — "시장에 어떤 문제가 있고 누가 얼마나 불편한가"를 숫자로. "1인 가구가 늘고 있다"는 누구나 쓰는 문장입니다. "대구 수성구 1인 가구 4.2만 세대, 5년간 31% 증가, 그런데 소용량 반찬 전문점은 3곳"처럼 지역·규모·공백을 한 문장에 담으세요.
@@ -478,7 +478,7 @@
     </div>
   </div>
 
-  <div class="eg-item">
+  <div class="eg-item" data-for="pre">
     <div class="eg-head" onclick="this.parentElement.classList.toggle('open')">🎯 심사위원이 실제로 보는 평가 항목 5가지<span class="eg-arrow">▼</span></div>
     <div class="eg-body">
       공고문 뒤쪽 '평가 기준' 표가 답안지입니다. 대부분 <strong>실현가능성 30~40점 &gt; 대표자 역량 20~30점 &gt; 시장성 20점 &gt; 차별성 10~20점 &gt; 재무 합리성 10점</strong> 구조입니다. 배점 높은 순서대로 분량을 배분하세요.
@@ -491,7 +491,7 @@
     </div>
   </div>
 
-  <div class="eg-item">
+  <div class="eg-item" data-for="all">
     <div class="eg-head" onclick="this.parentElement.classList.toggle('open')">🚫 탈락 사유 TOP 5 — 이것만 피해도 절반은 통과<span class="eg-arrow">▼</span></div>
     <div class="eg-body">
       <strong>1위. 자격 조건 미확인</strong> — 서류가 아무리 좋아도 자격 미달은 심사 전에 탈락합니다. 특히 사업자가 여러 개인 경우, 업력 계산, 사업자등록증 업태·종목 불일치(이건 업종 추가로 해결 가능), "폐업 후 O년 이내" 조건 — 이런 디테일에서 자주 걸립니다. 공고문의 '신청 자격'과 '제외 대상'을 형광펜 들고 읽으세요. 애매하면 담당자 전화 — 공고문의 문의 번호는 쓰라고 있는 겁니다.
@@ -503,7 +503,7 @@
     </div>
   </div>
 
-  <div class="eg-item">
+  <div class="eg-item" data-for="biz">
     <div class="eg-head" onclick="this.parentElement.classList.toggle('open')">📋 신청 서류 체크리스트<span class="eg-arrow">▼</span></div>
     <div class="eg-body">
       <strong>공통 서류</strong> — 사업자등록증명원(홈택스, 3개월 이내 발급본), 국세 납세증명서(홈택스), 지방세 납세증명서(위택스), 사업계획서(공고 서식 필수), 대표자 신분증·통장 사본. 체납이 있으면 신청 자체가 막히는 사업이 많으니 미리 확인하세요. 예비창업자는 "사업자등록 없음"이 자격인 사업이 있으니 등록 시점을 전략적으로 판단해야 합니다.
@@ -512,7 +512,7 @@
     </div>
   </div>
 
-  <div class="eg-item">
+  <div class="eg-item" data-for="biz">
     <div class="eg-head" onclick="this.parentElement.classList.toggle('open')">✅ 선정 후 협약·정산 — 선정됐다고 끝이 아닙니다<span class="eg-arrow">▼</span></div>
     <div class="eg-body">
       지원사업의 진짜 난이도는 선정 이후입니다. 이 파트는 어디에서도 잘 안 알려주는 내용입니다.
@@ -1468,6 +1468,19 @@ function showDetail(m,fromScreen){
   else link.classList.add('hidden');
   refreshDetailSaveBtn();
   show('scr-detail');
+  // 전문가 가이드 맞춤 노출: 예비창업자는 계획서·평가 중심, 기창업자는 서류·정산 중심
+  (function(){
+    const isPreUser=S.type==='pre';
+    document.querySelectorAll('.expert-guide .eg-item').forEach(el=>{
+      const f=el.getAttribute('data-for');
+      if(f==='all'){el.style.display='';return;}
+      if(isPreUser){
+        el.style.display=(f==='pre')?'':'none';
+      }else{
+        el.style.display=(f==='biz')?'':'none';
+      }
+    });
+  })();
   loadDetailCopy(m);
   loadGuide(m);
 }
