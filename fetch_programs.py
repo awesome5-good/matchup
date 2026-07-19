@@ -93,7 +93,7 @@ def fetch_kstartup():
                                "tags": tags, "is_active": True}):
                 total += 1
     report[src] = {"saved": total, "errors": errors}
-    print(f"  → {src} 완료: {total}건 저장/갱신" + (f" | 오류 {errors}건 ⚠️" if errors else ""))
+    print(f"  → {src} 완료: {total}건 저장/갱신" + (f" | 오류 {errors}건 [경고]" if errors else ""))
     return total
 
 
@@ -137,7 +137,7 @@ def fetch_bizinfo():
         print(f"  호출 실패: {e}")
         errors += 1
     report[src] = {"saved": total, "errors": errors}
-    print(f"  → {src} 완료: {total}건 저장/갱신" + (f" | 오류 {errors}건 ⚠️" if errors else ""))
+    print(f"  → {src} 완료: {total}건 저장/갱신" + (f" | 오류 {errors}건 [경고]" if errors else ""))
     return total
 
 
@@ -160,11 +160,19 @@ def fetch_mss():
             break
         items = []
         try:
-            items = data["response"]["body"]["items"]["item"]
-            if isinstance(items, dict):
-                items = [items]
-        except Exception:
-            print(f"  페이지 {page}: 데이터 파싱 실패 또는 없음")
+            body = data.get("response", {}).get("body", {})
+            raw = body.get("items", {})
+            if isinstance(raw, dict):
+                raw = raw.get("item", [])
+            if isinstance(raw, dict):
+                raw = [raw]
+            items = raw if isinstance(raw, list) else []
+            if not items:
+                print(f"  페이지 {page}: 데이터 없음 - 응답 구조: {list(body.keys())}")
+                break
+        except Exception as e:
+            print(f"  페이지 {page}: 파싱 오류 - {e}")
+            errors += 1
             break
         if not items:
             break
@@ -187,7 +195,7 @@ def fetch_mss():
                                "tags": ["중소벤처기업부", category], "is_active": True}):
                 total += 1
     report[src] = {"saved": total, "errors": errors}
-    print(f"  → {src} 완료: {total}건 저장/갱신" + (f" | 오류 {errors}건 ⚠️" if errors else ""))
+    print(f"  → {src} 완료: {total}건 저장/갱신" + (f" | 오류 {errors}건 [경고]" if errors else ""))
     return total
 
 
@@ -230,7 +238,7 @@ def fetch_smes24():
                                "tags": ["중소벤처24", category], "is_active": True}):
                 total += 1
     report[src] = {"saved": total, "errors": errors}
-    print(f"  → {src} 완료: {total}건 저장/갱신" + (f" | 오류 {errors}건 ⚠️" if errors else ""))
+    print(f"  → {src} 완료: {total}건 저장/갱신" + (f" | 오류 {errors}건 [경고]" if errors else ""))
     return total
 
 
@@ -280,7 +288,7 @@ def fetch_youth():
                                "source_url": detail_url, "tags": ["온통청년", category], "is_active": True}):
                 total += 1
     report[src] = {"saved": total, "errors": errors}
-    print(f"  → {src} 완료: {total}건 저장/갱신" + (f" | 오류 {errors}건 ⚠️" if errors else ""))
+    print(f"  → {src} 완료: {total}건 저장/갱신" + (f" | 오류 {errors}건 [경고]" if errors else ""))
     return total
 
 
@@ -305,18 +313,18 @@ def deactivate_expired():
 # ══════════════════════════════════════════
 def print_report(deactivated):
     print(f"\n{'='*50}")
-    print("📋 수집 결과 리포트")
+    print("수집 결과 리포트")
     print(f"{'='*50}")
     total_saved = 0
     for src, r in report.items():
         if r.get("skipped"):
-            status = "⏭  건너뜀 (키 미입력)"
+            status = "[건너뜀]  건너뜀 (키 미입력)"
         elif r.get("errors", 0) > 0:
-            status = f"⚠️  저장 {r['saved']}건 | 오류 {r['errors']}건 — 사이트 개편 가능성, 확인 필요"
+            status = f"[경고]  저장 {r['saved']}건 | 오류 {r['errors']}건 — 사이트 개편 가능성, 확인 필요"
         elif r["saved"] == 0:
-            status = f"❌ 0건 — API 응답 확인 필요"
+            status = f"[오류] 0건 — API 응답 확인 필요"
         else:
-            status = f"✅ {r['saved']}건 저장/갱신"
+            status = f"[OK] {r['saved']}건 저장/갱신"
         print(f"  {src:<12} : {status}")
         total_saved += r.get("saved", 0)
     print(f"{'─'*50}")
