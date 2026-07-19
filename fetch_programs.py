@@ -1,29 +1,40 @@
 # -*- coding: utf-8 -*-
 """
-매치업 지원사업 데이터 수집 v2
-- K-Startup: 페이지네이션 (최대 5페이지 = 500건)
-- 기업마당(Bizinfo): API 키 입력 시 자동 활성화
-- upsert로 중복 방지 (title 기준)
-- 마감 지난 공고 자동 비활성화
+매치업 지원사업 데이터 수집 v3
+소스별 수집 결과 및 오류를 자가진단 리포트로 출력
+
+[소스 목록]
+1. K-Startup (창업진흥원)           — 기존
+2. 기업마당 (Bizinfo)               — 기존
+3. 중소벤처기업부 공고 조회 서비스   — 신규 (공공데이터포털 키)
+4. 중소벤처24 공고정보               — 신규 (portal.smes.go.kr 키)
+5. 온통청년 청년정책API              — 키 입력 시 자동 활성화
+
 실행: python fetch_programs.py
 """
 import requests
 from datetime import date
 from supabase import create_client
 
+# ── 인증키 ──────────────────────────────────────────
 SUPABASE_URL = "https://wykupodtnbcrebgbzyxr.supabase.co"
 SUPABASE_KEY = "sb_publishable_THekjy2-GusHmZ7FrjX9UQ_gm41EUr2"
-KSTARTUP_KEY = "4f518baf8a28ed0f517bba932b36bc8dccb2b3c5c5b16993de091777e0f48ef4"
 
-# 기업마당 인증키 — https://www.bizinfo.go.kr/apiList.do 에서 발급 후 여기 입력
-BIZINFO_KEY = "2I57xn"
+KSTARTUP_KEY   = "4f518baf8a28ed0f517bba932b36bc8dccb2b3c5c5b16993de091777e0f48ef4"
+BIZINFO_KEY    = "2I57xn"
+DATA_GO_KEY    = "4f518baf8a28ed0f517bba932b36bc8dccb2b3c5c5b16993de091777e0f48ef4"  # 공공데이터포털
+SMES24_KEY     = "wQZe2AZiStdLNDd4um8dHnWQviVTRAZxv1jV+EyGcrXpc5y3+e3eHjtgn32Psfo0fr8tTUZ22JYPAxrcN+igjw=="
+YOUTH_KEY      = ""   # 온통청년 — 승인 후 입력
+# ────────────────────────────────────────────────────
 
-db = create_client(SUPABASE_URL, SUPABASE_KEY)
+db    = create_client(SUPABASE_URL, SUPABASE_KEY)
 today = date.today().isoformat()
+
+# 소스별 결과 집계
+report = {}
 
 
 def fmt_date(s):
-    """YYYYMMDD 또는 YYYY-MM-DD → YYYY-MM-DD, 아니면 None"""
     if not s:
         return None
     s = str(s).strip().replace(".", "-").replace("/", "-")
@@ -35,7 +46,6 @@ def fmt_date(s):
 
 
 def upsert_program(program):
-    """title 기준 upsert — 이미 있으면 갱신, 없으면 삽입"""
     try:
         db.table("programs").upsert(program, on_conflict="title").execute()
         return True
@@ -44,145 +54,282 @@ def upsert_program(program):
         return False
 
 
+# ══════════════════════════════════════════
+# 1. K-Startup
+# ══════════════════════════════════════════
 def fetch_kstartup():
-    print("=" * 50)
-    print("[1/3] K-Startup API 수집 시작")
+    src = "K-Startup"
+    print(f"\n{'='*50}")
+    print(f"[1/5] {src} 수집 시작")
     url = "https://apis.data.go.kr/B552735/kisedKstartupService01/getAnnouncementInformation01"
-    total = 0
-    for page in range(1, 6):  # 최대 5페이지 = 500건
-        params = {
-            "serviceKey": KSTARTUP_KEY,
-            "page": page,
-            "perPage": 100,
-            "returnType": "JSON",
-        }
+    total, errors = 0, 0
+    for page in range(1, 6):
         try:
-            res = requests.get(url, params=params, timeout=15)
+            res  = requests.get(url, params={"serviceKey": KSTARTUP_KEY, "page": page, "perPage": 100, "returnType": "JSON"}, timeout=15)
             data = res.json()
         except Exception as e:
             print(f"  페이지 {page} 호출 실패: {e}")
+            errors += 1
             break
-
         items = data.get("data", [])
         if not items:
-            print(f"  페이지 {page}: 데이터 없음 — 종료")
             break
         print(f"  페이지 {page}: {len(items)}건 수신")
-
         for item in items:
-            title = (item.get("biz_pbanc_nm") or "").strip()
+            title    = (item.get("biz_pbanc_nm") or "").strip()
             if not title:
                 continue
             deadline = fmt_date(item.get("pbanc_rcpt_end_dt"))
-            # 마감 지난 공고는 저장 단계에서 제외
             if deadline and deadline < today:
                 continue
-
             category = item.get("supt_biz_clsfc", "") or "창업"
-            region = item.get("supt_regin", "") or ""
-            tags = ["K-Startup"]
-            if category:
-                tags.append(category)
+            region   = item.get("supt_regin", "") or ""
+            tags     = ["K-Startup", category]
             if region:
                 tags.append(region)
-
-            program = {
-                "title": title,
-                "organization": item.get("pbanc_ntrp_nm", ""),
-                "category": category,
-                "description": item.get("pbanc_ctnt", ""),
-                "deadline": deadline,
-                "eligibility": item.get("aply_trgt_ctnt", ""),
-                "source_url": item.get("detl_pg_url", ""),
-                "tags": tags,
-                "is_active": True,
-            }
-            if upsert_program(program):
+            if upsert_program({"title": title, "organization": item.get("pbanc_ntrp_nm",""), "category": category,
+                               "description": item.get("pbanc_ctnt",""), "deadline": deadline,
+                               "eligibility": item.get("aply_trgt_ctnt",""), "source_url": item.get("detl_pg_url",""),
+                               "tags": tags, "is_active": True}):
                 total += 1
-    print(f"  → K-Startup 완료: {total}건 저장/갱신")
+    report[src] = {"saved": total, "errors": errors}
+    print(f"  → {src} 완료: {total}건 저장/갱신" + (f" | 오류 {errors}건 ⚠️" if errors else ""))
     return total
 
 
+# ══════════════════════════════════════════
+# 2. 기업마당 (Bizinfo)
+# ══════════════════════════════════════════
 def fetch_bizinfo():
-    print("=" * 50)
+    src = "기업마당"
+    print(f"\n{'='*50}")
     if not BIZINFO_KEY:
-        print("[2/3] 기업마당 — 인증키 미입력, 건너뜀")
-        print("  발급: https://www.bizinfo.go.kr/apiList.do → 지원사업정보 API")
+        print(f"[2/5] {src} — 인증키 미입력, 건너뜀")
+        report[src] = {"saved": 0, "errors": 0, "skipped": True}
         return 0
-    print("[2/3] 기업마당 API 수집 시작")
-    url = "https://www.bizinfo.go.kr/uss/rss/bizinfoApi.do"
-    params = {
-        "crtfcKey": BIZINFO_KEY,
-        "dataType": "json",
-        "searchCnt": "300",
-    }
-    total = 0
+    print(f"[2/5] {src} 수집 시작")
+    url    = "https://www.bizinfo.go.kr/uss/rss/bizinfoApi.do"
+    total, errors = 0, 0
     try:
-        res = requests.get(url, params=params, timeout=20)
-        data = res.json()
+        res   = requests.get(url, params={"crtfcKey": BIZINFO_KEY, "dataType": "json", "searchCnt": "300"}, timeout=20)
+        data  = res.json()
+        items = data.get("jsonArray", []) or data.get("item", []) or []
+        print(f"  {len(items)}건 수신")
+        for item in items:
+            title = (item.get("pblancNm") or "").strip()
+            if not title:
+                continue
+            period   = item.get("reqstBeginEndDe", "") or ""
+            deadline = fmt_date(period.split("~")[-1].strip()) if "~" in period else None
+            if deadline and deadline < today:
+                continue
+            category = item.get("pldirSportRealmLclasCodeNm", "") or "경영"
+            organ    = item.get("jrsdInsttNm", "") or item.get("excInsttNm", "")
+            detail_url = item.get("pblancUrl", "") or ""
+            if detail_url.startswith("/"):
+                detail_url = "https://www.bizinfo.go.kr" + detail_url
+            if upsert_program({"title": title, "organization": organ, "category": category,
+                               "description": (item.get("bsnsSumryCn") or "")[:2000], "deadline": deadline,
+                               "eligibility": item.get("trgetNm", "") or "", "source_url": detail_url,
+                               "tags": ["기업마당", category], "is_active": True}):
+                total += 1
     except Exception as e:
         print(f"  호출 실패: {e}")
-        return 0
-
-    items = data.get("jsonArray", []) or data.get("item", []) or []
-    print(f"  {len(items)}건 수신")
-    for item in items:
-        title = (item.get("pblancNm") or "").strip()
-        if not title:
-            continue
-        # 신청기간 "20260101 ~ 20260731" 형태에서 종료일 추출
-        period = item.get("reqstBeginEndDe", "") or ""
-        deadline = None
-        if "~" in period:
-            deadline = fmt_date(period.split("~")[-1].strip())
-        if deadline and deadline < today:
-            continue
-
-        category = item.get("pldirSportRealmLclasCodeNm", "") or "경영"
-        organ = item.get("jrsdInsttNm", "") or item.get("excInsttNm", "")
-        tags = ["기업마당", category]
-
-        detail_url = item.get("pblancUrl", "") or ""
-        if detail_url and detail_url.startswith("/"):
-            detail_url = "https://www.bizinfo.go.kr" + detail_url
-
-        program = {
-            "title": title,
-            "organization": organ,
-            "category": category,
-            "description": (item.get("bsnsSumryCn") or "")[:2000],
-            "deadline": deadline,
-            "eligibility": item.get("trgetNm", "") or "",
-            "source_url": detail_url,
-            "tags": tags,
-            "is_active": True,
-        }
-        if upsert_program(program):
-            total += 1
-    print(f"  → 기업마당 완료: {total}건 저장/갱신")
+        errors += 1
+    report[src] = {"saved": total, "errors": errors}
+    print(f"  → {src} 완료: {total}건 저장/갱신" + (f" | 오류 {errors}건 ⚠️" if errors else ""))
     return total
 
 
+# ══════════════════════════════════════════
+# 3. 중소벤처기업부 공고 조회 서비스 (공공데이터포털)
+# ══════════════════════════════════════════
+def fetch_mss():
+    src = "중소벤처기업부"
+    print(f"\n{'='*50}")
+    print(f"[3/5] {src} 공고 조회 서비스 수집 시작")
+    url   = "https://apis.data.go.kr/1421000/bizinfo/pblancBsnsService/getPblancBsnsList"
+    total, errors = 0, 0
+    for page in range(1, 6):
+        try:
+            res  = requests.get(url, params={"serviceKey": DATA_GO_KEY, "pageNo": page, "numOfRows": 100, "returnType": "json"}, timeout=15)
+            data = res.json()
+        except Exception as e:
+            print(f"  페이지 {page} 호출 실패: {e}")
+            errors += 1
+            break
+        items = []
+        try:
+            items = data["response"]["body"]["items"]["item"]
+            if isinstance(items, dict):
+                items = [items]
+        except Exception:
+            print(f"  페이지 {page}: 데이터 파싱 실패 또는 없음")
+            break
+        if not items:
+            break
+        print(f"  페이지 {page}: {len(items)}건 수신")
+        for item in items:
+            title    = (item.get("pblancNm") or "").strip()
+            if not title:
+                continue
+            deadline = fmt_date(item.get("reqstEndDe") or item.get("pblancEndDe"))
+            if deadline and deadline < today:
+                continue
+            category = item.get("pldirSportRealmLclasCodeNm", "") or "경영"
+            organ    = item.get("jrsdInsttNm", "") or item.get("excInsttNm", "")
+            detail_url = item.get("pblancUrl", "") or ""
+            if detail_url.startswith("/"):
+                detail_url = "https://www.bizinfo.go.kr" + detail_url
+            if upsert_program({"title": title, "organization": organ, "category": category,
+                               "description": (item.get("bsnsSumryCn") or "")[:2000], "deadline": deadline,
+                               "eligibility": item.get("trgetNm", "") or "", "source_url": detail_url,
+                               "tags": ["중소벤처기업부", category], "is_active": True}):
+                total += 1
+    report[src] = {"saved": total, "errors": errors}
+    print(f"  → {src} 완료: {total}건 저장/갱신" + (f" | 오류 {errors}건 ⚠️" if errors else ""))
+    return total
+
+
+# ══════════════════════════════════════════
+# 4. 중소벤처24 공고정보
+# ══════════════════════════════════════════
+def fetch_smes24():
+    src = "중소벤처24"
+    print(f"\n{'='*50}")
+    print(f"[4/5] {src} 공고정보 수집 시작")
+    url   = "https://portal.smes.go.kr/api/biz/announce/list"
+    total, errors = 0, 0
+    for page in range(1, 6):
+        try:
+            res  = requests.get(url, params={"apiKey": SMES24_KEY, "pageNo": page, "pageSize": 100}, timeout=15)
+            data = res.json()
+        except Exception as e:
+            print(f"  페이지 {page} 호출 실패: {e}")
+            errors += 1
+            break
+        items = data.get("data", {}).get("list", []) or data.get("list", []) or []
+        if not items:
+            # 응답 구조가 다를 수 있어 원본 출력
+            print(f"  페이지 {page}: 데이터 없음 (응답키: {list(data.keys())})")
+            break
+        print(f"  페이지 {page}: {len(items)}건 수신")
+        for item in items:
+            title    = (item.get("anncNm") or item.get("pblancNm") or "").strip()
+            if not title:
+                continue
+            deadline = fmt_date(item.get("rcptEndDe") or item.get("pblancEndDe"))
+            if deadline and deadline < today:
+                continue
+            organ    = item.get("anncInsttNm") or item.get("jrsdInsttNm", "")
+            category = item.get("anncTyCdNm") or "창업"
+            detail_url = item.get("detailUrl") or item.get("pblancUrl", "")
+            if upsert_program({"title": title, "organization": organ, "category": category,
+                               "description": (item.get("anncCn") or "")[:2000], "deadline": deadline,
+                               "eligibility": item.get("trgetNm", "") or "", "source_url": detail_url,
+                               "tags": ["중소벤처24", category], "is_active": True}):
+                total += 1
+    report[src] = {"saved": total, "errors": errors}
+    print(f"  → {src} 완료: {total}건 저장/갱신" + (f" | 오류 {errors}건 ⚠️" if errors else ""))
+    return total
+
+
+# ══════════════════════════════════════════
+# 5. 온통청년 청년정책API
+# ══════════════════════════════════════════
+def fetch_youth():
+    src = "온통청년"
+    print(f"\n{'='*50}")
+    if not YOUTH_KEY:
+        print(f"[5/5] {src} — 인증키 미입력 (승인 대기 중), 건너뜀")
+        report[src] = {"saved": 0, "errors": 0, "skipped": True}
+        return 0
+    print(f"[5/5] {src} 수집 시작")
+    url   = "https://www.youthcenter.go.kr/go/ythip/getPlcy"
+    total, errors = 0, 0
+    for page in range(1, 11):  # 최대 10페이지
+        try:
+            res  = requests.get(url, params={"apiKeyNm": YOUTH_KEY, "pageNum": page, "pageSize": 100, "rtnType": "json"}, timeout=15)
+            data = res.json()
+        except Exception as e:
+            print(f"  페이지 {page} 호출 실패: {e}")
+            errors += 1
+            break
+        items = data.get("youthPolicyList", [])
+        if not items:
+            break
+        print(f"  페이지 {page}: {len(items)}건 수신")
+        for item in items:
+            title    = (item.get("plcyNm") or "").strip()
+            if not title:
+                continue
+            # 사업기간 종료일 → deadline
+            deadline = fmt_date(item.get("bizPrdEndYmd"))
+            if deadline and deadline < today:
+                continue
+            eligibility = " | ".join(filter(None, [
+                item.get("addAplyQlfcCndCn", ""),
+                f"연령: {item.get('sprtTrgtMinAge','')}~{item.get('sprtTrgtMaxAge','')}세" if item.get("sprtTrgtAgeLmtYn") == "Y" else "",
+                item.get("ptcpPrpTrgtCn", "")
+            ]))
+            detail_url = item.get("aplyUrlAddr") or item.get("refUrlAddr1", "")
+            category   = item.get("lclsfNm", "청년")
+            if upsert_program({"title": title, "organization": item.get("sprvsnInstCdNm", ""),
+                               "category": category, "description": (item.get("plcyExplnCn") or "")[:2000],
+                               "deadline": deadline, "eligibility": eligibility,
+                               "source_url": detail_url, "tags": ["온통청년", category], "is_active": True}):
+                total += 1
+    report[src] = {"saved": total, "errors": errors}
+    print(f"  → {src} 완료: {total}건 저장/갱신" + (f" | 오류 {errors}건 ⚠️" if errors else ""))
+    return total
+
+
+# ══════════════════════════════════════════
+# 마감 공고 비활성화
+# ══════════════════════════════════════════
 def deactivate_expired():
-    print("=" * 50)
-    print("[3/3] 마감 지난 공고 비활성화")
+    print(f"\n{'='*50}")
+    print("[정리] 마감 지난 공고 비활성화")
     try:
-        res = (
-            db.table("programs")
-            .update({"is_active": False})
-            .lt("deadline", today)
-            .eq("is_active", True)
-            .execute()
-        )
+        res = db.table("programs").update({"is_active": False}).lt("deadline", today).eq("is_active", True).execute()
         cnt = len(res.data) if res.data else 0
         print(f"  → {cnt}건 비활성화 완료")
+        return cnt
     except Exception as e:
         print(f"  비활성화 오류: {e}")
+        return 0
+
+
+# ══════════════════════════════════════════
+# 자가진단 리포트
+# ══════════════════════════════════════════
+def print_report(deactivated):
+    print(f"\n{'='*50}")
+    print("📋 수집 결과 리포트")
+    print(f"{'='*50}")
+    total_saved = 0
+    for src, r in report.items():
+        if r.get("skipped"):
+            status = "⏭  건너뜀 (키 미입력)"
+        elif r.get("errors", 0) > 0:
+            status = f"⚠️  저장 {r['saved']}건 | 오류 {r['errors']}건 — 사이트 개편 가능성, 확인 필요"
+        elif r["saved"] == 0:
+            status = f"❌ 0건 — API 응답 확인 필요"
+        else:
+            status = f"✅ {r['saved']}건 저장/갱신"
+        print(f"  {src:<12} : {status}")
+        total_saved += r.get("saved", 0)
+    print(f"{'─'*50}")
+    print(f"  전체 저장/갱신  : {total_saved}건")
+    print(f"  마감 비활성화   : {deactivated}건")
+    print(f"{'='*50}")
 
 
 if __name__ == "__main__":
     k = fetch_kstartup()
     b = fetch_bizinfo()
-    deactivate_expired()
-    print("=" * 50)
-    print(f"전체 완료! K-Startup {k}건 + 기업마당 {b}건")
+    m = fetch_mss()
+    s = fetch_smes24()
+    y = fetch_youth()
+    d = deactivate_expired()
+    print_report(d)
