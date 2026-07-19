@@ -3,18 +3,23 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
 async function sbFetch(path, options={}) {
+  const { prefer, body, method, headers: extraHeaders, ...rest } = options;
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
-    ...options,
+    method: method || 'GET',
+    body: body || undefined,
+    ...rest,
     headers: {
       'apikey': SUPABASE_SERVICE_KEY,
       'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
       'Content-Type': 'application/json',
-      'Prefer': options.prefer || '',
-      ...(options.headers||{})
+      ...(prefer ? { 'Prefer': prefer } : {}),
+      ...(extraHeaders||{})
     }
   });
-  if (!res.ok) throw new Error(`Supabase error: ${res.status} ${await res.text()}`);
-  return res.json();
+  const text = await res.text();
+  if (!res.ok) throw new Error(`Supabase error: ${res.status} ${text}`);
+  if (!text || text === 'null') return [];
+  return JSON.parse(text);
 }
 
 export default async function handler(req, res) {
