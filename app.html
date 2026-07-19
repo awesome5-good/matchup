@@ -201,6 +201,15 @@
     .eg-body strong{color:var(--gray-900,#111);}
     .eg-body .eg-tip{background:var(--gray-50);border-radius:12px;padding:14px;margin-top:10px;font-size:14px;}
     .eg-body .eg-tip::before{content:"16년 실무 팁";display:block;font-weight:700;margin-bottom:6px;font-size:13px;}
+    .newsletter-box{background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:16px;padding:20px;margin-top:16px;margin-bottom:8px;}
+    .newsletter-box-title{font-size:16px;font-weight:800;margin-bottom:4px;}
+    .newsletter-box-sub{font-size:14px;color:var(--gray-500);margin-bottom:14px;line-height:1.6;}
+    .newsletter-row{display:flex;gap:8px;}
+    .newsletter-inp{flex:1;height:44px;border:1.5px solid var(--gray-200);border-radius:10px;padding:0 14px;font-size:15px;outline:none;}
+    .newsletter-inp:focus{border-color:var(--brand);}
+    .newsletter-btn{height:44px;padding:0 18px;background:var(--brand);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap;}
+    .newsletter-done{font-size:14px;color:var(--brand);font-weight:700;text-align:center;padding:8px 0;display:none;}
+    .newsletter-consent{font-size:12px;color:var(--gray-400);margin-top:8px;line-height:1.5;}
     .consult-cta{background:var(--gray-900);border-radius:16px;padding:24px 20px;margin-top:28px;text-align:center;}
     .consult-cta-title{font-size:19px;font-weight:800;color:#fff;margin-bottom:6px;}
     .consult-cta-sub{font-size:15px;color:var(--gray-300);margin-bottom:18px;line-height:1.6;}
@@ -442,6 +451,16 @@
       <button class="btn-inline" id="btn-go-match">매칭 시작하기</button>
     </div>
   </div>
+  <div class="newsletter-box" id="newsletter-box">
+  <div class="newsletter-box-title">매주 월요일, 맞춤 지원사업 브리핑</div>
+  <div class="newsletter-box-sub">이번 주 놓치면 안 되는 공고 3건 +<br>16년 컨설턴트의 실무 코멘트를 메일로 받아보세요.</div>
+  <div class="newsletter-row">
+    <input class="newsletter-inp" id="newsletter-email" type="email" placeholder="이메일 주소 입력">
+    <button class="newsletter-btn" onclick="subscribeNewsletter()">구독</button>
+  </div>
+  <div class="newsletter-done" id="newsletter-done">구독 완료! 매주 월요일 아침에 만나요 :)</div>
+  <div class="newsletter-consent">구독 시 광고성 정보 수신에 동의하며, 언제든지 수신 거부할 수 있습니다.</div>
+</div>
 </section>
 
 <!-- ═══ 사업 상세 ═══ -->
@@ -1402,7 +1421,7 @@ function updateBadges(){
   sc.classList.toggle('hidden',savedList.length===0);
 }
 
-function renderResults(){
+async function renderResults(){
   $('base-date').textContent=baseDate?`공고 기준일 ${fmtDate(baseDate)}`:'';
   if(!allMatches.length){
     const attempted=!!baseDate;
@@ -1424,21 +1443,26 @@ function renderResults(){
       </div>`;
     const b=$('btn-go-match');
     if(b)b.addEventListener('click',()=>attempted?enterSteps():navTab('match'));
-    return;
+  }else{
+    $('result-title').textContent=`${allMatches.length}개 사업이 매칭됐어요`;
+    $('result-sub').textContent='적합도가 높은 순서로 보여드려요';
+    $('results-list').innerHTML=allMatches.map((m,i)=>{
+      const p=m.program||{};
+      return `<button class="match-card ${i===0?'rank1':''}" data-idx="${i}">
+        ${i===0?'<span class="rank1-badge">가장 잘 맞아요</span>':''}
+        <span class="match-score ${m.match_score>=85?'':'mid'}">${m.match_score}점</span>
+        <div class="match-title">${txt(p.title)}</div>
+        <div class="match-sub">${txt(fmtCardSub(p))}</div>
+        ${renderNeedBadgesHtml(m.match_reason)}
+      </button>`;
+    }).join('');
+    document.querySelectorAll('#results-list .match-card').forEach(c=>c.addEventListener('click',()=>openDetail(parseInt(c.dataset.idx,10))));
   }
-  $('result-title').textContent=`${allMatches.length}개 사업이 매칭됐어요`;
-  $('result-sub').textContent='적합도가 높은 순서로 보여드려요';
-  $('results-list').innerHTML=allMatches.map((m,i)=>{
-    const p=m.program||{};
-    return `<button class="match-card ${i===0?'rank1':''}" data-idx="${i}">
-      ${i===0?'<span class="rank1-badge">가장 잘 맞아요</span>':''}
-      <span class="match-score ${m.match_score>=85?'':'mid'}">${m.match_score}점</span>
-      <div class="match-title">${txt(p.title)}</div>
-      <div class="match-sub">${txt(fmtCardSub(p))}</div>
-      ${renderNeedBadgesHtml(m.match_reason)}
-    </button>`;
-  }).join('');
-  document.querySelectorAll('#results-list .match-card').forEach(c=>c.addEventListener('click',()=>openDetail(parseInt(c.dataset.idx,10))));
+  const {data:{session:ns}}=await db.auth.getSession();
+  if(ns?.user?.email){
+    const nei=$('newsletter-email');
+    if(nei)nei.value=ns.user.email;
+  }
 }
 
 /* ═══════════ 사업 상세 + AI 가이드 ═══════════ */
@@ -1865,6 +1889,37 @@ db.auth.onAuthStateChange(async(event,session)=>{
 
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/sw.js');
+}
+
+async function subscribeNewsletter(){
+  const emailEl=$('newsletter-email');
+  const email=(emailEl?.value||'').trim();
+  if(!email||!/^[^@]+@[^@]+\.[^@]+$/.test(email)){
+    alert('올바른 이메일 주소를 입력해주세요.');
+    return;
+  }
+  const btn=document.querySelector('.newsletter-btn');
+  btn.disabled=true;
+  btn.textContent='처리 중...';
+  try{
+    const {data:{session}}=await db.auth.getSession();
+    const payload={
+      email,
+      biz_status: S.type||null,
+      industry: S.a.industry||null,
+      region: S.a.region||null,
+      user_id: session?.user?.id||null
+    };
+    const {error}=await db.from('subscribers').upsert(payload,{onConflict:'email'});
+    if(error)throw error;
+    $('newsletter-done').style.display='block';
+    document.querySelector('.newsletter-row').style.display='none';
+    document.querySelector('.newsletter-consent').style.display='none';
+  }catch(e){
+    alert('구독 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+    btn.disabled=false;
+    btn.textContent='구독';
+  }
 }
 </script>
 </body>
