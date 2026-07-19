@@ -200,42 +200,72 @@ def fetch_mss():
 def fetch_smes24():
     src = "중소벤처24"
     print(f"\n{'='*50}")
-    print(f"[4/5] {src} 공고정보 수집 시작")
-    url   = "https://portal.smes.go.kr/api/biz/announce/list"
+    print(f"[3/4] {src} 공고정보 수집 시작")
+    url   = "https://www.smes.go.kr/fnct/apiReqst/extPblancInfo"
+    token = "wQZe2AZiStdLNDd4um8dHnWQviVTRAZxv1jV+EyGcrXpc5y3+e3eHjtgn32Psfo0fr8tTUZ22JYPAxrcN+igjw=="
     total, errors = 0, 0
-    for page in range(1, 6):
-        res = None
-        try:
-            res  = requests.get(url, params={"apiKey": SMES24_KEY, "pageNo": page, "pageSize": 100}, timeout=15)
-            data = res.json()
-        except Exception as e:
-            print(f"  페이지 {page} 호출 실패: {e}")
-            print(f"  응답 앞부분: {res.text[:200] if res else '없음'}")
+    try:
+        import urllib.parse
+        encoded_token = urllib.parse.quote(token, safe='')
+        res  = requests.get(f"{url}?token={encoded_token}&html=no", timeout=20)
+        if res.status_code != 200:
+            print(f"  HTTP {res.status_code}")
             errors += 1
-            break
-        items = data.get("data", {}).get("list", []) or data.get("list", []) or []
-        if not items:
-            # 응답 구조가 다를 수 있어 원본 출력
-            print(f"  페이지 {page}: 데이터 없음 (응답키: {list(data.keys())})")
-            break
-        print(f"  페이지 {page}: {len(items)}건 수신")
+            report[src] = {"saved": 0, "errors": errors}
+            return 0
+        data = res.json()
+        if data.get("resultCd") != "0":
+            print(f"  API 오류: {data.get('resultMsg','')}")
+            errors += 1
+            report[src] = {"saved": 0, "errors": errors}
+            return 0
+        items = data.get("data", [])
+        print(f"  {len(items)}건 수신")
         for item in items:
-            title    = (item.get("anncNm") or item.get("pblancNm") or "").strip()
+            title = (item.get("pblancNm") or "").strip()
             if not title:
                 continue
-            deadline = fmt_date(item.get("rcptEndDe") or item.get("pblancEndDe"))
+            deadline = fmt_date(item.get("pblancEndDt"))
             if deadline and deadline < today:
                 continue
-            organ    = item.get("anncInsttNm") or item.get("jrsdInsttNm", "")
-            category = item.get("anncTyCdNm") or "창업"
-            detail_url = item.get("detailUrl") or item.get("pblancUrl", "")
+            # 자격 조건을 구조화해서 eligibility에 저장
+            elig_parts = []
+            if item.get("cmpScale"):
+                elig_parts.append(f"기업규모: {item.get('cmpScale')}")
+            if item.get("ablbiz"):
+                elig_parts.append(f"업력: {item.get('ablbiz')}")
+            if item.get("emplyCnt"):
+                elig_parts.append(f"종업원수: {item.get('emplyCnt')}")
+            if item.get("areaNm"):
+                elig_parts.append(f"지역: {item.get('areaNm')}")
+            if item.get("fntnYn") == "Y":
+                elig_parts.append("예비창업자 가능")
+            if item.get("refntnYn") == "Y":
+                elig_parts.append("재창업 가능")
+            raw_trget = (item.get("sportTrget") or "")
+            if raw_trget:
+                elig_parts.insert(0, raw_trget[:200])
+            eligibility = " | ".join(elig_parts)
+            category = item.get("bizType") or "경영"
+            organ    = item.get("sportInsttNm") or ""
+            detail_url = item.get("pblancDtlUrl") or item.get("reqstLinkInfo") or ""
+            description = " ".join(filter(None, [
+                item.get("policyCnts") or "",
+                item.get("sportCnts") or ""
+            ]))[:2000]
+            tags = ["중소벤처24", category]
+            if item.get("areaNm"):
+                tags.append(item.get("areaNm"))
             if upsert_program({"title": title, "organization": organ, "category": category,
-                               "description": (item.get("anncCn") or "")[:2000], "deadline": deadline,
-                               "eligibility": item.get("trgetNm", "") or "", "source_url": detail_url,
-                               "tags": ["중소벤처24", category], "is_active": True}):
+                               "description": description, "deadline": deadline,
+                               "eligibility": eligibility, "source_url": detail_url,
+                               "tags": tags, "is_active": True}):
                 total += 1
+    except Exception as e:
+        print(f"  호출 실패: {e}")
+        errors += 1
     report[src] = {"saved": total, "errors": errors}
-    print(f"  → {src} 완료: {total}건 저장/갱신" + (f" | 오류 {errors}건 [경고]" if errors else ""))
+    print(f"  -> {src} 완료: {total}건 저장/갱신" + (f" | 오류 {errors}건" if errors else ""))
     return total
 
 
@@ -246,10 +276,10 @@ def fetch_youth():
     src = "온통청년"
     print(f"\n{'='*50}")
     if not YOUTH_KEY:
-        print(f"[5/5] {src} - 인증키 미입력 (승인 대기 중), 건너뜀")
+        print(f"[4/4] {src} - 인증키 미입력 (승인 대기 중), 건너뜀")
         report[src] = {"saved": 0, "errors": 0, "skipped": True}
         return 0
-    print(f"[5/5] {src} 수집 시작")
+    print(f"[4/4] {src} 수집 시작")
     url   = "https://www.youthcenter.go.kr/go/ythip/getPlcy"
     total, errors = 0, 0
     for page in range(1, 11):  # 최대 10페이지
@@ -333,7 +363,6 @@ def print_report(deactivated):
 if __name__ == "__main__":
     k = fetch_kstartup()
     b = fetch_bizinfo()
-    m = fetch_mss()
     s = fetch_smes24()
     y = fetch_youth()
     d = deactivate_expired()
