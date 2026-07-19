@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import sys
+import io
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 """
 매치업 지원사업 데이터 수집 v3
 소스별 수집 결과 및 오류를 자가진단 리포트로 출력
@@ -148,40 +151,31 @@ def fetch_mss():
     src = "중소벤처기업부"
     print(f"\n{'='*50}")
     print(f"[3/5] {src} 공고 조회 서비스 수집 시작")
-    url   = "https://apis.data.go.kr/1421000/bizinfo/pblancBsnsService/getPblancBsnsList"
+    url   = "https://www.bizinfo.go.kr/uss/rss/bizinfoApi.do"
     total, errors = 0, 0
     for page in range(1, 6):
         try:
-            res  = requests.get(url, params={"serviceKey": DATA_GO_KEY, "pageNo": page, "numOfRows": 100, "returnType": "json"}, timeout=15)
+            res  = requests.get(url, params={"crtfcKey": DATA_GO_KEY, "dataType": "json", "searchCnt": "100", "pageIndex": page}, timeout=15)
+            if res.status_code != 200:
+                print(f"  페이지 {page}: HTTP {res.status_code}")
+                errors += 1
+                break
             data = res.json()
         except Exception as e:
             print(f"  페이지 {page} 호출 실패: {e}")
             errors += 1
             break
-        items = []
-        try:
-            body = data.get("response", {}).get("body", {})
-            raw = body.get("items", {})
-            if isinstance(raw, dict):
-                raw = raw.get("item", [])
-            if isinstance(raw, dict):
-                raw = [raw]
-            items = raw if isinstance(raw, list) else []
-            if not items:
-                print(f"  페이지 {page}: 데이터 없음 - 응답 구조: {list(body.keys())}")
-                break
-        except Exception as e:
-            print(f"  페이지 {page}: 파싱 오류 - {e}")
-            errors += 1
-            break
+        items = data.get("jsonArray", []) or []
         if not items:
+            print(f"  페이지 {page}: 데이터 없음")
             break
-        print(f"  페이지 {page}: {len(items)}건 수신")
+
         for item in items:
-            title    = (item.get("pblancNm") or "").strip()
+            title = (item.get("pblancNm") or "").strip()
             if not title:
                 continue
-            deadline = fmt_date(item.get("reqstEndDe") or item.get("pblancEndDe"))
+            period   = item.get("reqstBeginEndDe", "") or ""
+            deadline = fmt_date(period.split("~")[-1].strip()) if "~" in period else None
             if deadline and deadline < today:
                 continue
             category = item.get("pldirSportRealmLclasCodeNm", "") or "경영"
@@ -194,6 +188,7 @@ def fetch_mss():
                                "eligibility": item.get("trgetNm", "") or "", "source_url": detail_url,
                                "tags": ["중소벤처기업부", category], "is_active": True}):
                 total += 1
+        continue
     report[src] = {"saved": total, "errors": errors}
     print(f"  → {src} 완료: {total}건 저장/갱신" + (f" | 오류 {errors}건 [경고]" if errors else ""))
     return total
@@ -209,11 +204,13 @@ def fetch_smes24():
     url   = "https://portal.smes.go.kr/api/biz/announce/list"
     total, errors = 0, 0
     for page in range(1, 6):
+        res = None
         try:
             res  = requests.get(url, params={"apiKey": SMES24_KEY, "pageNo": page, "pageSize": 100}, timeout=15)
             data = res.json()
         except Exception as e:
             print(f"  페이지 {page} 호출 실패: {e}")
+            print(f"  응답 앞부분: {res.text[:200] if res else '없음'}")
             errors += 1
             break
         items = data.get("data", {}).get("list", []) or data.get("list", []) or []
@@ -249,7 +246,7 @@ def fetch_youth():
     src = "온통청년"
     print(f"\n{'='*50}")
     if not YOUTH_KEY:
-        print(f"[5/5] {src} — 인증키 미입력 (승인 대기 중), 건너뜀")
+        print(f"[5/5] {src} - 인증키 미입력 (승인 대기 중), 건너뜀")
         report[src] = {"saved": 0, "errors": 0, "skipped": True}
         return 0
     print(f"[5/5] {src} 수집 시작")
