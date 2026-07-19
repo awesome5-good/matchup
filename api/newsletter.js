@@ -1,10 +1,21 @@
 // api/newsletter.js — 매주 월요일 자동 발송 + 수동 트리거 가능
-import { createClient } from '@supabase/supabase-js';
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
-const db = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
-);
+async function sbFetch(path, options={}) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    ...options,
+    headers: {
+      'apikey': SUPABASE_SERVICE_KEY,
+      'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': options.prefer || '',
+      ...(options.headers||{})
+    }
+  });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status} ${await res.text()}`);
+  return res.json();
+}
 
 export default async function handler(req, res) {
   const auth = req.headers['authorization'] || req.query.secret;
@@ -13,10 +24,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { data: subs } = await db
-      .from('subscribers')
-      .select('*')
-      .eq('is_active', true);
+    const subs = await sbFetch('subscribers?is_active=eq.true&select=*');
 
     if (!subs || subs.length === 0) {
       return res.status(200).json({ message: '구독자 없음' });
@@ -24,14 +32,9 @@ export default async function handler(req, res) {
 
     const today = new Date();
     const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
-    const { data: programs } = await db
-      .from('programs')
-      .select('*')
-      .eq('is_active', true)
-      .lte('deadline', nextWeek.toISOString().split('T')[0])
-      .gte('deadline', today.toISOString().split('T')[0])
-      .order('created_at', { ascending: false })
-      .limit(5);
+    const todayStr = today.toISOString().split('T')[0];
+    const nextWeekStr = nextWeek.toISOString().split('T')[0];
+    const programs = await sbFetch(`programs?is_active=eq.true&deadline=gte.${todayStr}&deadline=lte.${nextWeekStr}&order=created_at.desc&limit=5&select=*`);
 
     const topPrograms = programs?.slice(0, 3) || [];
     let aiComment = '';
@@ -92,10 +95,14 @@ ${topPrograms.map((p, i) => `${i+1}. ${p.title} (마감: ${p.deadline}) - ${p.or
       }
     }
 
-    await db.from('newsletter_logs').insert({
-      issue_no: issueNo,
-      subject: `[매치업 ${issueNo}호] 이번 주 놓치면 안 되는 지원사업 ${topPrograms.length}건`,
-      sent_count: sentCount
+    await sbFetch('newsletter_logs', {
+      method: 'POST',
+      prefer: 'return=minimal',
+      body: JSON.stringify({
+        issue_no: issueNo,
+        subject: `[매치업 ${issueNo}호] 이번 주 놓치면 안 되는 지원사업 ${topPrograms.length}건`,
+        sent_count: sentCount
+      })
     });
 
     return res.status(200).json({ success: true, sent: sentCount, issueNo });
