@@ -206,21 +206,46 @@ def fetch_smes24():
     total, errors = 0, 0
     try:
         import urllib.parse
+        from datetime import datetime, timedelta
         encoded_token = urllib.parse.quote(token, safe='')
-        res  = requests.get(f"{url}?token={encoded_token}&html=no", timeout=20)
-        if res.status_code != 200:
-            print(f"  HTTP {res.status_code}")
-            errors += 1
-            report[src] = {"saved": 0, "errors": errors}
-            return 0
-        data = res.json()
-        if data.get("resultCd") != "0":
-            print(f"  API 오류: {data.get('resultMsg','')}")
-            errors += 1
-            report[src] = {"saved": 0, "errors": errors}
-            return 0
-        items = data.get("data", [])
-        print(f"  {len(items)}건 수신")
+        all_items = []
+        # 3개월씩 분할 요청 (전체를 한 번에 받으면 타임아웃)
+        base = datetime.today()
+        periods = [
+            (base - timedelta(days=90), base),
+            (base, base + timedelta(days=90)),
+            (base + timedelta(days=90), base + timedelta(days=180)),
+        ]
+        for start, end in periods:
+            strDt = start.strftime("%Y%m%d")
+            endDt = end.strftime("%Y%m%d")
+            try:
+                r = requests.get(
+                    f"{url}?token={encoded_token}&html=no&strDt={strDt}&endDt={endDt}",
+                    timeout=60
+                )
+                if r.status_code != 200:
+                    print(f"  HTTP {r.status_code} ({strDt}~{endDt})")
+                    continue
+                d = r.json()
+                if d.get("resultCd") != "0":
+                    print(f"  API 오류: {d.get('resultMsg','')} ({strDt}~{endDt})")
+                    continue
+                chunk = d.get("data", [])
+                print(f"  {strDt}~{endDt}: {len(chunk)}건 수신")
+                all_items.extend(chunk)
+            except Exception as e:
+                print(f"  구간 {strDt}~{endDt} 실패: {e}")
+                errors += 1
+        # 중복 제거 (pblancSeq 기준)
+        seen = set()
+        items = []
+        for item in all_items:
+            seq = item.get("pblancSeq")
+            if seq not in seen:
+                seen.add(seq)
+                items.append(item)
+        print(f"  총 {len(items)}건 (중복 제거 후)")
         for item in items:
             title = (item.get("pblancNm") or "").strip()
             if not title:
