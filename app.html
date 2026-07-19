@@ -191,13 +191,16 @@
     .eg-sub{font-size:15px;color:var(--gray-500);margin-bottom:18px;}
     .eg-item{background:#fff;border:1px solid var(--gray-200);border-radius:16px;margin-bottom:10px;overflow:hidden;}
     .eg-head{display:flex;justify-content:space-between;align-items:center;padding:18px;cursor:pointer;font-size:16px;font-weight:700;}
+    .eg-ico{flex-shrink:0;width:34px;height:34px;border-radius:10px;background:var(--brand-50);display:flex;align-items:center;justify-content:center;margin-right:12px;}
+    .eg-ico svg{width:18px;height:18px;stroke:var(--brand);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+    .eg-head-txt{flex:1;display:flex;align-items:center;}
     .eg-head .eg-arrow{transition:transform 0.2s;color:var(--gray-500);font-size:14px;}
     .eg-item.open .eg-arrow{transform:rotate(180deg);}
     .eg-body{display:none;padding:0 18px 18px;font-size:15px;color:var(--gray-600);line-height:1.75;}
     .eg-item.open .eg-body{display:block;}
     .eg-body strong{color:var(--gray-900,#111);}
     .eg-body .eg-tip{background:var(--gray-50);border-radius:12px;padding:14px;margin-top:10px;font-size:14px;}
-    .eg-body .eg-tip::before{content:"💡 16년 실무 팁";display:block;font-weight:700;margin-bottom:6px;font-size:13px;}
+    .eg-body .eg-tip::before{content:"16년 실무 팁";display:block;font-weight:700;margin-bottom:6px;font-size:13px;}
     .consult-cta{background:var(--gray-900);border-radius:16px;padding:24px 20px;margin-top:28px;text-align:center;}
     .consult-cta-title{font-size:19px;font-weight:800;color:#fff;margin-bottom:6px;}
     .consult-cta-sub{font-size:15px;color:var(--gray-300);margin-bottom:18px;line-height:1.6;}
@@ -466,7 +469,7 @@
   <p class="eg-sub">16년간 500개 기업 컨설팅·100건 이상 심사에서 나온 실전 노하우</p>
 
   <div class="eg-item" data-for="pre">
-    <div class="eg-head" onclick="this.parentElement.classList.toggle('open')">📝 사업계획서, 심사위원은 이렇게 읽습니다<span class="eg-arrow">▼</span></div>
+    <div class="eg-head" onclick="this.parentElement.classList.toggle('open')"><span class="eg-head-txt"><span class="eg-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></span>사업계획서, 심사위원은 이렇게 읽습니다</span><span class="eg-arrow">▼</span></div>
     <div class="eg-body">
       <strong>① 문제 정의</strong> — "시장에 어떤 문제가 있고 누가 얼마나 불편한가"를 숫자로. "1인 가구가 늘고 있다"는 누구나 쓰는 문장입니다. "대구 수성구 1인 가구 4.2만 세대, 5년간 31% 증가, 그런데 소용량 반찬 전문점은 3곳"처럼 지역·규모·공백을 한 문장에 담으세요.
       <div class="eg-tip">문제 정의는 심사위원에게 던지는 질문으로 시작하면 강력합니다. "이런 불편, 겪어보셨을 겁니다 → 다들 이 정도로만 알고 있습니다 → 그런데 이게 이런 문제를 만듭니다 → 기존 해결책은 이런 한계가 있습니다 → 그 틈새를 우리가 이렇게 풉니다." 이 흐름 하나로 심사위원의 시선을 끝까지 붙잡을 수 있습니다.</div>
@@ -479,7 +482,7 @@
   </div>
 
   <div class="eg-item" data-for="pre">
-    <div class="eg-head" onclick="this.parentElement.classList.toggle('open')">🎯 심사위원이 실제로 보는 평가 항목 5가지<span class="eg-arrow">▼</span></div>
+    <div class="eg-head" onclick="this.parentElement.classList.toggle('open')"><span class="eg-head-txt"><span class="eg-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></span>심사위원이 실제로 보는 평가 항목 5가지</span><span class="eg-arrow">▼</span></div>
     <div class="eg-body">
       공고문 뒤쪽 '평가 기준' 표가 답안지입니다. 대부분 <strong>실현가능성 30~40점 &gt; 대표자 역량 20~30점 &gt; 시장성 20점 &gt; 차별성 10~20점 &gt; 재무 합리성 10점</strong> 구조입니다. 배점 높은 순서대로 분량을 배분하세요.
       <br><br><strong>① 실현가능성</strong> — 이미 확보한 것(점포 계약, 거래처, 시제품, 예약 고객)이 점수를 만듭니다. 사업계획서만으로는 실행력을 증명할 수 없으니 MOU·협약서 같은 레퍼런스가 뒤를 받쳐줘야 합니다.
@@ -492,7 +495,7 @@
   </div>
 
   <div class="eg-item" data-for="all">
-    <div class="eg-head" onclick="this.parentElement.classList.toggle('open')">🚫 탈락 사유 TOP 5 — 이것만 피해도 절반은 통과<span class="eg-arrow">▼</span></div>
+    <div class="eg-head" onclick="this.parentElement.classList.toggle('open')"><span class="eg-head-txt"><span class="eg-ico"><svg viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>탈락 사유 TOP 5 — 이것만 피해도 절반은 통과</span><span class="eg-arrow">▼</span></div>
     <div class="eg-body">
       <strong>1위. 자격 조건 미확인</strong> — 서류가 아무리 좋아도 자격 미달은 심사 전에 탈락합니다. 특히 사업자가 여러 개인 경우, 업력 계산, 사업자등록증 업태·종목 불일치(이건 업종 추가로 해결 가능), "폐업 후 O년 이내" 조건 — 이런 디테일에서 자주 걸립니다. 공고문의 '신청 자격'과 '제외 대상'을 형광펜 들고 읽으세요. 애매하면 담당자 전화 — 공고문의 문의 번호는 쓰라고 있는 겁니다.
       <br><br><strong>2위. 공고 양식 미사용·형식 위반</strong> — 반드시 공고 첨부 서식으로. 분량 제한이 '이내'인지 '내외'인지까지 확인하세요.
@@ -504,7 +507,7 @@
   </div>
 
   <div class="eg-item" data-for="biz">
-    <div class="eg-head" onclick="this.parentElement.classList.toggle('open')">📋 신청 서류 체크리스트<span class="eg-arrow">▼</span></div>
+    <div class="eg-head" onclick="this.parentElement.classList.toggle('open')"><span class="eg-head-txt"><span class="eg-ico"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/></svg></span>신청 서류 체크리스트</span><span class="eg-arrow">▼</span></div>
     <div class="eg-body">
       <strong>공통 서류</strong> — 사업자등록증명원(홈택스, 3개월 이내 발급본), 국세 납세증명서(홈택스), 지방세 납세증명서(위택스), 사업계획서(공고 서식 필수), 대표자 신분증·통장 사본. 체납이 있으면 신청 자체가 막히는 사업이 많으니 미리 확인하세요. 예비창업자는 "사업자등록 없음"이 자격인 사업이 있으니 등록 시점을 전략적으로 판단해야 합니다.
       <br><br><strong>제출 전 최종 점검</strong> — 파일 형식(PDF 지정 많음)·용량 제한, 파일명 규칙("사업명_기업명_대표자명" 지정 공고 다수), 첨부 서식 개수와 내 파일 개수 대조(1개 누락이 가장 흔한 실격 사유), 접수번호 화면 캡처 보관.
@@ -513,7 +516,7 @@
   </div>
 
   <div class="eg-item" data-for="biz">
-    <div class="eg-head" onclick="this.parentElement.classList.toggle('open')">✅ 선정 후 협약·정산 — 선정됐다고 끝이 아닙니다<span class="eg-arrow">▼</span></div>
+    <div class="eg-head" onclick="this.parentElement.classList.toggle('open')"><span class="eg-head-txt"><span class="eg-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="15" x2="12" y2="15"/></svg></span>선정 후 협약·정산 — 선정됐다고 끝이 아닙니다</span><span class="eg-arrow">▼</span></div>
     <div class="eg-body">
       지원사업의 진짜 난이도는 선정 이후입니다. 이 파트는 어디에서도 잘 안 알려주는 내용입니다.
       <br><br><strong>협약 단계</strong> — 협약서의 '지원금 사용 기준'과 의무사항(교육 이수, 중간보고, 사업 유지 기간)을 서명 전에 확인하세요. 그리고 절대 <strong>선집행하지 마세요</strong>. 지원기관이 "언제부터 사용 가능"이라는 지침을 반드시 주는데, 협약 전·지침 전에 쓴 비용은 소급 인정이 안 되는 경우가 대부분입니다.
