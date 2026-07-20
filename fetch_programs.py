@@ -27,7 +27,7 @@ KSTARTUP_KEY   = "4f518baf8a28ed0f517bba932b36bc8dccb2b3c5c5b16993de091777e0f48e
 BIZINFO_KEY    = "2I57xn"
 DATA_GO_KEY    = "4f518baf8a28ed0f517bba932b36bc8dccb2b3c5c5b16993de091777e0f48ef4"  # 공공데이터포털
 SMES24_KEY     = "wQZe2AZiStdLNDd4um8dHnWQviVTRAZxv1jV+EyGcrXpc5y3+e3eHjtgn32Psfo0fr8tTUZ22JYPAxrcN+igjw=="
-YOUTH_KEY      = ""   # 온통청년 — 승인 후 입력
+YOUTH_KEY      = "ba5d58dc-e47f-4de8-8ce3-e55f51637f0a"
 # ────────────────────────────────────────────────────
 
 db    = create_client(SUPABASE_URL, SUPABASE_KEY)
