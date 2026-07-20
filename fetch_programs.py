@@ -317,10 +317,10 @@ def fetch_youth():
             print(f"  페이지 {page} 호출 실패: {e}")
             errors += 1
             break
-        items = data.get("youthPolicyList", [])
+        result = data.get("result", data)
+        items = result.get("youthPolicyList", [])
         if not items:
-            print(f"  페이지 {page} 응답 키 목록: {list(data.keys())}")
-            print(f"  응답 앞부분: {str(data)[:300]}")
+            print(f"  페이지 {page}: 데이터 없음 또는 마지막 페이지")
             break
         print(f"  페이지 {page}: {len(items)}건 수신")
         for item in items:
