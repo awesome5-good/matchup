@@ -724,7 +724,9 @@ async function requestConsultingPayment(){
   try{
     const config=await loadPortoneConfig();
     if(!config.storeId)throw new Error('PORTONE_STORE_ID 설정이 필요해요');
-    const paymentId=`consulting30min${Date.now()}${crypto.randomUUID().replace(/-/g,'').slice(0,8)}`;
+    const ts=Date.now().toString().slice(-8);
+const rand=crypto.randomUUID().replace(/-/g,'').slice(0,8);
+const paymentId=`pay${ts}${rand}`;
     const response=await PortOne.requestPayment({
       storeId:config.storeId,
       channelKey:config.channelKey,
