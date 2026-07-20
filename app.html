@@ -1784,7 +1784,7 @@ async function loginWithEmail(){
   if(!email||!pw)return alert('이메일과 비밀번호를 입력해주세요');
   const {error}=await db.auth.signInWithPassword({email,password:pw});
   if(error)return alert('로그인 실패: '+error.message);
-  renderMypage();
+  renderProfile();
 }
 async function renderProfile(){
   const {data:{session}}=await db.auth.getSession();
