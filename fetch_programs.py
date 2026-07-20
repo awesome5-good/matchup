@@ -317,6 +317,8 @@ def fetch_youth():
             break
         items = data.get("youthPolicyList", [])
         if not items:
+            print(f"  페이지 {page} 응답 키 목록: {list(data.keys())}")
+            print(f"  응답 앞부분: {str(data)[:300]}")
             break
         print(f"  페이지 {page}: {len(items)}건 수신")
         for item in items:
