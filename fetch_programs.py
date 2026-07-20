@@ -318,7 +318,6 @@ def fetch_youth():
         result = data.get("result", data)
         items = result.get("youthPolicyList", [])
         if not items:
-            print(f"  페이지 {page}: 데이터 없음 또는 마지막 페이지")
             break
         print(f"  페이지 {page}: {len(items)}건 수신")
         for item in items:
