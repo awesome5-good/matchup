@@ -309,7 +309,8 @@ def fetch_youth():
     total, errors = 0, 0
     for page in range(1, 11):  # 최대 10페이지
         try:
-            res  = requests.get(url, params={"apiKeyNm": YOUTH_KEY, "pageNum": page, "pageSize": 100, "rtnType": "json"}, timeout=15)
+            res  = requests.get(url, params={"apiKey": YOUTH_KEY, "pageNum": 1, "pageSize": 10, "rtnType": "json"}, timeout=15)
+            print(f"  테스트 URL: {res.url}")
             data = res.json()
         except Exception as e:
             print(f"  페이지 {page} 호출 실패: {e}")
